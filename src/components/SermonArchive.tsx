@@ -89,36 +89,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   }, []);
 
   const syncWithStaticOrStorage = () => {
-    // In static environment (like Cloudflare Pages), always ensure authoritative loadAndSyncSermons()
-    const authoritative = loadAndSyncSermons();
-    setSermons(authoritative);
-
-    // Optional background check of canaan_master_data.json if needed
-    fetch(`/canaan_master_data.json?t=${Date.now()}`)
-      .then(res => res.json())
-      .then(json => {
-        if (json?.data?.sermons && Array.isArray(json.data.sermons) && json.data.sermons.length > 0) {
-          // Reconcile: master flags (showVideo: false, showAudio: false) must be strictly enforced
-          const reconciled = json.data.sermons.map((s: Sermon) => {
-            const master = INITIAL_SERMONS.find(m => m.id === s.id || m.date === s.date);
-            if (master) {
-              return {
-                ...s,
-                showVideo: master.showVideo === false ? false : s.showVideo,
-                showAudio: master.showAudio === false ? false : s.showAudio
-              };
-            }
-            return s;
-          });
-          setSermons(reconciled);
-          try {
-            localStorage.setItem('canaan_sermons_data', JSON.stringify(reconciled));
-            localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-            localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-          } catch {}
-        }
-      })
-      .catch(() => {});
+    // In static environments (such as Cloudflare Pages), load directly from authoritative compiled master data
+    setSermons(loadAndSyncSermons());
   };
 
   const handleOpenSermon = (sermon: Sermon, preferredTab?: 'video' | 'audio' | 'notes') => {
