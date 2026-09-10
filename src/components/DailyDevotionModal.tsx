@@ -38,11 +38,11 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   if (!isOpen) return null;
 
   const dateText = lang === 'zh' ? formattedDateZh : formattedDateEn;
-  const title = lang === 'zh' ? (devotion.titleZh || '美好的團契') : (devotion.titleEn || 'What a Fellowship');
+  const title = lang === 'zh' ? (devotion.titleZh || '慷慨的典範') : (devotion.titleEn || 'Legacy of Generosity');
   const verse = lang === 'zh' ? devotion.verseZh : devotion.verseEn;
   const reference = lang === 'zh' ? devotion.referenceZh : devotion.referenceEn;
   const reading = lang === 'zh' ? (devotion.passageReadingZh || devotion.referenceZh) : (devotion.passageReadingEn || devotion.referenceEn);
-  const author = lang === 'zh' ? (devotion.authorZh || '雷翠霞') : (devotion.authorEn || 'Poh Fang Chia');
+  const author = lang === 'zh' ? (devotion.authorZh || '柯貝絲') : (devotion.authorEn || 'Kirsten Holmberg');
   const reflection = lang === 'zh' ? devotion.reflectionZh : devotion.reflectionEn;
   const prayer = lang === 'zh' ? devotion.prayerZh : devotion.prayerEn;
   const thought = lang === 'zh' ? devotion.thoughtZh : devotion.thoughtEn;
