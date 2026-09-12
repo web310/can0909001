@@ -26,6 +26,31 @@ export interface DailyDevotion {
 
 export const DAILY_DEVOTIONS: DailyDevotion[] = [
   {
+    "id": 103,
+    "dateStr": "2026-09-12",
+    "titleZh": "堅忍與喜樂",
+    "titleEn": "Perseverance and Joy",
+    "authorZh": "靈命日糧同工",
+    "authorEn": "Our Daily Bread Ministries",
+    "passageReadingZh": "雅各書 1:2-12",
+    "passageReadingEn": "James 1:2-12",
+    "verseZh": "我的弟兄們，你們落在百般試煉中，都要以為大喜樂；因為知道你們的信心經過試驗，就生忍耐。",
+    "verseEn": "Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance.",
+    "referenceZh": "雅各書 1 章 2-3 節",
+    "referenceEn": "James 1:2-3",
+    "reflectionZh": "當你面對生活中的困難與試煉時，你通常會有什麼反應？上帝如何藉著各樣的挑戰磨練你的信心，並在其中賜給你出人意外的平安與喜樂？",
+    "reflectionEn": "How do you typically respond when facing hardships and trials? How has God used challenges to refine your faith and grant you supernatural peace and joy in the midst of adversity?",
+    "prayerZh": "親愛的天父，感謝祢在一切艱難處境中依然掌管萬有。求祢賜我屬天的眼光，使我在百般試煉中不失去盼望與喜樂，堅心信靠祢的信實，讓我的信心生出忍耐與成熟，榮耀祢的聖名。阿們！",
+    "prayerEn": "Dear Heavenly Father, thank You that You remain in sovereign control even in our hardest seasons. Grant me heavenly perspective so that I may not lose hope or joy in the face of trials, trusting Your faithfulness to produce steadfast endurance and maturity in my life. In Jesus' name, Amen.",
+    "thoughtZh": "試煉是信心成熟的淬鍊場。當我們仰望掌管萬有的上帝時，忍耐到底的信心必能生出勝過環境的屬天喜樂，並領受主所應許的生命冠冕。",
+    "thoughtEn": "Trials are the crucible where faith is forged and matured. As we fix our eyes on our sovereign God, steadfast perseverance produces supernatural joy and the crown of life He has promised.",
+    "contentZh": "在植物的世界中，常能看見頑強的生命力——即使是一株生長在磚石階梯縫隙中的小花，只要有陽光與雨露，也能穿破石縫綻放。這正如使徒雅各在《雅各書》中向身處患難與逼迫中的信徒所作的勉勵：「堅忍到底是一件美好的事。」\n\n面對生活的挫折、病痛或人際關係的風浪，我們的本能往往是逃避或沮喪。然而雅各卻提醒我們一個顛覆性的屬天眼光：「你們落在百般試煉中，都要以為大喜樂；因為知道你們的信心經過試驗，就生忍耐」（雅各書 1:2-3）。這裡所說的「喜樂」，並不是對痛苦本身感到高興，而是因為深知上帝掌權，祂能使萬事互相效力，在艱難的處境中雕琢我們的生命，使我們「成全、完備，毫無缺欠」。\n\n雅各更在第12節宣告：「忍受試探的人是有福的，因為他經過試驗以後，必得生命的冠冕；這是主應許給那些愛他之人的。」聖經中的「有福」正包含了深刻而持久的喜樂。今天，無論你正經歷什麼樣的考驗，請記得上帝與你同行，在祂的恩典中堅忍到底，必得享屬天的平安與豐盛喜樂。",
+    "contentEn": "In nature, life often demonstrates extraordinary resilience—a delicate flower taking root in the crack of a stone stairway, braving harsh elements to bloom with quiet beauty. It stands as a vivid picture of what the apostle James encouraged believers enduring affliction to pursue: steadfast endurance is a magnificent and worthy pursuit.\n\nWhen confronted with life's setbacks, illnesses, or personal storms, our natural instinct is often to retreat in discouragement. Yet James presents a counterintuitive, divine perspective: \"Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance\" (James 1:2-3). This \"joy\" is not delighting in pain itself, but rather holding firm confidence that our sovereign God uses adversity to forge our character, making us mature and complete, lacking nothing.\n\nJames further proclaims in verse 12: \"Blessed is the one who perseveres under trial because, having stood the test, that person will receive the crown of life that the Lord has promised to those who love him.\" Biblical blessedness carries a profound, unbreakable joy. Whatever test you are walking through today, know that God walks beside you, and His grace empowers you to endure with steadfast joy.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://www.odbm.org/tc/devotionals/devotional-category/%E5%A0%85%E5%BF%8D%E8%88%87%E5%96%9C%E6%A8%82?ts=1789171200000"
+  },
+  {
     "id": 102,
     "dateStr": "2026-09-10",
     "titleZh": "慷慨的典範",

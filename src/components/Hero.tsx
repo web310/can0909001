@@ -21,8 +21,8 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
   const handleCopyVerse = () => {
     const d = todayDevotion.devotion;
     const verseText = lang === 'zh'
-      ? `【加南今日經文靈修 • ${todayDevotion.formattedDateZh}】\n主題：《${d.titleZh || '慷慨的典範'}》\n讀經：${d.passageReadingZh || d.referenceZh}\n\n📖 今日經文：\n“${d.verseZh}”（${d.referenceZh}）\n\n💡 反思：\n${d.reflectionZh || d.thoughtZh}\n\n🙏 禱告：\n${d.prayerZh || '親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。'}\n\n🌱 今日勉勵：\n${d.thoughtZh}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您有平安喜樂的一天！`
-      : `[Canaan Daily Scripture & Devotion • ${todayDevotion.formattedDateEn}]\nTitle: "${d.titleEn || 'Legacy of Generosity'}"\nPassage: ${d.passageReadingEn || d.referenceEn}\n\n📖 Today's Scripture:\n"${d.verseEn}" (${d.referenceEn})\n\n💡 Reflection:\n${d.reflectionEn || d.thoughtEn}\n\n🙏 Prayer:\n${d.prayerEn || 'Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.'}\n\n🌱 Thought:\n${d.thoughtEn}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+      ? `【加南今日經文靈修 • ${todayDevotion.formattedDateZh}】\n主題：《${d.titleZh || '今日靈修'}》\n讀經：${d.passageReadingZh || d.referenceZh}\n\n📖 今日經文：\n“${d.verseZh}”（${d.referenceZh}）\n\n💡 反思：\n${d.reflectionZh || d.thoughtZh}\n\n🙏 禱告：\n${d.prayerZh || '親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。'}\n\n🌱 今日勉勵：\n${d.thoughtZh}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您有平安喜樂的一天！`
+      : `[Canaan Daily Scripture & Devotion • ${todayDevotion.formattedDateEn}]\nTitle: "${d.titleEn || 'Daily Devotion'}"\nPassage: ${d.passageReadingEn || d.referenceEn}\n\n📖 Today's Scripture:\n"${d.verseEn}" (${d.referenceEn})\n\n💡 Reflection:\n${d.reflectionEn || d.thoughtEn}\n\n🙏 Prayer:\n${d.prayerEn || 'Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.'}\n\n🌱 Thought:\n${d.thoughtEn}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
     
     navigator.clipboard.writeText(verseText);
     setCopiedVerse(true);
