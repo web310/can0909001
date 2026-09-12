@@ -67,25 +67,44 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Load initial sermons: query server first (in Node.js dev environment), fallback to static/deployed master sync
+  // Load initial sermons: in production/Cloudflare environments, use compiled master data directly
   useEffect(() => {
-    fetch('/api/sermons')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && Array.isArray(data.sermons) && data.sermons.length > 0) {
-          setSermons(data.sermons);
-          try {
-            localStorage.setItem('canaan_sermons_data', JSON.stringify(data.sermons));
-            localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
-            localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
-          } catch {}
-        } else {
-          syncWithStaticOrStorage();
-        }
-      })
-      .catch(() => {
-        syncWithStaticOrStorage();
-      });
+    // Synchronize authoritative compiled master sermons
+    setSermons(loadAndSyncSermons());
+
+    // Only query backend API when running in local full-stack server mode
+    const isDevOrCustomServer = 
+      typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || 
+       window.location.hostname === '127.0.0.1' || 
+       window.location.hostname.includes('run.app'));
+
+    if (isDevOrCustomServer) {
+      fetch('/api/sermons')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && Array.isArray(data.sermons) && data.sermons.length > 0) {
+            const masterList = INITIAL_SERMONS;
+            const reconciled: Sermon[] = data.sermons.map((s: Sermon) => {
+              const master = masterList.find(m => m.id === s.id || m.date === s.date);
+              return {
+                ...s,
+                showVideo: master?.showVideo === false ? false : Boolean(s.showVideo),
+                showAudio: master?.showAudio === false ? false : Boolean(s.showAudio)
+              };
+            });
+            setSermons(reconciled);
+            try {
+              localStorage.setItem('canaan_sermons_data', JSON.stringify(reconciled));
+              localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
+              localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
+            } catch {}
+          }
+        })
+        .catch(() => {
+          // ignore error and keep authoritative master sermons
+        });
+    }
   }, []);
 
   const syncWithStaticOrStorage = () => {

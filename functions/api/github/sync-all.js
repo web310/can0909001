@@ -77,8 +77,106 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
       }
     }, null, 2);
 
+    const cloudflareSermonsJs = `// Cloudflare Pages Function: /api/sermons
+const DEFAULT_SERMONS = ${JSON.stringify(sermonsList, null, 2)};
+
+export async function onRequestGet(context) {
+  try {
+    const url = new URL(context.request.url);
+    const assetUrl = new URL('/canaan_master_data.json', url);
+    const masterRes = context.env && context.env.ASSETS
+      ? await context.env.ASSETS.fetch(assetUrl)
+      : await fetch(assetUrl);
+    if (masterRes && masterRes.ok) {
+      const masterData = await masterRes.json();
+      if (masterData && Array.isArray(masterData.data?.sermons) && masterData.data.sermons.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            sermons: masterData.data.sermons,
+            count: masterData.data.sermons.length,
+            source: 'canaan_master_data.json'
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Access-Control-Allow-Origin": "*",
+              "Cache-Control": "no-cache, no-store, must-revalidate"
+            }
+          }
+        );
+      }
+    }
+  } catch (err) {
+    console.warn("Could not read canaan_master_data.json:", err);
+  }
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      sermons: DEFAULT_SERMONS,
+      count: DEFAULT_SERMONS.length,
+      source: 'default_sermons'
+    }),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
+    }
+  );
+}
+
+export async function onRequestPost(context) {
+  try {
+    const { sermons } = await context.request.json();
+    if (Array.isArray(sermons)) {
+      return new Response(
+        JSON.stringify({ success: true, count: sermons.length }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        }
+      );
+    }
+    return new Response(
+      JSON.stringify({ error: "Sermons array required" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      }
+    );
+  } catch (err) {
+    return new Response(
+      JSON.stringify({ error: err.message || "Failed to process sermons" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      }
+    );
+  }
+}
+
+export async function onRequestOptions() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    }
+  });
+}
+`;
+
     const files = [
-      ...(sermonsList.length > 0 ? [{ path: "src/data/sermonsData.ts", content: sermonsTs }] : []),
+      ...(sermonsList.length > 0 ? [
+        { path: "src/data/sermonsData.ts", content: sermonsTs },
+        { path: "functions/api/sermons.js", content: cloudflareSermonsJs }
+      ] : []),
       ...(prayersList.length > 0 ? [{ path: "src/data/prayersData.ts", content: prayersTs }] : []),
       { path: "public/canaan_master_data.json", content: masterBackupJson }
     ];

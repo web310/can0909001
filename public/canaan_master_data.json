@@ -134,8 +134,8 @@
         ],
         "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
         "videoPasscode": "8s4y?JHX",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-5",

@@ -284,6 +284,91 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
         console.warn("Client fallback master json sync notice:", mErr);
       }
 
+      // Also sync functions/api/sermons.js to GitHub repository
+      try {
+        const edgeFnCode = `// Cloudflare Pages Function: /api/sermons
+const DEFAULT_SERMONS = ${JSON.stringify(sermons, null, 2)};
+
+export async function onRequestGet(context) {
+  try {
+    const url = new URL(context.request.url);
+    const assetUrl = new URL('/canaan_master_data.json', url);
+    const masterRes = context.env && context.env.ASSETS
+      ? await context.env.ASSETS.fetch(assetUrl)
+      : await fetch(assetUrl);
+    if (masterRes && masterRes.ok) {
+      const masterData = await masterRes.json();
+      if (masterData && Array.isArray(masterData.data?.sermons) && masterData.data.sermons.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            sermons: masterData.data.sermons,
+            count: masterData.data.sermons.length,
+            source: 'canaan_master_data.json'
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Access-Control-Allow-Origin": "*",
+              "Cache-Control": "no-cache, no-store, must-revalidate"
+            }
+          }
+        );
+      }
+    }
+  } catch (err) {
+    console.warn("Could not read canaan_master_data.json:", err);
+  }
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      sermons: DEFAULT_SERMONS,
+      count: DEFAULT_SERMONS.length,
+      source: 'edge_function_fallback'
+    }),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
+    }
+  );
+}
+
+export async function onRequestPost(context) {
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: { "Content-Type": "application/json; charset=utf-8" }
+  });
+}
+`;
+        const edgeContent = btoa(unescape(encodeURIComponent(edgeFnCode)));
+        let edgeSha: string | undefined;
+        const getEdge = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/functions/api/sermons.js?ref=${targetBranch}`, {
+          headers: { Authorization: authHeader, Accept: 'application/vnd.github+json' }
+        });
+        if (getEdge.ok) {
+          const eData = await getEdge.json();
+          edgeSha = eData.sha;
+        }
+        await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/functions/api/sermons.js`, {
+          method: 'PUT',
+          headers: { Authorization: authHeader, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `chore(cloudflare): update edge functions/api/sermons.js (${sermons.length})`,
+            content: edgeContent,
+            branch: targetBranch,
+            sha: edgeSha
+          })
+        });
+      } catch (eErr) {
+        console.warn("Client fallback edge function sync notice:", eErr);
+      }
+
       setPushSuccessResult({
         commitSha: commitSha.slice(0, 7),
         commitUrl,

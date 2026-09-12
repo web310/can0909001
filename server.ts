@@ -1037,8 +1037,8 @@ Strictly output your answer as a JSON object matching this schema:
       ],
       videoUrl: "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
       videoPasscode: "8s4y?JHX",
-      showVideo: true,
-      showAudio: true
+      showVideo: false,
+      showAudio: false
     },
     {
       id: "sermon-5",
@@ -2069,6 +2069,76 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
           }
         } catch (jsonErr) {
           console.warn("Could not sync canaan_master_data.json:", jsonErr);
+        }
+      }
+
+      // Update functions/api/sermons.js
+      const cloudflareFnPath = path.join(process.cwd(), "functions", "api", "sermons.js");
+      if (fs.existsSync(cloudflareFnPath)) {
+        try {
+          const fnContent = `// Cloudflare Pages Function: /api/sermons
+const DEFAULT_SERMONS = ${JSON.stringify(sermons, null, 2)};
+
+export async function onRequestGet(context) {
+  try {
+    const url = new URL(context.request.url);
+    const assetUrl = new URL('/canaan_master_data.json', url);
+    const masterRes = context.env && context.env.ASSETS
+      ? await context.env.ASSETS.fetch(assetUrl)
+      : await fetch(assetUrl);
+    if (masterRes && masterRes.ok) {
+      const masterData = await masterRes.json();
+      if (masterData && Array.isArray(masterData.data?.sermons) && masterData.data.sermons.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            sermons: masterData.data.sermons,
+            count: masterData.data.sermons.length,
+            source: 'canaan_master_data.json'
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Access-Control-Allow-Origin": "*",
+              "Cache-Control": "no-cache, no-store, must-revalidate"
+            }
+          }
+        );
+      }
+    }
+  } catch (err) {
+    console.warn("Could not read canaan_master_data.json:", err);
+  }
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      sermons: DEFAULT_SERMONS,
+      count: DEFAULT_SERMONS.length,
+      source: 'edge_function_fallback'
+    }),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
+    }
+  );
+}
+
+export async function onRequestPost(context) {
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: { "Content-Type": "application/json; charset=utf-8" }
+  });
+}
+`;
+          fs.writeFileSync(cloudflareFnPath, fnContent, "utf-8");
+        } catch (fnErr) {
+          console.warn("Could not sync functions/api/sermons.js:", fnErr);
         }
       }
     } catch (fsErr) {
@@ -3406,6 +3476,43 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
           });
         } catch (sErr) {
           console.warn("Could not sync remote sermonStorage.ts:", sErr);
+        }
+      }
+
+      // Also sync functions/api/sermons.js if exists
+      const cloudflareFnPath = path.join(process.cwd(), "functions", "api", "sermons.js");
+      if (fs.existsSync(cloudflareFnPath)) {
+        try {
+          const fnRaw = fs.readFileSync(cloudflareFnPath, "utf-8");
+          let fnSha: string | undefined = undefined;
+          const getFnRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/functions/api/sermons.js?ref=${activeBranch}`, {
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            }
+          });
+          if (getFnRes.ok) {
+            const fnInfo: any = await getFnRes.json();
+            fnSha = fnInfo.sha;
+          }
+          await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/functions/api/sermons.js`, {
+            method: "PUT",
+            headers: {
+              Authorization: authHeader,
+              Accept: "application/vnd.github+json",
+              "Content-Type": "application/json",
+              "User-Agent": "CanaanChurchApp/1.0"
+            },
+            body: JSON.stringify({
+              message: `chore(cloudflare): synchronize edge functions/api/sermons.js with latest sermons (${sermonList.length})`,
+              content: Buffer.from(fnRaw, "utf-8").toString("base64"),
+              branch: activeBranch,
+              sha: fnSha
+            })
+          });
+        } catch (fErr) {
+          console.warn("Could not sync remote functions/api/sermons.js:", fErr);
         }
       }
 

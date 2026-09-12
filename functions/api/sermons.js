@@ -36,8 +36,8 @@ const DEFAULT_SERMONS = [
       "3) 立志與弟兄姐妹一起迫切禱告"
     ],
     videoPasscode: "25226",
-    showVideo: true,
-    showAudio: true
+    showVideo: false,
+    showAudio: false
   },
   {
     id: "sermon-2",
@@ -65,8 +65,8 @@ const DEFAULT_SERMONS = [
       "四、重領使命與七千忠心未屈膝的同路人 （列王記上 19:15-18）"
     ],
     videoPasscode: "25226",
-    showVideo: true,
-    showAudio: true
+    showVideo: false,
+    showAudio: false
   },
   {
     id: "sermon-3",
@@ -94,8 +94,8 @@ const DEFAULT_SERMONS = [
       "4. 專心尋求神引領"
     ],
     videoPasscode: "25226",
-    showVideo: true,
-    showAudio: true
+    showVideo: false,
+    showAudio: false
   },
   {
     id: "sermon-4",
@@ -122,12 +122,12 @@ const DEFAULT_SERMONS = [
     ],
     videoUrl: "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
     videoPasscode: "8s4y?JHX",
-    showVideo: true,
-    showAudio: true
+    showVideo: false,
+    showAudio: false
   },
   {
     id: "sermon-5",
-    title: "Those Who Are Well Do Not Need a Physician",
+    title: "Those Who Are Well Do Need a Physician",
     titleZh: "康健的人用不著醫生",
     speaker: "Rev. Yijun Guo",
     speakerZh: "郭易君 牧師",
@@ -153,8 +153,8 @@ const DEFAULT_SERMONS = [
       "五、靈魂的醫生 （5:31）"
     ],
     videoPasscode: "25226",
-    showVideo: true,
-    showAudio: true
+    showVideo: false,
+    showAudio: false
   },
   {
     id: "sermon-6",
@@ -180,24 +180,57 @@ const DEFAULT_SERMONS = [
       "三、因名記在天上而歡喜 (路加福音 10:17-21)"
     ],
     videoPasscode: "25226",
-    showVideo: true,
-    showAudio: true
+    showVideo: false,
+    showAudio: false
   }
 ];
 
-export async function onRequestGet() {
+export async function onRequestGet(context) {
+  // First priority: read directly from the static canaan_master_data.json asset deployed on Cloudflare Pages
+  try {
+    const url = new URL(context.request.url);
+    const assetUrl = new URL('/canaan_master_data.json', url);
+    const masterRes = context.env && context.env.ASSETS
+      ? await context.env.ASSETS.fetch(assetUrl)
+      : await fetch(assetUrl);
+    if (masterRes && masterRes.ok) {
+      const masterData = await masterRes.json();
+      if (masterData && Array.isArray(masterData.data?.sermons) && masterData.data.sermons.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            sermons: masterData.data.sermons,
+            count: masterData.data.sermons.length,
+            source: 'canaan_master_data.json'
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Access-Control-Allow-Origin": "*",
+              "Cache-Control": "no-cache, no-store, must-revalidate"
+            }
+          }
+        );
+      }
+    }
+  } catch (err) {
+    console.warn("Could not read canaan_master_data.json:", err);
+  }
+
   return new Response(
     JSON.stringify({
       success: true,
       sermons: DEFAULT_SERMONS,
-      count: DEFAULT_SERMONS.length
+      count: DEFAULT_SERMONS.length,
+      source: 'default_sermons'
     }),
     {
       status: 200,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
         "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, max-age=60"
+        "Cache-Control": "no-cache, no-store, must-revalidate"
       }
     }
   );

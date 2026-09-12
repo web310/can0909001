@@ -11,7 +11,7 @@ export const SERMON_CONTENT_LIST: Sermon[] = INITIAL_SERMONS;
 
 export const SERMONS_DATA_VERSION: string = 
   (SermonsData as any).SERMONS_DATA_VERSION || 
-  `v-${INITIAL_SERMONS.length}-${INITIAL_SERMONS[0]?.date || 'master'}`;
+  `version-2026-09-12-clean-v3`;
 
 /**
  * Generate a deterministic fingerprint of the compiled master sermons.
@@ -20,7 +20,7 @@ export const SERMONS_DATA_VERSION: string =
 export function getMasterDataFingerprint(): string {
   try {
     return `${SERMONS_DATA_VERSION}::` + INITIAL_SERMONS.map(s => 
-      `${s.id}:${s.date}:${s.titleZh}:${s.speakerZh}:${s.videoUrl || ''}:${s.videoPasscode || ''}:${s.showVideo !== false}:${s.showAudio !== false}`
+      `${s.id}:${s.date}:${s.titleZh}:${s.speakerZh}:${s.videoUrl || ''}:${s.videoPasscode || ''}:${s.showVideo === true}:${s.showAudio === true}`
     ).join('|');
   } catch {
     return `${SERMONS_DATA_VERSION}::${INITIAL_SERMONS.length}`;
@@ -31,34 +31,38 @@ export function getMasterDataFingerprint(): string {
  * Authoritative sermon loader.
  * Validates cache against compiled master version and fingerprint.
  * Guarantees that any turned-off visibility flags (showVideo: false, showAudio: false) in the
- * deployed master take immediate effect across all deployment environments (Cloudflare Pages, GitHub).
+ * deployed master take immediate, unconditional effect across all deployment environments (Cloudflare Pages, GitHub).
  */
 export function loadAndSyncSermons(): Sermon[] {
+  const masterList = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
   try {
     const currentFingerprint = getMasterDataFingerprint();
     const cachedFingerprint = localStorage.getItem('canaan_sermons_master_fingerprint');
     const cachedVersion = localStorage.getItem('canaan_sermons_data_version');
     const saved = localStorage.getItem('canaan_sermons_data');
 
+    // If cache is missing or version/fingerprint does not match the clean master, purge obsolete cache
     if (!saved || cachedFingerprint !== currentFingerprint || cachedVersion !== SERMONS_DATA_VERSION) {
-      const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
       try {
-        localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
+        localStorage.setItem('canaan_sermons_data', JSON.stringify(masterList));
         localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
         localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
       } catch {}
-      return list;
+      return masterList;
     }
 
     const parsed: Sermon[] = JSON.parse(saved);
     if (Array.isArray(parsed) && parsed.length > 0) {
       const reconciled = parsed.map(s => {
-        const master = INITIAL_SERMONS.find(m => m.id === s.id || m.date === s.date);
+        const master = masterList.find(m => m.id === s.id || m.date === s.date);
         if (master) {
           return {
             ...s,
-            showVideo: master.showVideo === false ? false : s.showVideo,
-            showAudio: master.showAudio === false ? false : s.showAudio
+            // If master in code has showVideo === false, force false
+            showVideo: master.showVideo === false ? false : Boolean(s.showVideo),
+            // If master in code has showAudio === false, force false
+            showAudio: master.showAudio === false ? false : Boolean(s.showAudio)
           };
         }
         return s;
@@ -68,7 +72,8 @@ export function loadAndSyncSermons(): Sermon[] {
   } catch (e) {
     // ignore
   }
-  return [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  return masterList;
 }
 
 /**
@@ -77,6 +82,7 @@ export function loadAndSyncSermons(): Sermon[] {
 export function resetSermonsToDeployedMaster(): Sermon[] {
   const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   try {
+    localStorage.removeItem('canaan_sermons_data');
     localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
     localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
     localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
