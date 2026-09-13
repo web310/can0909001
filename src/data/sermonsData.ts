@@ -3,14 +3,43 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-09T20:31:54.757Z
+// Updated at: 2026-09-13T01:05:52.496Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
-// Total Sermons: 6
+// Total Sermons: 7
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-12-clean-v3";
+export const SERMONS_DATA_VERSION = "version-2026-09-13-mtz44prk";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-1789261339556",
+    "title": "A fighting chance",
+    "titleZh": "一線生機",
+    "speaker": "Rev. Sulun Meng",
+    "speakerZh": "孟蘇倫 牧師",
+    "date": "2026-09-13",
+    "scripture": "Joshua 2:15-21",
+    "scriptureZh": "約書亞記第二章（約書亞記 2:15-21）",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Sulun Meng on \"A fighting chance.\", reflecting on Joshua 2:15-21.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，孟蘇倫 牧師證道傳講《一線生機》，分享經文「約書亞記第二章（約書亞記 2:15-21）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
+      "2. All must be united; God will perfect and fulfill our entire church.",
+      "3. A journey born of faith will surely witness God's mighty works firsthand."
+    ],
+    "pointsZh": [
+      "1.在絕境中經歷生機",
+      "2. 在審判時獲得生機",
+      "3. 界線之內才有生機"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "audioUrl": "",
+    "showVideo": true,
+    "showAudio": true
+  },
   {
     "id": "sermon-20260906",
     "title": "The Antioch Church",
