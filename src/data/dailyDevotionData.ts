@@ -26,6 +26,31 @@ export interface DailyDevotion {
 
 export const DAILY_DEVOTIONS: DailyDevotion[] = [
   {
+    "id": 104,
+    "dateStr": "2026-09-13",
+    "titleZh": "致命的迷思",
+    "titleEn": "Deadly Confusion",
+    "authorZh": "靈命日糧同工",
+    "authorEn": "Our Daily Bread Ministries",
+    "passageReadingZh": "箴言 16:16-25",
+    "passageReadingEn": "Proverbs 16:16-25",
+    "verseZh": "有一條路，人以為正，至終成為死亡之路。",
+    "verseEn": "There is a way that appears to be right, but in the end it leads to death.",
+    "referenceZh": "箴言 16 章 25 節",
+    "referenceEn": "Proverbs 16:25",
+    "reflectionZh": "在你的日常生活中，是否曾有某些自以為正確的決定，回頭看卻發現偏離了上帝的心意？你今天如何學習放下自己的固有成見，專心尋求上帝話語的引導與真實智慧？",
+    "reflectionEn": "In your daily life, have you ever made choices that felt entirely right at the time, only to realize later they deviated from God's will? How can you lay aside self-reliance today to seek the Lord's true wisdom and guidance?",
+    "prayerZh": "親愛的天父，求祢赦免我常憑自己的小聰明與有限眼光行事。求祢賜下屬天的智慧與辨別力，照明我心中的眼睛，使我能識破世俗虛妄的迷思，專心信靠祢的話語，不偏離真理與生命的道路。阿們！",
+    "prayerEn": "Dear Heavenly Father, forgive me for often relying on my own limited understanding and human wisdom. Grant me divine discernment and spiritual clarity to see through the deceptive myths of this world. Anchor my heart firmly in Your Word, that I may walk steadfastly on the path of truth and eternal life. In Jesus' name, Amen.",
+    "thoughtZh": "我們最敏銳的肉眼也可能被幻象所欺騙，唯有敬畏上帝、領受祂的話語，才能使我們脫離自以為正的致命迷思，走向豐盛完全的生命之路。",
+    "thoughtEn": "Even our sharpest human insight can be misled by convincing illusions. Only by revering God and embracing His truth can we be delivered from deadly confusion and led into abundant life.",
+    "contentZh": "在許多高樓或大片玻璃窗的建築物旁，常會發生鳥兒猛烈撞擊玻璃窗的不幸事件。鳥兒之所以會一再高速撞向窗戶，是因為牠們被玻璃上映照出的藍天、白雲與樹影所迷惑，誤以為眼前是一條暢通無阻、充滿生機的飛行通道，卻未料到這片美麗的幻象背後，竟是致命的障礙。\n\n人類在人生的航程中，也常陷入類似的致命迷思。正如《箴言》16章25節所發出的深刻警示：「有一條路，人以為正，至終成為死亡之路。」世上有許多看似光鮮亮麗、合理甚至令人嚮往的人生捷徑——名利的誘惑、隨波逐流的價值觀、自以為義的判斷，常常偽裝成幸福的捷徑，讓人深信不疑地向前奔馳，直到撞上現實的痛苦與心靈的空虛，才驚覺自己被幻象所欺騙。\n\n我們有限的智慧和視角，往往無法看清整全的真相。《箴言》16章16節提醒我們：「得智慧勝似得金子；得聰明比得銀子更可取。」真正的安全與明辨，不在於我們多麼相信自己的直覺，而在於謙卑來到上帝面前，讓祂的話語成為我們腳前的燈、路上的光。當我們敬畏耶和華、順服祂的引導時，祂必引領我們遠離虛幻的迷思，踏上通往平安、喜樂與豐盛永生的光明大道。",
+    "contentEn": "Near many buildings with large glass windows, birds often tragically collide into transparent panes. They crash at full speed not out of recklessness, but because they are deceived by the crisp reflection of blue sky, drifting clouds, and green branches. What appears to be an open corridor of freedom is, in reality, a fatal illusion.\n\nIn our journey through life, we humans frequently fall prey to similarly deadly confusion. As Proverbs 16:25 poignantly warns: \"There is a way that appears to be right, but in the end it leads to death.\" The world presents countless attractive pathways—chasing worldly acclaim, self-indulgence, or relying solely on our own moral compass. These paths often appear entirely reasonable, even noble, leading people to run headlong into them until they encounter heartbreak, brokenness, and spiritual emptiness.\n\nOur human vision, no matter how sharp, is clouded and incomplete. Proverbs 16:16 reminds us, \"How much better to get wisdom than gold, to get insight rather than silver!\" True discernment does not come from leaning on our own instincts, but from humbly surrendering to the Creator who sees all things. God's living Word is a lamp to our feet and a light to our path. When we revere Him and follow His counsel, He delivers us from deadly deceptions and guides our steps along the path of peace, wholeness, and eternal life.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://www.odbm.org/tc/devotionals"
+  },
+  {
     "id": 103,
     "dateStr": "2026-09-12",
     "titleZh": "堅忍與喜樂",
