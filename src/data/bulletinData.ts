@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-10T09:03:25.698Z
+// Updated at: 2026-09-13T01:05:52.496Z
 // ============================================================================
 
 export interface BulletinData {
@@ -114,26 +114,26 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
   "updatedAt": "2026-09-06T10:00:00.000Z",
   "serviceDate": "2026-08-30",
   "presider": "鄭育青 弟兄",
-  "speaker": "萬志俠 牧師",
-  "speakerEn": "Rev. Zhixia Wan",
-  "sermonTitle": "走一條我們從未走過的路",
-  "sermonTitleEn": "Walking a Path We Have Never Walked Before",
-  "sermonScripture": "約書亞記第三章（約書亞記 3:1-17）",
-  "sermonScriptureEn": "Joshua 3:1-17",
-  "sermonSummary": "加南新生基督教會主日崇拜，萬志俠牧師透過約書亞記第三章傳講《走一條我們從未走過的路》，勉勵弟兄姊妹在面對未知的道路與教會新階段時，緊隨神的約櫃與腳步，全體同心合一，憑著信心踏入約旦河，親眼見證耶和華神在我們中間行的奇事與帶領。",
-  "sermonSummaryEn": "Rev. Zhixia Wan preached on Joshua 3:1-17 titled 'Walking a Path We Have Never Walked Before.' When facing uncharted journeys and new church seasons, we must follow closely in God's footsteps, be united as one body, and step forward in faith to witness God's wondrous works.",
+  "speaker": "孟蘇倫 牧師",
+  "speakerEn": "Rev. Sulun Meng",
+  "sermonTitle": "一線生機",
+  "sermonTitleEn": "A fighting chance",
+  "sermonScripture": "約書亞記第二章（約書亞記 2:15-21）",
+  "sermonScriptureEn": "Joshua 2:15-21",
+  "sermonSummary": "在加南新生基督教會主日崇拜中，孟蘇倫 牧師證道傳講《走一條我們從未走過的路》，分享經文「約書亞記第三章（約書亞記 3:1-17）」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Sulun Meng on \"Walking a Path We Have Never Walked Before\", reflecting on Joshua 3:1-17.",
   "sermonPointsZh": [
-    "1. 踏上新的旅程，我們必須緊隨神的腳步。",
-    "2. 眾人要合一，神要讓我們整個教會被成全。",
-    "3. 出于信心的旅程，必能親眼見證神的作為。"
+    "1.在絕境中經歷生機",
+    "2. 在審判時獲得生機",
+    "3. 界線之內才有生機"
   ],
   "sermonPoints": [
     "1. Stepping onto a new journey, we must follow closely in God's footsteps.",
     "2. All must be united; God will perfect and fulfill our entire church.",
     "3. A journey born of faith will surely witness God's mighty works firsthand."
   ],
-  "memoryVerse": "約書亞吩咐百姓說：「你們要自潔，因為明天耶和華必在你們中間行奇事。」（約書亞記 3:5）",
-  "memoryVerseRef": "約書亞記 3:5",
+  "memoryVerse": "「除他以外，別無拯救；因為在天下人間，沒有賜下別的名，我們可以靠著得救。」（使徒行傳4章12節）",
+  "memoryVerseRef": "使徒行傳4章12節",
   "weeklyReadingRange": "8/31 - 9/6",
   "weeklyReadingSchedule": [
     {
