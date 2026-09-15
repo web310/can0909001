@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
-import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink, Calendar, ChevronRight } from 'lucide-react';
+import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink, Calendar, ChevronRight, Search } from 'lucide-react';
 import heroImgUrl from '../assets/images/canaan_church_hero_1786434083190.jpg';
 import { getTodayDevotion } from '../data/dailyDevotionData';
 import { DailyDevotionModal } from './DailyDevotionModal';
@@ -117,10 +117,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-1.5 text-sm sm:text-base text-amber-200 hover:text-white bg-amber-500/20 hover:bg-amber-500/35 border border-amber-500/40 px-3 py-2 rounded-lg transition font-semibold shadow-sm cursor-pointer"
-                  title={lang === 'zh' ? '前往靈命日糧官方網站 (www.odbm.org/tc/devotionals)' : 'Visit Our Daily Bread (www.odbm.org)'}
+                  title={lang === 'zh' ? '前往靈命日糧官方網站 (www.odbm.org/tc/devotionals) 搜尋或閱讀當天靈修文章' : 'Search or read today\'s devotional on Our Daily Bread (www.odbm.org)'}
                 >
-                  <BookOpen className="w-4 h-4 text-amber-400" />
-                  <span>{lang === 'zh' ? '靈命日糧 odbm.org' : 'Our Daily Bread'}</span>
+                  <Search className="w-4 h-4 text-amber-400" />
+                  <span>{lang === 'zh' ? '搜尋當天靈命日糧' : 'Search Today\'s Devotional'}</span>
                   <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                 </a>
 

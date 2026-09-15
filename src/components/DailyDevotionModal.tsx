@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { DailyDevotion } from '../data/dailyDevotionData';
+import React, { useState, useEffect } from 'react';
+import { DailyDevotion, DAILY_DEVOTIONS } from '../data/dailyDevotionData';
 import { Language } from '../types';
 import {
   X,
@@ -8,11 +8,13 @@ import {
   ExternalLink,
   Copy,
   Check,
-  Share2,
   Sparkles,
   Sun,
-  Heart,
-  Quote
+  Quote,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  RotateCcw
 } from 'lucide-react';
 
 interface DailyDevotionModalProps {
@@ -32,31 +34,87 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   formattedDateEn,
   lang
 }) => {
+  const [activeDevotion, setActiveDevotion] = useState<DailyDevotion>(devotion);
   const [copied, setCopied] = useState(false);
   const [fontScale, setFontScale] = useState<'normal' | 'large' | 'huge'>('large');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+
+  // Sync activeDevotion with incoming devotion prop when opened or updated
+  useEffect(() => {
+    setActiveDevotion(devotion);
+  }, [devotion, isOpen]);
 
   if (!isOpen) return null;
 
-  const dateText = lang === 'zh' ? formattedDateZh : formattedDateEn;
-  const title = lang === 'zh' ? (devotion.titleZh || '慷慨的典範') : (devotion.titleEn || 'Legacy of Generosity');
-  const verse = lang === 'zh' ? devotion.verseZh : devotion.verseEn;
-  const reference = lang === 'zh' ? devotion.referenceZh : devotion.referenceEn;
-  const reading = lang === 'zh' ? (devotion.passageReadingZh || devotion.referenceZh) : (devotion.passageReadingEn || devotion.referenceEn);
-  const author = lang === 'zh' ? (devotion.authorZh || '柯貝絲') : (devotion.authorEn || 'Kirsten Holmberg');
-  const reflection = lang === 'zh' ? devotion.reflectionZh : devotion.reflectionEn;
-  const prayer = lang === 'zh' ? devotion.prayerZh : devotion.prayerEn;
-  const thought = lang === 'zh' ? devotion.thoughtZh : devotion.thoughtEn;
-  const content = lang === 'zh' ? devotion.contentZh : devotion.contentEn;
-  const odbmUrl = devotion.sourceUrl || 'https://www.odbm.org/tc/devotionals';
+  // Compute active devotion details
+  const isToday = activeDevotion.id === devotion.id || activeDevotion.dateStr === devotion.dateStr;
+  const currentIndex = DAILY_DEVOTIONS.findIndex(d => d.id === activeDevotion.id);
+
+  // Format date display for currently active devotion
+  let activeDateText = lang === 'zh' ? formattedDateZh : formattedDateEn;
+  if (!isToday && activeDevotion.dateStr) {
+    const parts = activeDevotion.dateStr.split('-');
+    if (parts.length === 3) {
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      const d = parseInt(parts[2], 10);
+      activeDateText = lang === 'zh' ? `${y}年${m}月${d}日` : `${m}/${d}/${y}`;
+    }
+  }
+
+  const title = lang === 'zh' ? (activeDevotion.titleZh || '今日靈修') : (activeDevotion.titleEn || 'Daily Devotion');
+  const verse = lang === 'zh' ? activeDevotion.verseZh : activeDevotion.verseEn;
+  const reference = lang === 'zh' ? activeDevotion.referenceZh : activeDevotion.referenceEn;
+  const reading = lang === 'zh' ? (activeDevotion.passageReadingZh || activeDevotion.referenceZh) : (activeDevotion.passageReadingEn || activeDevotion.referenceEn);
+  const author = lang === 'zh' ? (activeDevotion.authorZh || '靈命日糧同工') : (activeDevotion.authorEn || 'Our Daily Bread Ministries');
+  const reflection = lang === 'zh' ? activeDevotion.reflectionZh : activeDevotion.reflectionEn;
+  const prayer = lang === 'zh' ? activeDevotion.prayerZh : activeDevotion.prayerEn;
+  const thought = lang === 'zh' ? activeDevotion.thoughtZh : activeDevotion.thoughtEn;
+  const content = lang === 'zh' ? activeDevotion.contentZh : activeDevotion.contentEn;
+  const odbmUrl = activeDevotion.sourceUrl || 'https://www.odbm.org/tc/devotionals';
+
+  // Filtered devotionals based on search query
+  const filteredDevotions = searchQuery.trim()
+    ? DAILY_DEVOTIONS.filter(item => {
+        const query = searchQuery.trim().toLowerCase();
+        const tZh = (item.titleZh || '').toLowerCase();
+        const tEn = (item.titleEn || '').toLowerCase();
+        const rZh = (item.referenceZh || '').toLowerCase();
+        const rEn = (item.referenceEn || '').toLowerCase();
+        const pZh = (item.passageReadingZh || '').toLowerCase();
+        const vZh = (item.verseZh || '').toLowerCase();
+        const dStr = (item.dateStr || '').toLowerCase();
+        return tZh.includes(query) || tEn.includes(query) || rZh.includes(query) || rEn.includes(query) || pZh.includes(query) || vZh.includes(query) || dStr.includes(query);
+      })
+    : [];
 
   const handleCopy = () => {
     const textToCopy = lang === 'zh'
-      ? `【加南今日經文靈修 • ${dateText}】\n主題：《${title}》\n讀經：${reading}\n\n📖 今日經文：\n“${verse}”（${reference}）\n\n💡 反思：\n${reflection}\n\n🙏 禱告：\n${prayer}\n\n🌱 勉勵默想：\n${thought}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您！`
-      : `[Canaan Daily Devotion • ${dateText}]\nTitle: "${title}"\nPassage: ${reading}\n\n📖 Today's Scripture:\n"${verse}" (${reference})\n\n💡 Reflection:\n${reflection}\n\n🙏 Prayer:\n${prayer}\n\n🌱 Devotional Thought:\n${thought}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+      ? `【加南今日經文靈修 • ${activeDateText}】\n主題：《${title}》\n讀經：${reading}\n\n📖 今日經文：\n“${verse}”（${reference}）\n\n💡 反思：\n${reflection}\n\n🙏 禱告：\n${prayer}\n\n🌱 勉勵默想：\n${thought}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您！`
+      : `[Canaan Daily Devotion • ${activeDateText}]\nTitle: "${title}"\nPassage: ${reading}\n\n📖 Today's Scripture:\n"${verse}" (${reference})\n\n💡 Reflection:\n${reflection}\n\n🙏 Prayer:\n${prayer}\n\n🌱 Devotional Thought:\n${thought}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
 
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setActiveDevotion(DAILY_DEVOTIONS[currentIndex - 1]);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex >= 0 && currentIndex < DAILY_DEVOTIONS.length - 1) {
+      setActiveDevotion(DAILY_DEVOTIONS[currentIndex + 1]);
+    }
+  };
+
+  const handleResetToToday = () => {
+    setActiveDevotion(devotion);
+    setSearchQuery('');
+    setShowSearchDropdown(false);
   };
 
   return (
@@ -74,7 +132,7 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
           <div className="absolute -top-12 -right-12 w-40 h-40 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
 
           <div className="flex items-start justify-between gap-4 relative z-10">
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/25 border border-amber-400/40 text-amber-200 tracking-wide">
                   <Sun className="w-3.5 h-3.5 text-amber-300" />
@@ -82,14 +140,16 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                 </span>
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/25 border border-emerald-400/30 text-emerald-200">
                   <Calendar className="w-3 h-3 text-emerald-300" />
-                  <span>{dateText}</span>
-                  <span className="text-[10px] bg-emerald-400/30 px-1.5 py-0.2 rounded font-bold ml-1">
-                    {lang === 'zh' ? '今天' : 'Today'}
-                  </span>
+                  <span>{activeDateText}</span>
+                  {isToday && (
+                    <span className="text-[10px] bg-emerald-400/30 px-1.5 py-0.2 rounded font-bold ml-1">
+                      {lang === 'zh' ? '今天' : 'Today'}
+                    </span>
+                  )}
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-50 tracking-tight pt-1">
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-50 tracking-tight pt-1 truncate">
                 {title}
               </h2>
 
@@ -107,8 +167,20 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
               </div>
             </div>
 
-            {/* Close & Font scaler buttons */}
+            {/* Action Buttons: 搜尋當天靈命日糧 / Font scaler / Close */}
             <div className="flex items-center gap-2 shrink-0">
+              <a
+                href={odbmUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs sm:text-sm transition-all shadow-sm cursor-pointer"
+                title={lang === 'zh' ? '前往靈命日糧官方網站 (www.odbm.org/tc/devotionals) 搜尋閱讀當天文章' : 'Search & read today\'s devotional on odbm.org'}
+              >
+                <Search className="w-3.5 h-3.5 text-amber-950" />
+                <span>{lang === 'zh' ? '搜尋當天靈命日糧' : 'Search odbm.org'}</span>
+                <ExternalLink className="w-3 h-3 text-amber-950/80" />
+              </a>
+
               <button
                 type="button"
                 onClick={() => {
@@ -129,6 +201,145 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                 <X className="w-5 h-5" />
               </button>
             </div>
+          </div>
+
+          {/* Mobile direct link for 搜尋當天靈命日糧 */}
+          <div className="sm:hidden pt-3 mt-2 border-t border-amber-800/60 flex items-center justify-between">
+            <a
+              href={odbmUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-200 bg-amber-700/40 hover:bg-amber-700/60 px-2.5 py-1 rounded-lg border border-amber-400/30"
+            >
+              <Search className="w-3 h-3 text-amber-300" />
+              <span>{lang === 'zh' ? '在靈命日糧官網搜尋當天內容' : 'Search today on odbm.org'}</span>
+              <ExternalLink className="w-3 h-3 opacity-80" />
+            </a>
+          </div>
+        </div>
+
+        {/* Devotion Search & Navigation Tool Bar */}
+        <div className="bg-amber-50/80 border-b border-amber-200/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+          {/* Quick Date Switcher */}
+          <div className="flex items-center space-x-1.5">
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={currentIndex <= 0}
+              className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
+                currentIndex <= 0
+                  ? 'border-stone-200 text-stone-300 cursor-not-allowed'
+                  : 'border-amber-300 bg-white text-amber-900 hover:bg-amber-100/70 shadow-xs'
+              }`}
+              title={lang === 'zh' ? '看前一篇靈修' : 'Previous devotion'}
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{lang === 'zh' ? '前一篇' : 'Prev'}</span>
+            </button>
+
+            {!isToday && (
+              <button
+                type="button"
+                onClick={handleResetToToday}
+                className="px-2.5 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 text-xs font-bold flex items-center gap-1 shadow-xs transition cursor-pointer"
+                title={lang === 'zh' ? '返回今天最新靈修' : 'Return to today'}
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>{lang === 'zh' ? '回到今天' : 'Today'}</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={currentIndex < 0 || currentIndex >= DAILY_DEVOTIONS.length - 1}
+              className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
+                currentIndex < 0 || currentIndex >= DAILY_DEVOTIONS.length - 1
+                  ? 'border-stone-200 text-stone-300 cursor-not-allowed'
+                  : 'border-amber-300 bg-white text-amber-900 hover:bg-amber-100/70 shadow-xs'
+              }`}
+              title={lang === 'zh' ? '看後一篇靈修' : 'Next devotion'}
+            >
+              <span className="hidden sm:inline">{lang === 'zh' ? '後一篇' : 'Next'}</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Search Box */}
+          <div className="relative flex-1 max-w-xs sm:max-w-sm">
+            <div className="relative flex items-center">
+              <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchDropdown(true);
+                }}
+                onFocus={() => setShowSearchDropdown(true)}
+                placeholder={lang === 'zh' ? '搜尋經文、主題或日期...' : 'Search devotionals...'}
+                className="w-full pl-8 pr-7 py-1 text-xs bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-1 focus:ring-amber-500 text-stone-800 placeholder-stone-400 shadow-inner"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setShowSearchDropdown(false);
+                  }}
+                  className="absolute right-2 text-stone-400 hover:text-stone-600 p-0.5 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Search Results Dropdown */}
+            {showSearchDropdown && searchQuery.trim() && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-amber-200 z-50 max-h-56 overflow-y-auto p-1.5 space-y-1">
+                {filteredDevotions.length > 0 ? (
+                  filteredDevotions.slice(0, 6).map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveDevotion(item);
+                        setShowSearchDropdown(false);
+                        setSearchQuery('');
+                      }}
+                      className="w-full text-left p-2 rounded-lg hover:bg-amber-50 text-xs transition flex items-center justify-between gap-2 border border-transparent hover:border-amber-200 cursor-pointer"
+                    >
+                      <div className="min-w-0">
+                        <div className="font-bold text-amber-950 truncate">
+                          {lang === 'zh' ? item.titleZh : item.titleEn}
+                        </div>
+                        <div className="text-[11px] text-stone-500 truncate">
+                          {lang === 'zh' ? (item.passageReadingZh || item.referenceZh) : (item.passageReadingEn || item.referenceEn)}
+                        </div>
+                      </div>
+                      {item.dateStr && (
+                        <span className="shrink-0 text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">
+                          {item.dateStr}
+                        </span>
+                      )}
+                    </button>
+                  ))
+                ) : (
+                  <div className="p-3 text-center space-y-2 text-xs text-stone-500">
+                    <p>{lang === 'zh' ? '本站靈修庫未找到，可直接至官網搜尋：' : 'Not found in local archive, search on odbm.org:'}</p>
+                    <a
+                      href="https://www.odbm.org/tc/devotionals"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-bold text-amber-800 hover:text-amber-950 underline"
+                    >
+                      <span>前往靈命日糧官網 (odbm.org)</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -275,10 +486,10 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
               href={odbmUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-amber-700 hover:bg-amber-800 transition-colors shadow-md cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 transition-all shadow-md cursor-pointer"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>{lang === 'zh' ? '到 odbm.org 閱讀' : 'Open odbm.org'}</span>
+              <Search className="w-4 h-4" />
+              <span>{lang === 'zh' ? '在靈命日糧搜尋當天內容' : 'Search on odbm.org'}</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-85" />
             </a>
           </div>
