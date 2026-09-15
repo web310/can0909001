@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
 import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink, Calendar, ChevronRight, Search } from 'lucide-react';
@@ -17,6 +17,12 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
   const [fontScale, setFontScale] = useState<'large' | 'huge'>('large');
   const [isDevotionModalOpen, setIsDevotionModalOpen] = useState(false);
   const todayDevotion = getTodayDevotion();
+
+  useEffect(() => {
+    const handleOpenDevotion = () => setIsDevotionModalOpen(true);
+    window.addEventListener('canaan_open_daily_devotion', handleOpenDevotion);
+    return () => window.removeEventListener('canaan_open_daily_devotion', handleOpenDevotion);
+  }, []);
 
   const handleCopyVerse = () => {
     const d = todayDevotion.devotion;

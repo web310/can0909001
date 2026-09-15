@@ -50,6 +50,12 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
     return () => window.removeEventListener('canaan_bulletin_updated', handleBulletinUpdated as EventListener);
   }, []);
 
+  useEffect(() => {
+    const handleOpenBible = () => setIsAnnualModalOpen(true);
+    window.addEventListener('canaan_open_annual_bible_reading', handleOpenBible);
+    return () => window.removeEventListener('canaan_open_annual_bible_reading', handleOpenBible);
+  }, []);
+
   const memoryVerse = lang === 'zh'
     ? (bulletinData?.memoryVerse || WEEKLY_BIBLE_READING.memoryVerseZh)
     : (bulletinData?.memoryVerseEn || WEEKLY_BIBLE_READING.memoryVerseEn || bulletinData?.memoryVerse);
@@ -64,7 +70,7 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
   const readingRange = lang === 'zh' ? autoWeeklyPlan.rangeZh : autoWeeklyPlan.rangeEn;
 
   return (
-    <section className="py-16 bg-gradient-to-b from-amber-50/80 via-white to-slate-50 border-y border-amber-200/60 text-slate-800">
+    <section id="bulletin" className="py-16 bg-gradient-to-b from-amber-50/80 via-white to-slate-50 border-y border-amber-200/60 text-slate-800 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Header with Annual Theme */}
