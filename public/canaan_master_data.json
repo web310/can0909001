@@ -1,6 +1,6 @@
 {
   "app": "Canaan Shin Sheng Christian Church",
-  "exportedAt": "2026-09-13T01:05:52.496Z",
+  "exportedAt": "2026-09-15T21:06:28.678Z",
   "version": "2.0",
   "stats": {
     "totalSermons": 7,
@@ -38,8 +38,8 @@
         "videoUrl": "",
         "videoPasscode": "25226",
         "audioUrl": "",
-        "showVideo": true,
-        "showAudio": true
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-20260906",
