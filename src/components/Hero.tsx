@@ -68,7 +68,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                 </>
               ) : (
                 <>
-                  Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-100">Canaan Shin Sheng</span>
+                  Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-100">Canaan Shin Sheng Christian Church</span>
                 </>
               )}
             </h1>
