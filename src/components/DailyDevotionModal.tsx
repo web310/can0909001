@@ -39,10 +39,14 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   const [fontScale, setFontScale] = useState<'normal' | 'large' | 'huge'>('large');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [dateInputVal, setDateInputVal] = useState(activeDevotion.dateStr || '2026-09-17');
 
   // Sync activeDevotion with incoming devotion prop when opened or updated
   useEffect(() => {
     setActiveDevotion(devotion);
+    if (devotion.dateStr) {
+      setDateInputVal(devotion.dateStr);
+    }
   }, [devotion, isOpen]);
 
   if (!isOpen) return null;
@@ -74,20 +78,56 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   const content = lang === 'zh' ? activeDevotion.contentZh : activeDevotion.contentEn;
   const odbmUrl = activeDevotion.sourceUrl || 'https://www.odbm.org/tc/devotionals';
 
+  // Available quick dates for quick switching
+  const quickDateItems = [
+    { dateStr: '2026-09-17', labelZh: '今天 9/17', labelEn: 'Today 9/17', tag: '仰望上帝' },
+    { dateStr: '2026-09-16', labelZh: '昨天 9/16', labelEn: 'Yesterday 9/16', tag: '永恆生命' },
+    { dateStr: '2026-09-15', labelZh: '9/15', labelEn: '9/15', tag: '忍耐寬容' },
+    { dateStr: '2026-09-14', labelZh: '9/14', labelEn: '9/14', tag: '警醒防備' },
+    { dateStr: '2026-09-13', labelZh: '9/13', labelEn: '9/13', tag: '致命迷思' },
+    { dateStr: '2026-09-12', labelZh: '9/12', labelEn: '9/12', tag: '堅忍喜樂' },
+    { dateStr: '2026-09-10', labelZh: '9/10', labelEn: '9/10', tag: '慷慨典範' },
+  ];
+
   // Filtered devotionals based on search query
   const filteredDevotions = searchQuery.trim()
     ? DAILY_DEVOTIONS.filter(item => {
-        const query = searchQuery.trim().toLowerCase();
+        const raw = searchQuery.trim().toLowerCase();
+        // Normalize date searches like "9/17", "09/17", "9-17", "9月17日", "2026-09-17"
+        const cleanDate = raw.replace(/月/, '-').replace(/日/, '').replace(/\//g, '-');
+
         const tZh = (item.titleZh || '').toLowerCase();
         const tEn = (item.titleEn || '').toLowerCase();
         const rZh = (item.referenceZh || '').toLowerCase();
         const rEn = (item.referenceEn || '').toLowerCase();
         const pZh = (item.passageReadingZh || '').toLowerCase();
+        const pEn = (item.passageReadingEn || '').toLowerCase();
         const vZh = (item.verseZh || '').toLowerCase();
+        const cZh = (item.contentZh || '').toLowerCase();
         const dStr = (item.dateStr || '').toLowerCase();
-        return tZh.includes(query) || tEn.includes(query) || rZh.includes(query) || rEn.includes(query) || pZh.includes(query) || vZh.includes(query) || dStr.includes(query);
+
+        const matchDate = dStr.includes(raw) || dStr.includes(cleanDate) ||
+          (raw === '今天' && (item.id === devotion.id || item.dateStr === devotion.dateStr)) ||
+          (raw === '昨天' && item.dateStr === '2026-09-16');
+
+        return matchDate || tZh.includes(raw) || tEn.includes(raw) || rZh.includes(raw) || rEn.includes(raw) ||
+          pZh.includes(raw) || pEn.includes(raw) || vZh.includes(raw) || cZh.includes(raw);
       })
     : [];
+
+  const handleSelectDate = (dateVal: string) => {
+    setDateInputVal(dateVal);
+    const match = DAILY_DEVOTIONS.find(d => d.dateStr === dateVal);
+    if (match) {
+      setActiveDevotion(match);
+      setSearchQuery('');
+      setShowSearchDropdown(false);
+    } else {
+      // If date is not in local archive, open search prompt
+      setSearchQuery(dateVal);
+      setShowSearchDropdown(true);
+    }
+  };
 
   const handleCopy = () => {
     const textToCopy = lang === 'zh'
@@ -219,127 +259,206 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
         </div>
 
         {/* Devotion Search & Navigation Tool Bar */}
-        <div className="bg-amber-50/80 border-b border-amber-200/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-          {/* Quick Date Switcher */}
-          <div className="flex items-center space-x-1.5">
-            <button
-              type="button"
-              onClick={handlePrev}
-              disabled={currentIndex <= 0}
-              className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
-                currentIndex <= 0
-                  ? 'border-stone-200 text-stone-300 cursor-not-allowed'
-                  : 'border-amber-300 bg-white text-amber-900 hover:bg-amber-100/70 shadow-xs'
-              }`}
-              title={lang === 'zh' ? '看前一篇靈修' : 'Previous devotion'}
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{lang === 'zh' ? '前一篇' : 'Prev'}</span>
-            </button>
-
-            {!isToday && (
+        <div className="bg-amber-50/90 border-b border-amber-200/90 px-4 py-3 shrink-0 space-y-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            {/* Prev / Today / Next Controls */}
+            <div className="flex items-center space-x-1.5 shrink-0">
               <button
                 type="button"
-                onClick={handleResetToToday}
-                className="px-2.5 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 text-xs font-bold flex items-center gap-1 shadow-xs transition cursor-pointer"
-                title={lang === 'zh' ? '返回今天最新靈修' : 'Return to today'}
+                onClick={handlePrev}
+                disabled={currentIndex <= 0}
+                className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
+                  currentIndex <= 0
+                    ? 'border-stone-200 text-stone-300 cursor-not-allowed'
+                    : 'border-amber-300 bg-white text-amber-900 hover:bg-amber-100/70 shadow-xs'
+                }`}
+                title={lang === 'zh' ? '看前一篇靈修' : 'Previous devotion'}
               >
-                <RotateCcw className="w-3 h-3" />
-                <span>{lang === 'zh' ? '回到今天' : 'Today'}</span>
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{lang === 'zh' ? '前一篇' : 'Prev'}</span>
               </button>
-            )}
 
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={currentIndex < 0 || currentIndex >= DAILY_DEVOTIONS.length - 1}
-              className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
-                currentIndex < 0 || currentIndex >= DAILY_DEVOTIONS.length - 1
-                  ? 'border-stone-200 text-stone-300 cursor-not-allowed'
-                  : 'border-amber-300 bg-white text-amber-900 hover:bg-amber-100/70 shadow-xs'
-              }`}
-              title={lang === 'zh' ? '看後一篇靈修' : 'Next devotion'}
-            >
-              <span className="hidden sm:inline">{lang === 'zh' ? '後一篇' : 'Next'}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-xs sm:max-w-sm">
-            <div className="relative flex items-center">
-              <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setShowSearchDropdown(true);
-                }}
-                onFocus={() => setShowSearchDropdown(true)}
-                placeholder={lang === 'zh' ? '搜尋經文、主題或日期...' : 'Search devotionals...'}
-                className="w-full pl-8 pr-7 py-1 text-xs bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-1 focus:ring-amber-500 text-stone-800 placeholder-stone-400 shadow-inner"
-              />
-              {searchQuery && (
+              {!isToday && (
                 <button
                   type="button"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setShowSearchDropdown(false);
-                  }}
-                  className="absolute right-2 text-stone-400 hover:text-stone-600 p-0.5 cursor-pointer"
+                  onClick={handleResetToToday}
+                  className="px-2.5 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100 text-xs font-bold flex items-center gap-1 shadow-xs transition cursor-pointer"
+                  title={lang === 'zh' ? '返回今天最新靈修' : 'Return to today'}
                 >
-                  <X className="w-3 h-3" />
+                  <RotateCcw className="w-3 h-3" />
+                  <span>{lang === 'zh' ? '回到今天最新' : 'Today'}</span>
                 </button>
               )}
+
+              <button
+                type="button"
+                onClick={handleNext}
+                disabled={currentIndex < 0 || currentIndex >= DAILY_DEVOTIONS.length - 1}
+                className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
+                  currentIndex < 0 || currentIndex >= DAILY_DEVOTIONS.length - 1
+                    ? 'border-stone-200 text-stone-300 cursor-not-allowed'
+                    : 'border-amber-300 bg-white text-amber-900 hover:bg-amber-100/70 shadow-xs'
+                }`}
+                title={lang === 'zh' ? '看後一篇靈修' : 'Next devotion'}
+              >
+                <span className="hidden sm:inline">{lang === 'zh' ? '後一篇' : 'Next'}</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Date Picker Input */}
+              <div className="relative flex items-center">
+                <label className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-medium text-amber-900 hover:bg-amber-50/80 cursor-pointer shadow-xs" title={lang === 'zh' ? '選擇任意日期搜尋靈命日糧' : 'Pick a date'}>
+                  <Calendar className="w-3.5 h-3.5 text-amber-700" />
+                  <span className="hidden md:inline">{lang === 'zh' ? '選擇日期：' : 'Date:'}</span>
+                  <input
+                    type="date"
+                    value={dateInputVal}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        handleSelectDate(e.target.value);
+                      }
+                    }}
+                    className="text-xs bg-transparent border-none text-stone-800 focus:outline-none cursor-pointer font-bold"
+                  />
+                </label>
+              </div>
             </div>
 
-            {/* Search Results Dropdown */}
-            {showSearchDropdown && searchQuery.trim() && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-amber-200 z-50 max-h-56 overflow-y-auto p-1.5 space-y-1">
-                {filteredDevotions.length > 0 ? (
-                  filteredDevotions.slice(0, 6).map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveDevotion(item);
-                        setShowSearchDropdown(false);
-                        setSearchQuery('');
-                      }}
-                      className="w-full text-left p-2 rounded-lg hover:bg-amber-50 text-xs transition flex items-center justify-between gap-2 border border-transparent hover:border-amber-200 cursor-pointer"
+            {/* Search Box */}
+            <div className="relative flex-1 max-w-xs sm:max-w-sm">
+              <div className="relative flex items-center">
+                <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSearchDropdown(true);
+                  }}
+                  onFocus={() => setShowSearchDropdown(true)}
+                  placeholder={lang === 'zh' ? '搜尋每一天的靈命日糧 (如 9/17、經文、主題)...' : 'Search devotionals by date or topic...'}
+                  className="w-full pl-8 pr-7 py-1.5 text-xs bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-1 focus:ring-amber-500 text-stone-800 placeholder-stone-400 shadow-inner"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setShowSearchDropdown(false);
+                    }}
+                    className="absolute right-2 text-stone-400 hover:text-stone-600 p-0.5 cursor-pointer"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+
+              {/* Search Results Dropdown */}
+              {showSearchDropdown && searchQuery.trim() && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-2xl border border-amber-300 z-50 max-h-64 overflow-y-auto p-2 space-y-1.5">
+                  <div className="text-[11px] font-bold text-stone-500 px-1.5 pb-1 border-b border-stone-100 flex items-center justify-between">
+                    <span>{lang === 'zh' ? `搜尋「${searchQuery}」結果` : `Results for "${searchQuery}"`}</span>
+                    <a
+                      href={`https://www.odbm.org/tc/devotionals`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-amber-700 hover:text-amber-900 inline-flex items-center gap-0.5 underline font-normal"
                     >
-                      <div className="min-w-0">
-                        <div className="font-bold text-amber-950 truncate">
-                          {lang === 'zh' ? item.titleZh : item.titleEn}
+                      <span>{lang === 'zh' ? '前往靈命日糧官網' : 'Go to odbm.org'}</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </div>
+
+                  {filteredDevotions.length > 0 ? (
+                    filteredDevotions.slice(0, 6).map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveDevotion(item);
+                          if (item.dateStr) setDateInputVal(item.dateStr);
+                          setShowSearchDropdown(false);
+                          setSearchQuery('');
+                        }}
+                        className="w-full text-left p-2 rounded-lg hover:bg-amber-50 text-xs transition flex items-center justify-between gap-2 border border-transparent hover:border-amber-200 cursor-pointer"
+                      >
+                        <div className="min-w-0">
+                          <div className="font-bold text-amber-950 truncate">
+                            {lang === 'zh' ? item.titleZh : item.titleEn}
+                          </div>
+                          <div className="text-[11px] text-stone-500 truncate">
+                            {lang === 'zh' ? (item.passageReadingZh || item.referenceZh) : (item.passageReadingEn || item.referenceEn)}
+                          </div>
                         </div>
-                        <div className="text-[11px] text-stone-500 truncate">
-                          {lang === 'zh' ? (item.passageReadingZh || item.referenceZh) : (item.passageReadingEn || item.referenceEn)}
-                        </div>
-                      </div>
-                      {item.dateStr && (
-                        <span className="shrink-0 text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">
-                          {item.dateStr}
-                        </span>
-                      )}
-                    </button>
-                  ))
-                ) : (
-                  <div className="p-3 text-center space-y-2 text-xs text-stone-500">
-                    <p>{lang === 'zh' ? '本站靈修庫未找到，可直接至官網搜尋：' : 'Not found in local archive, search on odbm.org:'}</p>
+                        {item.dateStr && (
+                          <span className="shrink-0 text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">
+                            {item.dateStr}
+                          </span>
+                        )}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="p-3 text-center space-y-2 text-xs text-stone-600 bg-stone-50 rounded-lg">
+                      <p>{lang === 'zh' ? `本站存檔未找到「${searchQuery}」，可直接在靈命日糧官網搜尋：` : `Not found in local archive for "${searchQuery}", search on official website:`}</p>
+                      <a
+                        href="https://www.odbm.org/tc/devotionals"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs shadow-xs"
+                      >
+                        <Search className="w-3 h-3" />
+                        <span>在靈命日糧官網搜尋當天內容</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Option to search on official website */}
+                  <div className="pt-1 border-t border-stone-100">
                     <a
                       href="https://www.odbm.org/tc/devotionals"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-bold text-amber-800 hover:text-amber-950 underline"
+                      className="w-full py-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold flex items-center justify-between transition"
                     >
-                      <span>前往靈命日糧官網 (odbm.org)</span>
-                      <ExternalLink className="w-3 h-3" />
+                      <span className="inline-flex items-center gap-1">
+                        <Search className="w-3 h-3 text-amber-700" />
+                        <span>{lang === 'zh' ? '在靈命日糧官方網站搜尋' : 'Search on official website (odbm.org)'}</span>
+                      </span>
+                      <ExternalLink className="w-3 h-3 opacity-70" />
                     </a>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Dates Pill Bar */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 pt-0.5 scrollbar-none text-[11px]">
+            <span className="text-stone-500 font-bold shrink-0 flex items-center gap-1">
+              <span>{lang === 'zh' ? '快速瀏覽日期：' : 'Quick Dates:'}</span>
+            </span>
+            {quickDateItems.map((item) => {
+              const isActive = activeDevotion.dateStr === item.dateStr;
+              return (
+                <button
+                  key={item.dateStr}
+                  type="button"
+                  onClick={() => handleSelectDate(item.dateStr)}
+                  className={`px-2.5 py-1 rounded-md font-bold whitespace-nowrap transition cursor-pointer shrink-0 flex items-center gap-1 ${
+                    isActive
+                      ? 'bg-amber-700 text-white shadow-xs'
+                      : 'bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-950 border border-amber-200/80'
+                  }`}
+                  title={`${item.dateStr} - ${item.tag}`}
+                >
+                  <span>{lang === 'zh' ? item.labelZh : item.labelEn}</span>
+                  <span className={`text-[10px] font-normal ${isActive ? 'text-amber-200' : 'text-stone-500'}`}>
+                    ({item.tag})
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
