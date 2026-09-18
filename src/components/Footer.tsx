@@ -93,7 +93,9 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenGiving, onOpenAI }) 
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>{CHURCH_INFO.phone1} / {CHURCH_INFO.phone2}</span>
+                <a href={`tel:${CHURCH_INFO.phone1}`} className="hover:text-amber-300 transition-colors">
+                  {CHURCH_INFO.phone1}
+                </a>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
