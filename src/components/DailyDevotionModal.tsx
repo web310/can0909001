@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { DailyDevotion, DAILY_DEVOTIONS } from '../data/dailyDevotionData';
+import React, { useState, useEffect, useMemo } from 'react';
+import { DailyDevotion, DAILY_DEVOTIONS, loadCachedDevotions, fetchServerDailyDevotion } from '../data/dailyDevotionData';
 import { Language } from '../types';
 import {
   X,
@@ -14,7 +14,8 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  RotateCcw
+  RotateCcw,
+  RefreshCw
 } from 'lucide-react';
 
 interface DailyDevotionModalProps {
@@ -39,7 +40,8 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   const [fontScale, setFontScale] = useState<'normal' | 'large' | 'huge'>('large');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
-  const [dateInputVal, setDateInputVal] = useState(activeDevotion.dateStr || '2026-09-17');
+  const [dateInputVal, setDateInputVal] = useState(activeDevotion.dateStr || '');
+  const [isLoadingDate, setIsLoadingDate] = useState(false);
 
   // Sync activeDevotion with incoming devotion prop when opened or updated
   useEffect(() => {
@@ -49,11 +51,144 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
     }
   }, [devotion, isOpen]);
 
+  // Combined master list of devotions (local archive + dynamic server cache)
+  const allKnownDevotions = useMemo(() => {
+    const cached = loadCachedDevotions();
+    const map = new Map<string, DailyDevotion>();
+    [...DAILY_DEVOTIONS, ...cached].forEach(d => {
+      const key = d.dateStr || `id_${d.id}`;
+      if (!map.has(key)) {
+        map.set(key, d);
+      }
+    });
+    return Array.from(map.values());
+  }, [activeDevotion]);
+
+  // Dynamic quick dates calculated relative to current date
+  const quickDateItems = useMemo(() => {
+    const items = [];
+    const now = new Date();
+    for (let offset = 0; offset <= 6; offset++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - offset);
+      const y = d.getFullYear();
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const dateStr = `${y}-${pad(m)}-${pad(day)}`;
+
+      const found = allKnownDevotions.find(item => item.dateStr === dateStr);
+      let labelZh = `${m}/${day}`;
+      let labelEn = `${m}/${day}`;
+      if (offset === 0) {
+        labelZh = `今天 ${m}/${day}`;
+        labelEn = `Today ${m}/${day}`;
+      } else if (offset === 1) {
+        labelZh = `昨天 ${m}/${day}`;
+        labelEn = `Yesterday ${m}/${day}`;
+      }
+
+      items.push({
+        dateStr,
+        labelZh,
+        labelEn,
+        tag: found?.titleZh || (offset === 0 ? '今日靈修' : '靈修默想')
+      });
+    }
+    return items;
+  }, [allKnownDevotions]);
+
+  // Filtered devotionals based on search query
+  const filteredDevotions = searchQuery.trim()
+    ? allKnownDevotions.filter(item => {
+        const raw = searchQuery.trim().toLowerCase();
+        // Normalize date searches like "9/18", "09/18", "9-18", "9月18日", "2026-09-18"
+        const cleanDate = raw.replace(/月/, '-').replace(/日/, '').replace(/\//g, '-');
+
+        const tZh = (item.titleZh || '').toLowerCase();
+        const tEn = (item.titleEn || '').toLowerCase();
+        const rZh = (item.referenceZh || '').toLowerCase();
+        const rEn = (item.referenceEn || '').toLowerCase();
+        const pZh = (item.passageReadingZh || '').toLowerCase();
+        const pEn = (item.passageReadingEn || '').toLowerCase();
+        const vZh = (item.verseZh || '').toLowerCase();
+        const cZh = (item.contentZh || '').toLowerCase();
+        const dStr = (item.dateStr || '').toLowerCase();
+
+        const matchDate = dStr.includes(raw) || dStr.includes(cleanDate) ||
+          (raw === '今天' && (item.id === devotion.id || item.dateStr === devotion.dateStr)) ||
+          (raw === '昨天' && quickDateItems[1] && item.dateStr === quickDateItems[1].dateStr);
+
+        return matchDate || tZh.includes(raw) || tEn.includes(raw) || rZh.includes(raw) || rEn.includes(raw) ||
+          pZh.includes(raw) || pEn.includes(raw) || vZh.includes(raw) || cZh.includes(raw);
+      })
+    : [];
+
+  const handleSelectDate = async (dateVal: string) => {
+    setDateInputVal(dateVal);
+    const match = allKnownDevotions.find(d => d.dateStr === dateVal);
+    if (match) {
+      setActiveDevotion(match);
+      setSearchQuery('');
+      setShowSearchDropdown(false);
+      return;
+    }
+
+    // Try on-demand fetch from server auto-generator if not in local cache
+    try {
+      setIsLoadingDate(true);
+      const serverDev = await fetchServerDailyDevotion(dateVal);
+      if (serverDev) {
+        setActiveDevotion(serverDev);
+        setSearchQuery('');
+        setShowSearchDropdown(false);
+        return;
+      }
+    } catch {
+      // fallback to search prompt
+    } finally {
+      setIsLoadingDate(false);
+    }
+
+    setSearchQuery(dateVal);
+    setShowSearchDropdown(true);
+  };
+
+  const handleCopy = () => {
+    const textToCopy = lang === 'zh'
+      ? `【加南今日經文靈修 • ${activeDateText}】\n主題：《${title}》\n讀經：${reading}\n\n📖 今日經文：\n“${verse}”（${reference}）\n\n💡 反思：\n${reflection}\n\n🙏 禱告：\n${prayer}\n\n🌱 勉勵默想：\n${thought}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您！`
+      : `[Canaan Daily Devotion • ${activeDateText}]\nTitle: "${title}"\nPassage: ${reading}\n\n📖 Today's Scripture:\n"${verse}" (${reference})\n\n💡 Reflection:\n${reflection}\n\n🙏 Prayer:\n${prayer}\n\n🌱 Devotional Thought:\n${thought}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const currentIndex = allKnownDevotions.findIndex(d => d.id === activeDevotion.id || (d.dateStr && d.dateStr === activeDevotion.dateStr));
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setActiveDevotion(allKnownDevotions[currentIndex - 1]);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex >= 0 && currentIndex < allKnownDevotions.length - 1) {
+      setActiveDevotion(allKnownDevotions[currentIndex + 1]);
+    }
+  };
+
+  const handleResetToToday = () => {
+    setActiveDevotion(devotion);
+    if (devotion.dateStr) setDateInputVal(devotion.dateStr);
+    setSearchQuery('');
+    setShowSearchDropdown(false);
+  };
+
   if (!isOpen) return null;
 
   // Compute active devotion details
   const isToday = activeDevotion.id === devotion.id || activeDevotion.dateStr === devotion.dateStr;
-  const currentIndex = DAILY_DEVOTIONS.findIndex(d => d.id === activeDevotion.id);
 
   // Format date display for currently active devotion
   let activeDateText = lang === 'zh' ? formattedDateZh : formattedDateEn;
@@ -78,85 +213,6 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   const content = lang === 'zh' ? activeDevotion.contentZh : activeDevotion.contentEn;
   const odbmUrl = activeDevotion.sourceUrl || 'https://www.odbm.org/tc/devotionals';
 
-  // Available quick dates for quick switching
-  const quickDateItems = [
-    { dateStr: '2026-09-17', labelZh: '今天 9/17', labelEn: 'Today 9/17', tag: '仰望上帝' },
-    { dateStr: '2026-09-16', labelZh: '昨天 9/16', labelEn: 'Yesterday 9/16', tag: '永恆生命' },
-    { dateStr: '2026-09-15', labelZh: '9/15', labelEn: '9/15', tag: '忍耐寬容' },
-    { dateStr: '2026-09-14', labelZh: '9/14', labelEn: '9/14', tag: '警醒防備' },
-    { dateStr: '2026-09-13', labelZh: '9/13', labelEn: '9/13', tag: '致命迷思' },
-    { dateStr: '2026-09-12', labelZh: '9/12', labelEn: '9/12', tag: '堅忍喜樂' },
-    { dateStr: '2026-09-10', labelZh: '9/10', labelEn: '9/10', tag: '慷慨典範' },
-  ];
-
-  // Filtered devotionals based on search query
-  const filteredDevotions = searchQuery.trim()
-    ? DAILY_DEVOTIONS.filter(item => {
-        const raw = searchQuery.trim().toLowerCase();
-        // Normalize date searches like "9/17", "09/17", "9-17", "9月17日", "2026-09-17"
-        const cleanDate = raw.replace(/月/, '-').replace(/日/, '').replace(/\//g, '-');
-
-        const tZh = (item.titleZh || '').toLowerCase();
-        const tEn = (item.titleEn || '').toLowerCase();
-        const rZh = (item.referenceZh || '').toLowerCase();
-        const rEn = (item.referenceEn || '').toLowerCase();
-        const pZh = (item.passageReadingZh || '').toLowerCase();
-        const pEn = (item.passageReadingEn || '').toLowerCase();
-        const vZh = (item.verseZh || '').toLowerCase();
-        const cZh = (item.contentZh || '').toLowerCase();
-        const dStr = (item.dateStr || '').toLowerCase();
-
-        const matchDate = dStr.includes(raw) || dStr.includes(cleanDate) ||
-          (raw === '今天' && (item.id === devotion.id || item.dateStr === devotion.dateStr)) ||
-          (raw === '昨天' && item.dateStr === '2026-09-16');
-
-        return matchDate || tZh.includes(raw) || tEn.includes(raw) || rZh.includes(raw) || rEn.includes(raw) ||
-          pZh.includes(raw) || pEn.includes(raw) || vZh.includes(raw) || cZh.includes(raw);
-      })
-    : [];
-
-  const handleSelectDate = (dateVal: string) => {
-    setDateInputVal(dateVal);
-    const match = DAILY_DEVOTIONS.find(d => d.dateStr === dateVal);
-    if (match) {
-      setActiveDevotion(match);
-      setSearchQuery('');
-      setShowSearchDropdown(false);
-    } else {
-      // If date is not in local archive, open search prompt
-      setSearchQuery(dateVal);
-      setShowSearchDropdown(true);
-    }
-  };
-
-  const handleCopy = () => {
-    const textToCopy = lang === 'zh'
-      ? `【加南今日經文靈修 • ${activeDateText}】\n主題：《${title}》\n讀經：${reading}\n\n📖 今日經文：\n“${verse}”（${reference}）\n\n💡 反思：\n${reflection}\n\n🙏 禱告：\n${prayer}\n\n🌱 勉勵默想：\n${thought}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您！`
-      : `[Canaan Daily Devotion • ${activeDateText}]\nTitle: "${title}"\nPassage: ${reading}\n\n📖 Today's Scripture:\n"${verse}" (${reference})\n\n💡 Reflection:\n${reflection}\n\n🙏 Prayer:\n${prayer}\n\n🌱 Devotional Thought:\n${thought}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
-
-    navigator.clipboard.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setActiveDevotion(DAILY_DEVOTIONS[currentIndex - 1]);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentIndex >= 0 && currentIndex < DAILY_DEVOTIONS.length - 1) {
-      setActiveDevotion(DAILY_DEVOTIONS[currentIndex + 1]);
-    }
-  };
-
-  const handleResetToToday = () => {
-    setActiveDevotion(devotion);
-    setSearchQuery('');
-    setShowSearchDropdown(false);
-  };
-
   return (
     <div
       className="fixed inset-0 z-60 bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 md:p-6 animate-in fade-in duration-200"
@@ -178,15 +234,25 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                   <Sun className="w-3.5 h-3.5 text-amber-300" />
                   <span>{lang === 'zh' ? '靈命日糧 • 今日靈修' : 'Our Daily Bread • Devotional'}</span>
                 </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/25 border border-emerald-400/30 text-emerald-200">
-                  <Calendar className="w-3 h-3 text-emerald-300" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/25 border border-emerald-400/30 text-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                  <span>{lang === 'zh' ? '每日自動更新' : 'Daily Auto-Update'}</span>
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-stone-900/40 border border-stone-500/30 text-amber-200">
+                  <Calendar className="w-3 h-3 text-amber-300" />
                   <span>{activeDateText}</span>
                   {isToday && (
-                    <span className="text-[10px] bg-emerald-400/30 px-1.5 py-0.2 rounded font-bold ml-1">
+                    <span className="text-[10px] bg-emerald-400/40 text-emerald-200 px-1.5 py-0.2 rounded font-bold ml-1">
                       {lang === 'zh' ? '今天' : 'Today'}
                     </span>
                   )}
                 </span>
+                {isLoadingDate && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-amber-400/20 text-amber-200 animate-pulse">
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    <span>{lang === 'zh' ? '載入更新中...' : 'Syncing...'}</span>
+                  </span>
+                )}
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-50 tracking-tight pt-1 truncate">

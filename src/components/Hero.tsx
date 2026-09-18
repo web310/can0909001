@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { CHURCH_INFO } from '../data/churchData';
-import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink, Calendar, ChevronRight, Search } from 'lucide-react';
+import { MapPin, Play, Heart, Sparkles, Clock, Sun, Copy, Check, BookOpen, ExternalLink, Calendar, ChevronRight, Search, RefreshCw } from 'lucide-react';
 import heroImgUrl from '../assets/images/canaan_church_hero_1786434083190.jpg';
-import { getTodayDevotion } from '../data/dailyDevotionData';
+import { getTodayDevotion, fetchServerDailyDevotion } from '../data/dailyDevotionData';
 import { DailyDevotionModal } from './DailyDevotionModal';
 
 interface HeroProps {
@@ -16,7 +16,42 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
   const [copiedVerse, setCopiedVerse] = useState(false);
   const [fontScale, setFontScale] = useState<'large' | 'huge'>('large');
   const [isDevotionModalOpen, setIsDevotionModalOpen] = useState(false);
-  const todayDevotion = getTodayDevotion();
+  const [todayDevotion, setTodayDevotion] = useState(() => getTodayDevotion());
+  const [isAutoUpdating, setIsAutoUpdating] = useState(false);
+
+  // Automatically sync daily devotion from server on mount and when day changes
+  useEffect(() => {
+    let isMounted = true;
+    const syncDevotion = async () => {
+      try {
+        setIsAutoUpdating(true);
+        const serverData = await fetchServerDailyDevotion();
+        if (serverData && isMounted) {
+          setTodayDevotion(getTodayDevotion());
+        }
+      } catch {
+        // maintain current
+      } finally {
+        if (isMounted) setIsAutoUpdating(false);
+      }
+    };
+
+    syncDevotion();
+
+    // Check periodically for midnight date roll-over (automatically updates without manual refresh)
+    const interval = setInterval(() => {
+      const refreshed = getTodayDevotion();
+      if (refreshed.fullDateKey !== todayDevotion.fullDateKey) {
+        setTodayDevotion(refreshed);
+        syncDevotion();
+      }
+    }, 60000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [todayDevotion.fullDateKey]);
 
   useEffect(() => {
     const handleOpenDevotion = () => setIsDevotionModalOpen(true);
@@ -81,7 +116,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
           <div className="relative rounded-2xl bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-amber-950/45 border-2 border-amber-500/50 backdrop-blur-md p-6 sm:p-7 shadow-2xl space-y-5 max-w-3xl animate-in fade-in duration-300">
             {/* Top Bar: Date + Title Badge + Font Scaler + Source Link + Copy/Share Button */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/30 pb-3.5">
-              <div className="flex items-center space-x-2.5 text-amber-300 font-bold tracking-wide text-base sm:text-lg">
+              <div className="flex flex-wrap items-center gap-2 text-amber-300 font-bold tracking-wide text-base sm:text-lg">
                 <span className="p-1.5 rounded-lg bg-amber-500/25 text-amber-400 border border-amber-500/40">
                   <Sun className="w-5 h-5 text-amber-400" />
                 </span>
@@ -91,6 +126,11 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                 <span className="text-amber-400/60">•</span>
                 <span className="text-amber-100 font-semibold">
                   {lang === 'zh' ? todayDevotion.formattedDateZh : todayDevotion.formattedDateEn}
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-1">
+                  <span className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${isAutoUpdating ? 'animate-ping' : 'animate-pulse'}`} />
+                  <span>{lang === 'zh' ? '每日自動更新' : 'Auto-Updated Daily'}</span>
+                  {isAutoUpdating && <RefreshCw className="w-3 h-3 animate-spin text-emerald-300" />}
                 </span>
               </div>
 

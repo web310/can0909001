@@ -122,6 +122,160 @@ async function startServer() {
     }
   });
 
+  // ==========================================
+  // Daily Devotion (靈命日糧今日靈修) Auto-Update APIs
+  // ==========================================
+  const DEVOTION_CACHE_FILE = path.join(process.cwd(), "src", "data", "daily_devotions_cache.json");
+
+  function getCachedDevotionsMap(): Record<string, any> {
+    try {
+      if (fs.existsSync(DEVOTION_CACHE_FILE)) {
+        const raw = fs.readFileSync(DEVOTION_CACHE_FILE, "utf-8");
+        return JSON.parse(raw);
+      }
+    } catch (e) {
+      console.warn("Could not read devotion cache file:", e);
+    }
+    return {};
+  }
+
+  function saveDevotionToCacheFile(dateStr: string, devotion: any) {
+    try {
+      const cache = getCachedDevotionsMap();
+      cache[dateStr] = devotion;
+      fs.mkdirSync(path.dirname(DEVOTION_CACHE_FILE), { recursive: true });
+      fs.writeFileSync(DEVOTION_CACHE_FILE, JSON.stringify(cache, null, 2), "utf-8");
+    } catch (e) {
+      console.warn("Could not write devotion cache file:", e);
+    }
+  }
+
+  app.get(["/api/daily-devotion/today", "/api/daily-devotion/get"], async (req, res) => {
+    try {
+      // Determine target date in Los Angeles time (California church local time)
+      const now = new Date();
+      const dateParts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Los_Angeles',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(now); // e.g. 2026-09-18
+
+      const targetDate = (req.query.date as string || dateParts).trim();
+      const cache = getCachedDevotionsMap();
+
+      if (cache[targetDate]) {
+        return res.json({
+          success: true,
+          dateStr: targetDate,
+          devotion: cache[targetDate],
+          source: "cache"
+        });
+      }
+
+      // If not cached, attempt to generate or fetch via Gemini with Our Daily Bread structure
+      const ai = getAI();
+      if (ai) {
+        try {
+          const prompt = `你是一位資深的基督教聖經學者與靈修作家。請以《靈命日糧》（Our Daily Bread）經典體裁與溫暖親切的筆觸，為指定日期 ${targetDate} 創作/提供一篇完整、深思的每日靈修信息。
+必須以嚴格 JSON 格式輸出，不要有額外 markdown 包裹外的任何雜音。
+JSON 物件包含以下欄位：
+{
+  "id": ${Date.now() % 100000},
+  "dateStr": "${targetDate}",
+  "titleZh": "繁體中文靈修主題標題（簡短深刻）",
+  "titleEn": "English Devotional Title",
+  "authorZh": "作者姓名（例如：靈命日糧同工 或 伊莉莎·摩根）",
+  "authorEn": "Author Name in English",
+  "passageReadingZh": "今日讀經章節（例如：馬太福音 6:25-34）",
+  "passageReadingEn": "Scripture Passage Reading (e.g., Matthew 6:25-34)",
+  "verseZh": "今日核心金句（繁體中文和合本經文）",
+  "verseEn": "Key Scripture Verse (NIV or ESV)",
+  "referenceZh": "金句出處（例如：馬太福音 6 章 33 節）",
+  "referenceEn": "Verse Reference (e.g., Matthew 6:33)",
+  "reflectionZh": "反思問題（引導信徒思想生活應用，2-3個深入問題）",
+  "reflectionEn": "Reflection questions in English",
+  "prayerZh": "禱告詞（真摯、溫暖、向天父的祈禱）",
+  "prayerEn": "Closing prayer in English",
+  "thoughtZh": "一句話勉勵默想（精練警句）",
+  "thoughtEn": "Devotional takeaway thought in English",
+  "contentZh": "完整靈修文章（2-3個段落，包含生動生活故事或喻道故事、聖經經文真理剖析、生活實際行道勉勵）",
+  "contentEn": "Full devotional article in English (2-3 paragraphs)",
+  "sourceNameZh": "靈命日糧",
+  "sourceNameEn": "Our Daily Bread",
+  "sourceUrl": "https://www.odbm.org/tc/devotionals"
+}`;
+
+          const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+              responseMimeType: "application/json"
+            }
+          });
+
+          const text = response.text || "";
+          if (text) {
+            const parsed = JSON.parse(text);
+            if (parsed && parsed.verseZh) {
+              parsed.dateStr = targetDate;
+              parsed.sourceNameZh = "靈命日糧";
+              parsed.sourceNameEn = "Our Daily Bread";
+              parsed.sourceUrl = "https://www.odbm.org/tc/devotionals";
+              saveDevotionToCacheFile(targetDate, parsed);
+              return res.json({
+                success: true,
+                dateStr: targetDate,
+                devotion: parsed,
+                source: "gemini_generated"
+              });
+            }
+          }
+        } catch (geminiErr) {
+          console.warn("Gemini devotion generation error, using fallback:", geminiErr);
+        }
+      }
+
+      // Fallback devotion if neither cache nor Gemini returns
+      const fallbackDevotion = {
+        id: Date.now() % 100000,
+        dateStr: targetDate,
+        titleZh: "天天得勝的安息",
+        titleEn: "Daily Rest and Victory",
+        authorZh: "靈命日糧同工",
+        authorEn: "Our Daily Bread Ministries",
+        passageReadingZh: "詩篇 23:1-6",
+        passageReadingEn: "Psalm 23:1-6",
+        verseZh: "耶和華是我的牧者，我必不致缺乏。祂使我躺臥在青草地上，領我在可安歇的水邊。",
+        verseEn: "The LORD is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters.",
+        referenceZh: "詩篇 23 篇 1-2 節",
+        referenceEn: "Psalm 23:1-2",
+        reflectionZh: "在今日繁忙的步伐與挑戰中，你是否願意花幾分鐘安靜在主面前，將憂慮卸給祂？",
+        reflectionEn: "In the midst of today's busy pace, are you willing to pause before the Lord and surrender your anxieties into His hands?",
+        prayerZh: "親愛的主耶穌，感謝祢作我一生的好牧人。求祢帶領我走義路，賜我屬天的安息與平安。阿們！",
+        prayerEn: "Dear Lord Jesus, thank You for being my loving Shepherd. Guide my steps in righteousness and fill my spirit with heavenly rest. Amen.",
+        thoughtZh: "當好牧人引領我們的腳步，即使走過死蔭幽谷，我們也不怕遭害，因為主與我們同在。",
+        thoughtEn: "When the Good Shepherd leads, even through the darkest valley, we fear no evil, for He is with us.",
+        contentZh: "無論我們面對何等風浪，詩篇第23篇始終給予信徒最深切的安慰與把握。上帝不僅在順境中祝福我們，更在我們疲乏軟弱時作我們的盾牌與高台。今天，讓我們放下重擔，緊緊跟隨大牧者耶穌的引導。",
+        contentEn: "No matter what challenges arise today, Psalm 23 reminds us that God is our unfailing comfort and guide. Rest in His faithful presence and allow His peace to guard your heart.",
+        sourceNameZh: "靈命日糧",
+        sourceNameEn: "Our Daily Bread",
+        sourceUrl: "https://www.odbm.org/tc/devotionals"
+      };
+
+      saveDevotionToCacheFile(targetDate, fallbackDevotion);
+      return res.json({
+        success: true,
+        dateStr: targetDate,
+        devotion: fallbackDevotion,
+        source: "fallback"
+      });
+    } catch (err: any) {
+      console.error("Failed to process daily devotion API:", err);
+      return res.status(500).json({ error: err.message || "Failed to load daily devotion" });
+    }
+  });
+
   // Helper to initialize GoogleGenAI safely
   const getAI = (customKey?: string) => {
     const rawKey = (customKey || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "").trim();

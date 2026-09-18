@@ -26,6 +26,81 @@ export interface DailyDevotion {
 
 export const DAILY_DEVOTIONS: DailyDevotion[] = [
   {
+    "id": 109,
+    "dateStr": "2026-09-18",
+    "titleZh": "尋求祂的國",
+    "titleEn": "Seeking God's Kingdom",
+    "authorZh": "伊莉莎·摩根",
+    "authorEn": "Elisa Morgan",
+    "passageReadingZh": "馬太福音 6:25-34",
+    "passageReadingEn": "Matthew 6:25-34",
+    "verseZh": "你們要先求他的國和他的義，這些東西都要加給你們了。",
+    "verseEn": "But seek first his kingdom and his righteousness, and all these things will be given to you as well.",
+    "referenceZh": "馬太福音 6 章 33 節",
+    "referenceEn": "Matthew 6:33",
+    "reflectionZh": "在日常生活中，哪些生活瑣事或未知的明日最容易引發你的焦慮與憂慮？知道天父深知你的需要並時刻看顧你，如何幫助你將心思意念從憂慮轉向定睛尋求上帝的國與祂的公義？",
+    "reflectionEn": "In daily life, what concerns or future uncertainties most easily trigger worry within you? How does resting in the truth that your Heavenly Father already knows your needs empower you to redirect your focus toward seeking His kingdom and righteousness?",
+    "prayerZh": "親愛的天父，在充滿變數的生活中，我承認自己常為衣食日用與明天憂慮。求祢赦免我微小的信心，提醒我看天上的飛鳥與野地的百合花，體會祢對我無微不至的看顧。賜我單純信靠的心，凡事「先求祢的國和祢的義」，深信祢必按祢豐盛的恩典供應我一切所需。奉主耶穌基督的聖名禱告，阿們！",
+    "prayerEn": "Dear Heavenly Father, amid life's uncertainties, I confess that worries about daily provisions and the unknown future often cloud my heart. Forgive my lack of faith and remind me of the birds of the air and the lilies of the field, reflecting Your boundless care. Grant me a trusting heart to seek first Your kingdom and Your righteousness, resting peacefully in Your unfailing provision. In Jesus' name, Amen.",
+    "thoughtZh": "憂慮將我們的心靈撕裂在恐懼與自力更生之間；先求上帝的國，則使我們的心靈深植在天父信實充足的供應之中。",
+    "thoughtEn": "Worry tears our hearts between fear and self-reliance; seeking God's kingdom anchors our souls in our Father's faithful and abundant provision.",
+    "contentZh": "伊莉莎·摩根分享道，當她的小孫子第一次在她新家過夜時，因為對不熟悉的房間與黑暗環境感到不安，焦慮地問她如果半夜醒來需要找她該怎麼辦。伊莉莎拿出一卷長長的鮮豔緞帶，從孫子的床邊一路延伸連接到自己的臥室床頭，溫柔地告訴他：「只要抓著這條線，你就能隨時找到我！」這條看得見的線帶給孩子無比的安慰，使他在平安中安然入睡。\n\n在《馬太福音》第6章中，耶穌深刻地談到了人類普遍面臨的憂慮——為吃什麼、喝什麼、穿什麼而操心掛慮（25節）。「憂慮」在希臘原文中的字根含義是「被撕裂成兩個方向」——我們的心在「信靠上帝」與「試圖靠自己解決」之間拉扯折磨。主耶穌提醒我們：天上的飛鳥也不種也不收，天父尚且養活牠們；野地的百合花不勞苦不紡線，上帝還給它如此美麗的妝飾。何況我們是天父所深愛的兒女呢？\n\n耶穌在第33節給出了戰勝憂慮的神聖良方：「你們要先求祂的國和祂的義，這些東西都要加給你們了。」這就像那條連向天父心意的緞帶：當恐懼與焦慮襲來時，我們不需要依靠有限的自己慌亂奔波，只需握緊這條通往上帝同在的應許之線——在每一個決定中尊主為大、尋求祂的同在、活出祂的公義與慈愛。天父必親自負責看顧我們的一切所需，賞賜我們出人意外的真實平安！",
+    "contentEn": "Author Elisa Morgan recounts when her young grandson spent his first night at her new home. Feeling uneasy about the unfamiliar dark room, he asked how he could find her if he grew frightened. Elisa took a roll of vibrant ribbon, anchored it beside his bed, and unrolled it all the way to her own bedside, assuring him: “Just follow the line, and you’ll find me!” That simple, tangible connection calmed his fears and brought deep rest.\n\nIn Matthew chapter 6, Jesus addresses our universal human anxiety concerning daily bread, physical security, and tomorrow's uncertainties (v. 25). The Greek root of the word \"worry\" denotes being pulled or torn in two different directions—wavering between trusting God and frantically striving in self-reliance. Jesus gently reminds us: the birds of the air neither sow nor reap, yet our Heavenly Father feeds them; the lilies of the field neither toil nor spin, yet Solomon in all his splendor was not arrayed like one of these. How much more will God care for us, His beloved children?\n\nJesus provides the divine antidote in verse 33: “Seek first his kingdom and his righteousness, and all these things will be given to you as well.” This is the holy lifeline: when anxiety knocks at our door, we do not need to be paralyzed by fear. Instead, follow the line straight into the Father's heart—aligning our daily priorities with His kingdom, trusting His character, and resting in His sovereign care. God promises to supply all our needs according to His boundless riches in Christ!",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://www.odbm.org/tc/devotionals"
+  },
+  {
+    "id": 110,
+    "dateStr": "2026-09-19",
+    "titleZh": "基督帶來的改變",
+    "titleEn": "The Change Christ Brings",
+    "authorZh": "靈命日糧同工",
+    "authorEn": "Our Daily Bread Ministries",
+    "passageReadingZh": "箴言 28:13-14",
+    "passageReadingEn": "Proverbs 28:13-14",
+    "verseZh": "遮掩自己罪過的，必不亨通；承認離棄罪過的，必蒙憐恤。",
+    "verseEn": "Whoever conceals their sins does not prosper, but the one who confesses and renounces them finds mercy.",
+    "referenceZh": "箴言 28 章 13 節",
+    "referenceEn": "Proverbs 28:13",
+    "reflectionZh": "當你做錯事或心存過犯時，你習慣本能地掩飾推託，還是坦然來到慈愛的天父面前認罪悔改？耶穌在十字架上的救贖，如何給予你誠實面對軟弱並迎向重生的勇氣？",
+    "reflectionEn": "When you falter or make mistakes, is your instinct to conceal and defend, or to bring it openly before our merciful God? How does Christ's sacrifice on the cross grant you courage to embrace honest repentance and spiritual renewal?",
+    "prayerZh": "慈悲憐憫的救主，祢深知我一切的心思意念。求祢光照我內心隱而未現的過錯，賜我謙卑認罪的勇氣。感謝祢應許赦免我的罪，洗淨我一切的不義，並賜下聖靈更新我的生命，使我在恩典中天天蒙恩成長。阿們！",
+    "prayerEn": "Merciful Savior, You search every heart and know all my ways. Shine Your gentle light upon my hidden flaws and grant me humility to confess and turn from sin. Thank You for Your promise of complete forgiveness and the renewing power of the Holy Spirit. Amen.",
+    "thoughtZh": "掩蓋罪過如同用粉底遮掩傷口，唯有坦露在基督的救恩光芒中，才能領受徹底的醫治與重生。",
+    "thoughtEn": "Concealing sin is like masking a wound; only exposing it to Christ's healing grace brings lasting restoration and freedom.",
+    "contentZh": "《箴言》28章13節提醒我們：「遮掩自己罪過的，必不亨通；承認離棄罪過的，必蒙憐恤。」在基督耶穌裡，上帝不是為了定我們的罪，而是要拯救與更新我們。當我們敞開向神認罪時，基督豐盛的慈愛就必臨到，賜我們勝過軟弱的全新力量。",
+    "contentEn": "Proverbs 28:13 reminds us that concealing sin prevents spiritual flourishing, while confessing and turning from it invites God's profound mercy. Through Jesus Christ, God does not seek to condemn us, but to heal, restore, and transform us into His image.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://www.odbm.org/tc/devotionals"
+  },
+  {
+    "id": 111,
+    "dateStr": "2026-09-20",
+    "titleZh": "活出豐盛生命",
+    "titleEn": "Abundant Life in Christ",
+    "authorZh": "靈命日糧同工",
+    "authorEn": "Our Daily Bread Ministries",
+    "passageReadingZh": "約翰福音 10:7-15",
+    "passageReadingEn": "John 10:7-15",
+    "verseZh": "盜賊來，無非要偷竊、殺害、毀壞；我來了，是要叫羊得生命，並且得的更豐盛。",
+    "verseEn": "The thief comes only to steal and kill and destroy; I have come that they may have life, and have it to the full.",
+    "referenceZh": "約翰福音 10 章 10 節",
+    "referenceEn": "John 10:10",
+    "reflectionZh": "耶穌所賜的「豐盛生命」對你而言意味著什麼？在忙碌與世俗追求中，你如何緊緊跟隨好牧人耶穌的聲音，享受祂所賜的心靈飽足？",
+    "reflectionEn": "What does the \"abundant life\" Jesus promised mean to your soul today? Amid world distractions, how can you remain close to the Good Shepherd and experience His divine fullness?",
+    "prayerZh": "主耶穌，祢是我的好牧人，為羊捨命的主！感謝祢賜給我永恆且豐盛的生命。求祢牽引我每一天的腳步，使我在祢的同在與話語中得著滿足與力量。奉主聖名禱告，阿們！",
+    "prayerEn": "Lord Jesus, You are my Good Shepherd who laid down Your life for us. Thank You for granting me life in all its fullness. Guide my steps and fill my heart with Your peace and everlasting joy. Amen.",
+    "thoughtZh": "豐盛生命不在於物質的多寡，而在於與好牧人耶穌基督每一天親密同行所帶來的屬天平安與喜樂。",
+    "thoughtEn": "Abundant life is not measured by earthly possessions, but by the fullness of joy and peace found in intimate fellowship with the Good Shepherd.",
+    "contentZh": "耶穌宣告祂是好牧人，要帶領屬祂的羊進入豐草之處。盜賊帶來破壞與混亂，但基督帶來生命、平安與永恆的盼望。信靠祂的人必不致缺乏。",
+    "contentEn": "Jesus declared that He is the Good Shepherd who leads His sheep into verdant pastures. While the enemy seeks destruction, Christ brings eternal life, peace, and unshakable hope.",
+    "sourceNameZh": "靈命日糧",
+    "sourceNameEn": "Our Daily Bread",
+    "sourceUrl": "https://www.odbm.org/tc/devotionals"
+  },
+  {
     "id": 108,
     "dateStr": "2026-09-17",
     "titleZh": "仰望上帝",
@@ -557,6 +632,53 @@ export const DAILY_DEVOTIONS: DailyDevotion[] = [
   }
 ];
 
+// Dynamic cache helper for client-side storage
+export function loadCachedDevotions(): DailyDevotion[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem('canaan_daily_devotions_cache');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+export function saveDevotionToCache(dev: DailyDevotion): void {
+  if (typeof window === 'undefined' || !dev) return;
+  try {
+    const current = loadCachedDevotions();
+    const filtered = current.filter(d => (dev.dateStr && d.dateStr !== dev.dateStr) || (!dev.dateStr && d.id !== dev.id));
+    filtered.unshift(dev);
+    // Keep max 60 cached devotions
+    localStorage.setItem('canaan_daily_devotions_cache', JSON.stringify(filtered.slice(0, 60)));
+  } catch {
+    // ignore
+  }
+}
+
+// Client helper to fetch today's or any date's devotion from server API
+export async function fetchServerDailyDevotion(customDateStr?: string): Promise<DailyDevotion | null> {
+  try {
+    const url = customDateStr
+      ? `/api/daily-devotion/get?date=${encodeURIComponent(customDateStr)}`
+      : '/api/daily-devotion/today';
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data && data.devotion) {
+      saveDevotionToCache(data.devotion);
+      return data.devotion;
+    }
+  } catch {
+    // ignore network issues
+  }
+  return null;
+}
+
 export function getTodayDevotion(customDate?: Date) {
   const d = customDate || new Date();
   const year = d.getFullYear();
@@ -566,8 +688,14 @@ export function getTodayDevotion(customDate?: Date) {
   const fullDateKey = `${year}-${pad(month)}-${pad(date)}`;
   const monthDayKey = `${pad(month)}-${pad(date)}`;
 
-  // Check if there is an exact date match (e.g. 2026-09-07 or 09-07)
-  const matched = DAILY_DEVOTIONS.find(dev => dev.dateStr === fullDateKey || dev.dateStr === monthDayKey);
+  // 1. Check local browser cache first
+  const cachedList = loadCachedDevotions();
+  let matched = cachedList.find(dev => dev.dateStr === fullDateKey || dev.dateStr === monthDayKey);
+
+  // 2. Check pre-compiled archive
+  if (!matched) {
+    matched = DAILY_DEVOTIONS.find(dev => dev.dateStr === fullDateKey || dev.dateStr === monthDayKey);
+  }
 
   const startOfYear = new Date(year, 0, 0);
   const diff = d.getTime() - startOfYear.getTime();
@@ -579,6 +707,7 @@ export function getTodayDevotion(customDate?: Date) {
 
   const devotion: DailyDevotion = {
     ...rawDevotion,
+    dateStr: rawDevotion.dateStr || fullDateKey,
     titleZh: rawDevotion.titleZh || '今日靈修默想',
     titleEn: rawDevotion.titleEn || 'Daily Devotion',
     reflectionZh: rawDevotion.reflectionZh || "你曾經歷哪些事，使你想起上帝慈愛地看顧你？上帝永恆不變的愛，對你來說有何意義？",
@@ -600,6 +729,7 @@ export function getTodayDevotion(customDate?: Date) {
     devotion,
     formattedDateZh,
     formattedDateEn,
-    dayOfYear
+    dayOfYear,
+    fullDateKey
   };
 }
