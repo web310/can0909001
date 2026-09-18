@@ -169,8 +169,8 @@ ${formData.message}
                   <div>
                     <div className="font-bold text-slate-900 mb-0.5">{lang === 'zh' ? '電話號碼 (Telephone)' : 'Phone Number'}</div>
                     <div className="space-y-0.5">
-                      <a href={`tel:${CHURCH_INFO.phone2}`} className="block text-slate-700 hover:text-amber-800 font-mono font-medium">
-                        {CHURCH_INFO.phone2} ({lang === 'zh' ? '辦公室' : 'Office'})
+                      <a href={`tel:${CHURCH_INFO.phone1}`} className="block text-slate-700 hover:text-amber-800 font-mono font-medium">
+                        {CHURCH_INFO.phone1}
                       </a>
                     </div>
                   </div>
