@@ -156,8 +156,8 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
 
   const handleCopy = () => {
     const textToCopy = lang === 'zh'
-      ? `【加南今日經文靈修 • ${activeDateText}】\n主題：《${title}》\n讀經：${reading}\n\n📖 今日經文：\n“${verse}”（${reference}）\n\n💡 反思：\n${reflection}\n\n🙏 禱告：\n${prayer}\n\n🌱 勉勵默想：\n${thought}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您！`
-      : `[Canaan Daily Devotion • ${activeDateText}]\nTitle: "${title}"\nPassage: ${reading}\n\n📖 Today's Scripture:\n"${verse}" (${reference})\n\n💡 Reflection:\n${reflection}\n\n🙏 Prayer:\n${prayer}\n\n🌱 Devotional Thought:\n${thought}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+      ? `【加南今日經文靈修 • ${activeDateText}】\n主題：《${title}》\n讀經：${reading}\n\n📖 今日經文：\n“${verse}”（${reference}）\n\n💡 反思：\n${reflection}\n\n🙏 禱告：\n${prayer}\n\n🌱 勉勵默想：\n${thought}\n\n加南新生基督教會 祝福您！`
+      : `[Canaan Daily Devotion • ${activeDateText}]\nTitle: "${title}"\nPassage: ${reading}\n\n📖 Today's Scripture:\n"${verse}" (${reference})\n\n💡 Reflection:\n${reflection}\n\n🙏 Prayer:\n${prayer}\n\n🌱 Devotional Thought:\n${thought}\n\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
 
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
@@ -206,12 +206,11 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
   const verse = lang === 'zh' ? activeDevotion.verseZh : activeDevotion.verseEn;
   const reference = lang === 'zh' ? activeDevotion.referenceZh : activeDevotion.referenceEn;
   const reading = lang === 'zh' ? (activeDevotion.passageReadingZh || activeDevotion.referenceZh) : (activeDevotion.passageReadingEn || activeDevotion.referenceEn);
-  const author = lang === 'zh' ? (activeDevotion.authorZh || '靈命日糧同工') : (activeDevotion.authorEn || 'Our Daily Bread Ministries');
+  const author = lang === 'zh' ? (activeDevotion.authorZh || '加南靈修同工') : (activeDevotion.authorEn || 'Canaan Devotional Team');
   const reflection = lang === 'zh' ? activeDevotion.reflectionZh : activeDevotion.reflectionEn;
   const prayer = lang === 'zh' ? activeDevotion.prayerZh : activeDevotion.prayerEn;
   const thought = lang === 'zh' ? activeDevotion.thoughtZh : activeDevotion.thoughtEn;
   const content = lang === 'zh' ? activeDevotion.contentZh : activeDevotion.contentEn;
-  const odbmUrl = activeDevotion.sourceUrl || 'https://www.odbm.org/tc/devotionals';
 
   return (
     <div
@@ -232,7 +231,7 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/25 border border-amber-400/40 text-amber-200 tracking-wide">
                   <Sun className="w-3.5 h-3.5 text-amber-300" />
-                  <span>{lang === 'zh' ? '靈命日糧 • 今日靈修' : 'Our Daily Bread • Devotional'}</span>
+                  <span>{lang === 'zh' ? '今日經文靈修' : 'Daily Scripture Devotion'}</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/25 border border-emerald-400/30 text-emerald-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
@@ -273,20 +272,8 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
               </div>
             </div>
 
-            {/* Action Buttons: 搜尋當天靈命日糧 / Font scaler / Close */}
+            {/* Action Buttons: Font scaler / Close */}
             <div className="flex items-center gap-2 shrink-0">
-              <a
-                href={odbmUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs sm:text-sm transition-all shadow-sm cursor-pointer"
-                title={lang === 'zh' ? '前往靈命日糧官方網站 (www.odbm.org/tc/devotionals) 搜尋閱讀當天文章' : 'Search & read today\'s devotional on odbm.org'}
-              >
-                <Search className="w-3.5 h-3.5 text-amber-950" />
-                <span>{lang === 'zh' ? '搜尋當天靈命日糧' : 'Search odbm.org'}</span>
-                <ExternalLink className="w-3 h-3 text-amber-950/80" />
-              </a>
-
               <button
                 type="button"
                 onClick={() => {
@@ -307,20 +294,6 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                 <X className="w-5 h-5" />
               </button>
             </div>
-          </div>
-
-          {/* Mobile direct link for 搜尋當天靈命日糧 */}
-          <div className="sm:hidden pt-3 mt-2 border-t border-amber-800/60 flex items-center justify-between">
-            <a
-              href={odbmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-200 bg-amber-700/40 hover:bg-amber-700/60 px-2.5 py-1 rounded-lg border border-amber-400/30"
-            >
-              <Search className="w-3 h-3 text-amber-300" />
-              <span>{lang === 'zh' ? '在靈命日糧官網搜尋當天內容' : 'Search today on odbm.org'}</span>
-              <ExternalLink className="w-3 h-3 opacity-80" />
-            </a>
           </div>
         </div>
 
@@ -373,7 +346,7 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
 
               {/* Date Picker Input */}
               <div className="relative flex items-center">
-                <label className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-medium text-amber-900 hover:bg-amber-50/80 cursor-pointer shadow-xs" title={lang === 'zh' ? '選擇任意日期搜尋靈命日糧' : 'Pick a date'}>
+                <label className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-medium text-amber-900 hover:bg-amber-50/80 cursor-pointer shadow-xs" title={lang === 'zh' ? '選擇任意日期靈修' : 'Pick a date'}>
                   <Calendar className="w-3.5 h-3.5 text-amber-700" />
                   <span className="hidden md:inline">{lang === 'zh' ? '選擇日期：' : 'Date:'}</span>
                   <input
@@ -402,7 +375,7 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                     setShowSearchDropdown(true);
                   }}
                   onFocus={() => setShowSearchDropdown(true)}
-                  placeholder={lang === 'zh' ? '搜尋每一天的靈命日糧 (如 9/17、經文、主題)...' : 'Search devotionals by date or topic...'}
+                  placeholder={lang === 'zh' ? '搜尋靈修 (如 9/27、經文、主題)...' : 'Search devotionals by date or topic...'}
                   className="w-full pl-8 pr-7 py-1.5 text-xs bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-1 focus:ring-amber-500 text-stone-800 placeholder-stone-400 shadow-inner"
                 />
                 {searchQuery && (
@@ -424,15 +397,6 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-2xl border border-amber-300 z-50 max-h-64 overflow-y-auto p-2 space-y-1.5">
                   <div className="text-[11px] font-bold text-stone-500 px-1.5 pb-1 border-b border-stone-100 flex items-center justify-between">
                     <span>{lang === 'zh' ? `搜尋「${searchQuery}」結果` : `Results for "${searchQuery}"`}</span>
-                    <a
-                      href={`https://www.odbm.org/tc/devotionals`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-amber-700 hover:text-amber-900 inline-flex items-center gap-0.5 underline font-normal"
-                    >
-                      <span>{lang === 'zh' ? '前往靈命日糧官網' : 'Go to odbm.org'}</span>
-                      <ExternalLink className="w-2.5 h-2.5" />
-                    </a>
                   </div>
 
                   {filteredDevotions.length > 0 ? (
@@ -464,36 +428,10 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                       </button>
                     ))
                   ) : (
-                    <div className="p-3 text-center space-y-2 text-xs text-stone-600 bg-stone-50 rounded-lg">
-                      <p>{lang === 'zh' ? `本站存檔未找到「${searchQuery}」，可直接在靈命日糧官網搜尋：` : `Not found in local archive for "${searchQuery}", search on official website:`}</p>
-                      <a
-                        href="https://www.odbm.org/tc/devotionals"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs shadow-xs"
-                      >
-                        <Search className="w-3 h-3" />
-                        <span>在靈命日糧官網搜尋當天內容</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
+                    <div className="p-3 text-center space-y-1 text-xs text-stone-600 bg-stone-50 rounded-lg">
+                      <p>{lang === 'zh' ? `本站存檔未找到「${searchQuery}」，請嘗試以日期（如 9/27）或主題關鍵字搜尋。` : `No devotions found for "${searchQuery}". Please try searching by date or keyword.`}</p>
                     </div>
                   )}
-
-                  {/* Option to search on official website */}
-                  <div className="pt-1 border-t border-stone-100">
-                    <a
-                      href="https://www.odbm.org/tc/devotionals"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold flex items-center justify-between transition"
-                    >
-                      <span className="inline-flex items-center gap-1">
-                        <Search className="w-3 h-3 text-amber-700" />
-                        <span>{lang === 'zh' ? '在靈命日糧官方網站搜尋' : 'Search on official website (odbm.org)'}</span>
-                      </span>
-                      <ExternalLink className="w-3 h-3 opacity-70" />
-                    </a>
-                  </div>
                 </div>
               )}
             </div>
@@ -636,16 +574,8 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
         {/* Bottom Footer Actions */}
         <div className="bg-stone-100 p-4 sm:p-5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3 shrink-0">
           <div className="flex items-center space-x-2 text-xs sm:text-sm text-stone-600">
-            <span>{lang === 'zh' ? '靈修出處：' : 'Source:'}</span>
-            <a
-              href={odbmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-amber-800 hover:text-amber-950 font-bold underline underline-offset-2 inline-flex items-center gap-1"
-            >
-              <span>靈命日糧 (www.odbm.org)</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            <span className="w-2 h-2 rounded-full bg-amber-600" />
+            <span>{lang === 'zh' ? '加南新生基督教會 • 每日讀經與靈修默想' : 'Canaan Shin Sheng Christian Church • Daily Devotional'}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -666,17 +596,6 @@ export const DailyDevotionModal: React.FC<DailyDevotionModalProps> = ({
                 </>
               )}
             </button>
-
-            <a
-              href={odbmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 transition-all shadow-md cursor-pointer"
-            >
-              <Search className="w-4 h-4" />
-              <span>{lang === 'zh' ? '在靈命日糧搜尋當天內容' : 'Search on odbm.org'}</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-85" />
-            </a>
           </div>
         </div>
       </div>

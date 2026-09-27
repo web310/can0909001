@@ -62,8 +62,8 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
   const handleCopyVerse = () => {
     const d = todayDevotion.devotion;
     const verseText = lang === 'zh'
-      ? `【加南今日經文靈修 • ${todayDevotion.formattedDateZh}】\n主題：《${d.titleZh || '今日靈修'}》\n讀經：${d.passageReadingZh || d.referenceZh}\n\n📖 今日經文：\n“${d.verseZh}”（${d.referenceZh}）\n\n💡 反思：\n${d.reflectionZh || d.thoughtZh}\n\n🙏 禱告：\n${d.prayerZh || '親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。'}\n\n🌱 今日勉勵：\n${d.thoughtZh}\n\n🌐 靈修出處：靈命日糧 (www.odbm.org/tc/devotionals)\n加南新生基督教會 祝福您有平安喜樂的一天！`
-      : `[Canaan Daily Scripture & Devotion • ${todayDevotion.formattedDateEn}]\nTitle: "${d.titleEn || 'Daily Devotion'}"\nPassage: ${d.passageReadingEn || d.referenceEn}\n\n📖 Today's Scripture:\n"${d.verseEn}" (${d.referenceEn})\n\n💡 Reflection:\n${d.reflectionEn || d.thoughtEn}\n\n🙏 Prayer:\n${d.prayerEn || 'Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.'}\n\n🌱 Thought:\n${d.thoughtEn}\n\n🌐 Source: Our Daily Bread (www.odbm.org)\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
+      ? `【加南今日經文靈修 • ${todayDevotion.formattedDateZh}】\n主題：《${d.titleZh || '今日靈修'}》\n讀經：${d.passageReadingZh || d.referenceZh}\n\n📖 今日經文：\n“${d.verseZh}”（${d.referenceZh}）\n\n💡 反思：\n${d.reflectionZh || d.thoughtZh}\n\n🙏 禱告：\n${d.prayerZh || '親愛的天父，祢是又真又活的上帝，感謝祢一直看顧我。'}\n\n🌱 今日勉勵：\n${d.thoughtZh}\n\n加南新生基督教會 祝福您有平安喜樂的一天！`
+      : `[Canaan Daily Scripture & Devotion • ${todayDevotion.formattedDateEn}]\nTitle: "${d.titleEn || 'Daily Devotion'}"\nPassage: ${d.passageReadingEn || d.referenceEn}\n\n📖 Today's Scripture:\n"${d.verseEn}" (${d.referenceEn})\n\n💡 Reflection:\n${d.reflectionEn || d.thoughtEn}\n\n🙏 Prayer:\n${d.prayerEn || 'Dear Heavenly Father, You are the true and living God. Thank You for always watching over me.'}\n\n🌱 Thought:\n${d.thoughtEn}\n\nCanaan Shin Sheng Christian Church wishes you a blessed day!`;
     
     navigator.clipboard.writeText(verseText);
     setCopiedVerse(true);
@@ -112,7 +112,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
             </p>
           </div>
 
-          {/* Daily Scripture & Encouragement (今日經文靈修 - 靈命日糧 odbm.org) */}
+          {/* Daily Scripture & Encouragement (今日經文靈修) */}
           <div className="relative rounded-2xl bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-amber-950/45 border-2 border-amber-500/50 backdrop-blur-md p-6 sm:p-7 shadow-2xl space-y-5 max-w-3xl animate-in fade-in duration-300">
             {/* Top Bar: Date + Title Badge + Font Scaler + Source Link + Copy/Share Button */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/30 pb-3.5">
@@ -157,18 +157,6 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
                   <span className="font-serif font-black text-base sm:text-lg">A{fontScale === 'huge' ? '++' : '+'}</span>
                   <span>{fontScale === 'huge' ? (lang === 'zh' ? '特大字體' : 'Extra Large') : (lang === 'zh' ? '大字體' : 'Large')}</span>
                 </button>
-
-                <a
-                  href={todayDevotion.devotion.sourceUrl || "https://www.odbm.org/tc/devotionals"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1.5 text-sm sm:text-base text-amber-200 hover:text-white bg-amber-500/20 hover:bg-amber-500/35 border border-amber-500/40 px-3 py-2 rounded-lg transition font-semibold shadow-sm cursor-pointer"
-                  title={lang === 'zh' ? '前往靈命日糧官方網站 (www.odbm.org/tc/devotionals) 搜尋或閱讀當天靈修文章' : 'Search or read today\'s devotional on Our Daily Bread (www.odbm.org)'}
-                >
-                  <Search className="w-4 h-4 text-amber-400" />
-                  <span>{lang === 'zh' ? '搜尋當天靈命日糧' : 'Search Today\'s Devotional'}</span>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-                </a>
 
                 <button
                   type="button"
@@ -280,18 +268,11 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
               </div>
             </div>
 
-            {/* Footer Source Credit & Action */}
+            {/* Footer Action Bar */}
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base text-slate-200 font-normal border-t border-amber-500/20">
-              <span className="flex items-center space-x-2">
-                <span className="font-medium text-slate-300">靈修出處：</span>
-                <a
-                  href="https://www.odbm.org/tc/devotionals"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-amber-300 hover:text-amber-100 underline underline-offset-2 transition font-bold"
-                >
-                  靈命日糧 Our Daily Bread (www.odbm.org/tc/devotionals)
-                </a>
+              <span className="flex items-center space-x-2 text-amber-200/90 text-sm">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                <span>{lang === 'zh' ? '加南新生基督教會 • 每日讀經與靈修默想' : 'Canaan Shin Sheng Christian Church • Daily Devotional'}</span>
               </span>
 
               <button
@@ -374,7 +355,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenGiving, onOpenAI }) => {
         </div>
       </div>
 
-      {/* Full Daily Devotional Modal (靈命日糧今日靈修) */}
+      {/* Full Daily Devotional Modal (今日靈修) */}
       <DailyDevotionModal
         isOpen={isDevotionModalOpen}
         onClose={() => setIsDevotionModalOpen(false)}

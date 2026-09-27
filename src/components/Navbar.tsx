@@ -143,14 +143,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         {
           titleZh: "今日經文靈修",
           titleEn: "Daily Devotional",
-          descZh: "靈命日糧每日靈修經文與默想",
-          descEn: "Our Daily Bread readings & reflection",
+          descZh: "每日靈修經文、反思與禱告默想",
+          descEn: "Daily scripture readings, reflection & prayer",
           action: () => {
             window.dispatchEvent(new CustomEvent('canaan_open_daily_devotion'));
           },
           icon: Sun,
-          badgeZh: "靈命日糧",
-          badgeEn: "ODB",
+          badgeZh: "每日更新",
+          badgeEn: "Daily",
         },
         {
           titleZh: "全年讀經進度",
@@ -637,10 +637,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   ? 'text-amber-800 hover:text-amber-900 hover:bg-amber-50' 
                   : 'text-amber-300 hover:text-white hover:bg-white/10'
               }`}
-              title="閱讀今日靈命日糧靈修"
+              title="閱讀今日經文靈修"
             >
               <Sun className="w-3.5 h-3.5 text-amber-400" />
-              <span>{lang === 'zh' ? '今日靈修' : 'Daily Bread'}</span>
+              <span>{lang === 'zh' ? '今日靈修' : 'Daily Devotion'}</span>
             </button>
           </div>
 

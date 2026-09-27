@@ -128,7 +128,7 @@ export const WeeklyBulletinHighlight: React.FC<WeeklyHighlightProps> = ({ lang }
                       {lang === 'zh' ? '【每日讀經進度】' : 'Daily Bible Reading Plan'}
                     </h3>
                     <div className="text-[10px] text-amber-800 font-medium">
-                      {lang === 'zh' ? '《靈命日糧》全年通讀聖經' : 'Daily Bread 365 Plan'}
+                      {lang === 'zh' ? '全年通讀聖經計畫' : 'Annual Bible Reading Plan'}
                     </div>
                   </div>
                 </div>

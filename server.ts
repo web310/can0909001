@@ -123,7 +123,7 @@ async function startServer() {
   });
 
   // ==========================================
-  // Daily Devotion (靈命日糧今日靈修) Auto-Update APIs
+  // Daily Devotion (今日靈修) Auto-Update APIs
   // ==========================================
   const DEVOTION_CACHE_FILE = path.join(process.cwd(), "src", "data", "daily_devotions_cache.json");
 
@@ -173,11 +173,11 @@ async function startServer() {
         });
       }
 
-      // If not cached, attempt to generate or fetch via Gemini with Our Daily Bread structure
+      // If not cached, attempt to generate or fetch via Gemini with Daily Devotional structure
       const ai = getAI();
       if (ai) {
         try {
-          const prompt = `你是一位資深的基督教聖經學者與靈修作家。請以《靈命日糧》（Our Daily Bread）經典體裁與溫暖親切的筆觸，為指定日期 ${targetDate} 創作/提供一篇完整、深思的每日靈修信息。
+          const prompt = `你是一位資深的基督教聖經學者與靈修作家。請為指定日期 ${targetDate} 創作/提供一篇完整、深思的每日靈修信息。
 必須以嚴格 JSON 格式輸出，不要有額外 markdown 包裹外的任何雜音。
 JSON 物件包含以下欄位：
 {
@@ -185,7 +185,7 @@ JSON 物件包含以下欄位：
   "dateStr": "${targetDate}",
   "titleZh": "繁體中文靈修主題標題（簡短深刻）",
   "titleEn": "English Devotional Title",
-  "authorZh": "作者姓名（例如：靈命日糧同工 或 伊莉莎·摩根）",
+  "authorZh": "作者姓名（例如：靈修同工）",
   "authorEn": "Author Name in English",
   "passageReadingZh": "今日讀經章節（例如：馬太福音 6:25-34）",
   "passageReadingEn": "Scripture Passage Reading (e.g., Matthew 6:25-34)",
@@ -201,9 +201,9 @@ JSON 物件包含以下欄位：
   "thoughtEn": "Devotional takeaway thought in English",
   "contentZh": "完整靈修文章（2-3個段落，包含生動生活故事或喻道故事、聖經經文真理剖析、生活實際行道勉勵）",
   "contentEn": "Full devotional article in English (2-3 paragraphs)",
-  "sourceNameZh": "靈命日糧",
-  "sourceNameEn": "Our Daily Bread",
-  "sourceUrl": "https://www.odbm.org/tc/devotionals"
+  "sourceNameZh": "每日經文靈修",
+  "sourceNameEn": "Daily Devotional",
+  "sourceUrl": "#"
 }`;
 
           const response = await ai.models.generateContent({
@@ -219,9 +219,9 @@ JSON 物件包含以下欄位：
             const parsed = JSON.parse(text);
             if (parsed && parsed.verseZh) {
               parsed.dateStr = targetDate;
-              parsed.sourceNameZh = "靈命日糧";
-              parsed.sourceNameEn = "Our Daily Bread";
-              parsed.sourceUrl = "https://www.odbm.org/tc/devotionals";
+              parsed.sourceNameZh = "每日經文靈修";
+              parsed.sourceNameEn = "Daily Devotional";
+              parsed.sourceUrl = "#";
               saveDevotionToCacheFile(targetDate, parsed);
               return res.json({
                 success: true,
@@ -262,8 +262,8 @@ JSON 物件包含以下欄位：
           dateStr: targetDate,
           titleZh: "天天得勝的安息",
           titleEn: "Daily Rest and Victory",
-          authorZh: "靈命日糧同工",
-          authorEn: "Our Daily Bread Ministries",
+          authorZh: "靈修同工",
+          authorEn: "Church Devotional Team",
           passageReadingZh: "詩篇 23:1-6",
           passageReadingEn: "Psalm 23:1-6",
           verseZh: "耶和華是我的牧者，我必不致缺乏。祂使我躺臥在青草地上，領我在可安歇的水邊。",
@@ -278,9 +278,9 @@ JSON 物件包含以下欄位：
           thoughtEn: "When the Good Shepherd leads, even through the darkest valley, we fear no evil, for He is with us.",
           contentZh: "無論我們面對何等風浪，詩篇第23篇始終給予信徒最深切的安慰與把握。上帝不僅在順境中祝福我們，更在我們疲乏軟弱時作我們的盾牌與高台。今天，讓我們放下重擔，緊緊跟隨大牧者耶穌的引導。",
           contentEn: "No matter what challenges arise today, Psalm 23 reminds us that God is our unfailing comfort and guide. Rest in His faithful presence and allow His peace to guard your heart.",
-          sourceNameZh: "靈命日糧",
-          sourceNameEn: "Our Daily Bread",
-          sourceUrl: "https://www.odbm.org/tc/devotionals"
+          sourceNameZh: "每日經文靈修",
+          sourceNameEn: "Daily Devotional",
+          sourceUrl: "#"
         };
       }
 

@@ -58,7 +58,7 @@ export const AnnualBibleReadingModal: React.FC<AnnualReadingModalProps> = ({
           <div className="space-y-1">
             <div className="inline-flex items-center space-x-2 text-xs font-semibold text-amber-300 bg-amber-950/60 px-3 py-1 rounded-full border border-amber-700/50">
               <BookOpen className="w-3.5 h-3.5" />
-              <span>{lang === 'zh' ? '《靈命日糧》全年通讀聖經進度表' : 'Annual Bible Reading Plan (365 Days)'}</span>
+              <span>{lang === 'zh' ? '全年通讀聖經進度表' : 'Annual Bible Reading Plan (365 Days)'}</span>
             </div>
             <h3 className="font-serif text-xl sm:text-2xl font-bold text-amber-50">
               {lang === 'zh' ? '每日讀經與靈修計畫' : 'Daily Bible Reading & Devotional Plan'}

@@ -244,7 +244,7 @@ God invites you to cast every single burden upon Him. His peace surpasses all hu
     if (lang === 'zh') {
       const themeLine = d.titleZh ? `📖 **今日靈修主題**：《${d.titleZh}》\n${d.passageReadingZh ? `📜 **讀經進度**：${d.passageReadingZh}\n` : ''}\n` : '';
       return {
-        reply: `平安！為您送上今日（${td.formattedDateZh}）經文靈修與默想（靈修出處：靈命日糧 odbm.org）：
+        reply: `平安！為您送上今日（${td.formattedDateZh}）經文靈修與默想：
 
 ${themeLine}☀️ **今日靈修經文**：
 **${d.referenceZh}**：「${d.verseZh}」
@@ -258,8 +258,7 @@ ${d.prayerZh}
 🌱 **今日勉勵**：
 ${d.thoughtZh}
 
-🌐 **靈修來源**：
-靈命日糧 Our Daily Bread (www.odbm.org/tc/devotionals) • 願神親自引領您今天每一個腳步，心中滿有屬天的平安與力量！`,
+願神親自引領您今天每一個腳步，心中滿有屬天的平安與力量！`,
         scriptures: [
           { reference: d.referenceZh, text: d.verseZh }
         ],
@@ -272,7 +271,7 @@ ${d.thoughtZh}
       };
     } else {
       return {
-        reply: `Peace be with you! Here is today's (${td.formattedDateEn}) scripture and devotional reflection (Source: Our Daily Bread odbm.org):
+        reply: `Peace be with you! Here is today's (${td.formattedDateEn}) scripture and devotional reflection:
 
 ☀️ **Daily Scripture Verse**:
 **${d.referenceEn}**: "${d.verseEn}"
@@ -286,7 +285,7 @@ ${d.prayerEn}
 🌱 **Devotional Thought**:
 ${d.thoughtEn}
 
-🌐 **Source**: Our Daily Bread Ministries (www.odbm.org)`,
+May God guide your steps today with heavenly peace and joy!`,
         scriptures: [
           { reference: d.referenceEn, text: d.verseEn }
         ],
