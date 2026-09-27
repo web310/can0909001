@@ -3,14 +3,43 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-15T21:06:28.678Z
+// Updated at: 2026-09-27T22:20:12.787Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
-// Total Sermons: 7
+// Total Sermons: 8
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-15-mu35wekm";
+export const SERMONS_DATA_VERSION = "version-2026-09-27-mukdtg8j";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-1790547163293",
+    "title": "Understanding the Gospel of Jesus Christ",
+    "titleZh": "認識耶穌基督的福音",
+    "speaker": "Brother Shaoxin Li",
+    "speakerZh": "李紹信 弟兄",
+    "date": "2026-09-27",
+    "scripture": "Mark 1:1-45",
+    "scriptureZh": "馬可福音第一章",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "At Canaan Shin Sheng Christian Church Sunday Service, Brother Shaoxin Li preached on 'Understanding the Gospel of Jesus Christ' from Mark 1, examining the truth and foundation of the gospel, the core and proclamation of the gospel, and the inheritance and mission of the gospel. Urging believers to be rooted in Christ and united in proclaiming the Kingdom of God.",
+    "summaryZh": "加南新生基督教會主日崇拜，李紹信弟兄透過馬可福音第一章傳講《認識耶穌基督的福音》，深刻剖析福音的真假與根基、福音的核心與傳揚，以及福音的傳承與使命。勉勵全體弟兄姊妹在基督真道上扎根，同心合一傳揚天國的福音，活出充滿得救喜樂與忠心見證的生命。",
+    "points": [
+      "1. The Truth and Foundation of the Gospel (Mark 1:1-8)",
+      "2. The Core and Proclamation of the Gospel (Mark 1:9-15)",
+      "3. The Inheritance and Mission of the Gospel (Mark 1:16-45)"
+    ],
+    "pointsZh": [
+      "一、福音的真假 ‧ 福音的根基（可 1:1-8）",
+      "二、福音的核心 ‧ 福音的傳揚（可 1:9-15）",
+      "三、福音的傳承 ‧ 福音的使命（可 1:16-45）"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "audioUrl": "",
+    "showVideo": true,
+    "showAudio": true
+  },
   {
     "id": "sermon-1789261339556",
     "title": "A fighting chance",
