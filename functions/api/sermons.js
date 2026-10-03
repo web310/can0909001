@@ -246,56 +246,33 @@ const DEFAULT_SERMONS = [
 export async function onRequestGet(context) {
   try {
     const url = new URL(context.request.url);
-    const assetUrl = new URL('/canaan_master_data.json', url);
-    const masterRes = context.env && context.env.ASSETS
-      ? await context.env.ASSETS.fetch(assetUrl)
-      : await fetch(assetUrl);
-    if (masterRes && masterRes.ok) {
-      const masterData = await masterRes.json();
-      if (masterData && Array.isArray(masterData.data?.sermons) && masterData.data.sermons.length > 0) {
-        return new Response(
-          JSON.stringify({
-            success: true,
-            sermons: masterData.data.sermons,
-            count: masterData.data.sermons.length,
-            source: 'canaan_master_data.json'
-          }),
-          {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              "Access-Control-Allow-Origin": "*",
-              "Cache-Control": "no-cache, no-store, must-revalidate"
-            }
+    const assetUrl = new URL("/canaan_master_data.json", url);
+    const res = await context.env.ASSETS.fetch(assetUrl);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.data && Array.isArray(data.data.sermons) && data.data.sermons.length > 0) {
+        return new Response(JSON.stringify({
+          success: true,
+          sermons: data.data.sermons
+        }), {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Cache-Control": "public, max-age=60, s-maxage=60"
           }
-        );
+        });
       }
     }
   } catch (err) {
-    console.warn("Could not read canaan_master_data.json:", err);
+    // fallback
   }
 
-  return new Response(
-    JSON.stringify({
-      success: true,
-      sermons: DEFAULT_SERMONS,
-      count: DEFAULT_SERMONS.length,
-      source: 'edge_function_fallback'
-    }),
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-      }
+  return new Response(JSON.stringify({
+    success: true,
+    sermons: DEFAULT_SERMONS
+  }), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "public, max-age=60, s-maxage=60"
     }
-  );
-}
-
-export async function onRequestPost(context) {
-  return new Response(JSON.stringify({ success: true }), {
-    status: 200,
-    headers: { "Content-Type": "application/json; charset=utf-8" }
   });
 }

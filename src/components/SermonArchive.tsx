@@ -434,58 +434,56 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
           {/* Search Box & Admin Add Sermon Action */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto">
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  if (onOpenGlobalSync) {
-                    onOpenGlobalSync();
-                  } else {
-                    setIsGitHubModalOpen(true);
-                  }
-                }}
-                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-all shrink-0 border border-amber-400 cursor-pointer"
-                title={lang === 'zh' ? '一鍵將 9/27 講道、相片、週報與所有資料同步至 GitHub' : 'Sync All Church Data to GitHub'}
-              >
-                <Github className="w-4 h-4 text-slate-950" />
-                <span>{lang === 'zh' ? '🚀 一鍵 GitHub 同步' : '🚀 Sync to GitHub'}</span>
-              </button>
+            {adminEmail && (
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onOpenGlobalSync) {
+                      onOpenGlobalSync();
+                    } else {
+                      setIsGitHubModalOpen(true);
+                    }
+                  }}
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-all shrink-0 border border-amber-400 cursor-pointer"
+                  title={lang === 'zh' ? '管理員專屬：一鍵將講道、相片、週報與所有資料同步至 GitHub' : 'Admin: Sync All Church Data to GitHub'}
+                >
+                  <Github className="w-4 h-4 text-slate-950" />
+                  <span>{lang === 'zh' ? '🚀 一鍵 GitHub 同步' : '🚀 Sync to GitHub'}</span>
+                </button>
 
-              {adminEmail && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditingSermon(null); // new sermon
-                      setIsEditModalOpen(true);
-                    }}
-                    className="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-colors shrink-0"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>{lang === 'zh' ? '+ 新增主日講道' : '+ Add Sermon'}</span>
-                  </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingSermon(null); // new sermon
+                    setIsEditModalOpen(true);
+                  }}
+                  className="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-colors shrink-0"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>{lang === 'zh' ? '+ 新增主日講道' : '+ Add Sermon'}</span>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsReorderModalOpen(true)}
-                    className="bg-indigo-600/90 hover:bg-indigo-600 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-colors shrink-0 border border-indigo-500/40"
-                    title={lang === 'zh' ? '調整講道顯示順序（拖曳/置頂/上下移動）' : 'Reorder Sermons (Drag & Drop / Move)'}
-                  >
-                    <ArrowUpDown className="w-4 h-4" />
-                    <span>{lang === 'zh' ? '調整順序' : 'Reorder'}</span>
-                  </button>
+                <button
+                  type="button"
+                  onClick={() => setIsReorderModalOpen(true)}
+                  className="bg-indigo-600/90 hover:bg-indigo-600 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-colors shrink-0 border border-indigo-500/40"
+                  title={lang === 'zh' ? '調整講道顯示順序（拖曳/置頂/上下移動）' : 'Reorder Sermons (Drag & Drop / Move)'}
+                >
+                  <ArrowUpDown className="w-4 h-4" />
+                  <span>{lang === 'zh' ? '調整順序' : 'Reorder'}</span>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsResetModalOpen(true)}
-                    className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-xl transition-colors border border-slate-700"
-                    title={lang === 'zh' ? '恢復預設講道清單' : 'Reset to defaults'}
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                  </button>
-                </>
-              )}
-            </div>
+                <button
+                  type="button"
+                  onClick={() => setIsResetModalOpen(true)}
+                  className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-xl transition-colors border border-slate-700"
+                  title={lang === 'zh' ? '恢復預設講道清單' : 'Reset to defaults'}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              </div>
+            )}
 
             <div className="w-full sm:w-64 relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />

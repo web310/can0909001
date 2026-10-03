@@ -323,28 +323,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               </div>
             ) : (
-              <div className="hidden md:flex items-center space-x-2">
-                {onOpenGlobalGitHubSync && (
-                  <button
-                    onClick={onOpenGlobalGitHubSync}
-                    className="flex items-center text-slate-950 hover:text-slate-900 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 font-bold px-3 py-1 rounded-full border border-amber-300 shadow-md hover:shadow-amber-500/20 transition-all text-xs transform hover:scale-[1.02] cursor-pointer"
-                    title="一鍵將 9/27 主日講道與全站資料同步至 GitHub 並自動部署 Cloudflare"
-                  >
-                    <Github className="w-3.5 h-3.5 mr-1 text-slate-950" />
-                    <span>{lang === 'zh' ? '🚀 一鍵和 GitHub 同步' : '🚀 Sync All to GitHub'}</span>
-                  </button>
-                )}
-                {onOpenAdminLogin && (
-                  <button
-                    onClick={onOpenAdminLogin}
-                    className="flex items-center text-slate-300 hover:text-amber-300 bg-slate-800/80 hover:bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700 transition-all text-xs cursor-pointer"
-                    title="網頁管理員登入 (web@canaannewlife.org)"
-                  >
-                    <Lock className="w-3 h-3 mr-1 text-amber-400" />
-                    <span>{lang === 'zh' ? '管理員登入' : 'Admin Login'}</span>
-                  </button>
-                )}
-              </div>
+              onOpenAdminLogin && (
+                <button
+                  onClick={onOpenAdminLogin}
+                  className="hidden md:flex items-center text-slate-300 hover:text-amber-300 bg-slate-800/80 hover:bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700 transition-all text-xs cursor-pointer"
+                  title="網頁管理員登入 (web@canaannewlife.org)"
+                >
+                  <Lock className="w-3 h-3 mr-1 text-amber-400" />
+                  <span>{lang === 'zh' ? '管理員登入' : 'Admin Login'}</span>
+                </button>
+              )
             )}
 
             <a
@@ -875,32 +863,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-2 pt-2 border-t border-slate-800">
-                    {onOpenGlobalGitHubSync && (
-                      <button
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          onOpenGlobalGitHubSync();
-                        }}
-                        className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 py-2.5 rounded-2xl text-xs font-bold shadow-lg cursor-pointer"
-                      >
-                        <Github className="w-4 h-4 text-slate-950" />
-                        <span>{lang === 'zh' ? '🚀 一鍵和 GitHub 同步全站' : '🚀 Sync All Data to GitHub'}</span>
-                      </button>
-                    )}
-                    {onOpenAdminLogin && (
-                      <button
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          onOpenAdminLogin();
-                        }}
-                        className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-2xl text-xs font-medium border border-slate-700 cursor-pointer"
-                      >
-                        <Lock className="w-3.5 h-3.5 text-amber-400" />
-                        <span>{lang === 'zh' ? '管理員登入 (web@canaannewlife.org)' : 'Admin Login'}</span>
-                      </button>
-                    )}
-                  </div>
+                  onOpenAdminLogin && (
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        onOpenAdminLogin();
+                      }}
+                      className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-2xl text-xs font-medium border border-slate-700 cursor-pointer"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>{lang === 'zh' ? '管理員登入 (web@canaannewlife.org)' : 'Admin Login'}</span>
+                    </button>
+                  )
                 )}
 
                 <a
