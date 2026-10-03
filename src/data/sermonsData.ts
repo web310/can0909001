@@ -1,16 +1,42 @@
-import { Sermon } from "../types";
+import { Sermon } from '../types';
 
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-09-28T01:24:55.017Z
+// Updated at: 2026-10-03T08:48:14.353Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
-// Total Sermons: 8
+// Total Sermons: 9
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-09-27-mukkezc9";
+export const SERMONS_DATA_VERSION = "version-2026-10-03-mus5gcup";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-1791014936583",
+    "title": "How to Open Our Spiritual Eyes",
+    "titleZh": "如何打開屬靈的眼睛",
+    "speaker": "萬四長老",
+    "speakerZh": "萬四長老",
+    "date": "2026-10-04",
+    "scripture": "Ephesians 1:17–18 John 17:3 Philippians 3:10 Romans 8:18",
+    "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by 萬四長老 on \"Understanding the Gospel of Jesus Christ\", reflecting on Mark 1:1-45.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《認識耶穌基督的福音》，分享經文「馬可福音第一章」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "1. The Truth and Foundation of the Gospel (Mark 1:1-8)",
+      "2. The Core and Proclamation of the Gospel (Mark 1:9-15)",
+      "3. The Inheritance and Mission of the Gospel (Mark 1:16-45)"
+    ],
+    "pointsZh": [
+      "一、打開信心的眼睛",
+      "二、打開愛的眼睛",
+      "三、打開盼望的眼睛"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226"
+  },
   {
     "id": "sermon-1790547163293",
     "title": "Understanding the Gospel of Jesus Christ",
@@ -37,8 +63,8 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     "videoUrl": "",
     "videoPasscode": "25226",
     "audioUrl": "",
-    "showVideo": true,
-    "showAudio": true
+    "showVideo": false,
+    "showAudio": false
   },
   {
     "id": "sermon-1789261339556",
