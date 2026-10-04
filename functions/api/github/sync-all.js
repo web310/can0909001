@@ -16,6 +16,7 @@ export async function onRequestPost(context) {
     const activeBranch = branch || "main";
 
     const sermonsList = Array.isArray(data?.sermons) ? data.sermons : [];
+    const eventsList = Array.isArray(data?.events) ? data.events : [];
     const photosList = Array.isArray(data?.photos) ? data.photos : [];
     const categoriesList = Array.isArray(data?.categories) ? data.categories : [];
     const albumsList = Array.isArray(data?.albums) ? data.albums : [];
@@ -56,12 +57,25 @@ export const PRAYERS_DATA_VERSION = "${versionStr}";
 export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, null, 2)};
 `;
 
+    const eventsTs = `import { ChurchEvent } from '../types';
+
+// ============================================================================
+// CANAAN SHIN SHENG CHRISTIAN CHURCH - EVENTS & GATHERINGS MASTER DATA
+// Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
+// Updated at: ${new Date().toISOString()}
+// Total Events: ${eventsList.length}
+// ============================================================================
+
+export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = ${JSON.stringify(eventsList, null, 2)};
+`;
+
     const masterBackupJson = JSON.stringify({
       app: "Canaan Shin Sheng Christian Church",
       exportedAt: new Date().toISOString(),
       version: "2.0",
       stats: {
         totalSermons: sermonsList.length,
+        totalEvents: eventsList.length,
         totalPhotos: photosList.length,
         totalCategories: categoriesList.length,
         totalAlbums: albumsList.length,
@@ -69,6 +83,7 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayersList, nu
       },
       data: {
         sermons: sermonsList,
+        events: eventsList,
         photos: photosList,
         categories: categoriesList,
         albums: albumsList,
@@ -177,6 +192,7 @@ export async function onRequestOptions() {
         { path: "src/data/sermonsData.ts", content: sermonsTs },
         { path: "functions/api/sermons.js", content: cloudflareSermonsJs }
       ] : []),
+      ...(eventsList.length > 0 ? [{ path: "src/data/eventsData.ts", content: eventsTs }] : []),
       ...(prayersList.length > 0 ? [{ path: "src/data/prayersData.ts", content: prayersTs }] : []),
       { path: "public/canaan_master_data.json", content: masterBackupJson }
     ];

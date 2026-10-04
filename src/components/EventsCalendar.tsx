@@ -665,7 +665,7 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                         </div>
                       )}
 
-                      {(evt.imageUrl || evt.id === 'event-1788806584933' || (evt.titleZh && evt.titleZh.includes('健行'))) && (
+                      {(evt.imageUrl || evt.id === 'event-1788806584933' || (evt.locationZh && evt.locationZh.includes('Robert Ryan'))) && (
                         <div className="inline-flex items-center space-x-1 text-xs font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-200">
                           <span>🗺️</span>
                           <span>{lang === 'zh' ? '附路線地圖' : 'With Trail Map'}</span>
@@ -686,7 +686,7 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                       {(() => {
                         const rawDesc = lang === 'zh' ? (evt.descriptionZh || evt.description) : (evt.description || evt.descriptionZh);
                         const isLong = rawDesc.length > 60 || rawDesc.includes('\n');
-                        const hasMap = !!(evt.imageUrl || evt.id === 'event-1788806584933' || (evt.titleZh && evt.titleZh.includes('健行')));
+                        const hasMap = !!(evt.imageUrl || evt.id === 'event-1788806584933' || (evt.locationZh && evt.locationZh.includes('Robert Ryan')));
                         // First line preview or first 50 chars
                         const previewLine = rawDesc.split('\n')[0].trim();
                         const snippet = isLong ? (previewLine.length > 55 ? previewLine.slice(0, 52).trim() : previewLine) : rawDesc;
@@ -740,40 +740,46 @@ export const EventsCalendar: React.FC<EventsProps> = ({
                     </div>
 
                     {/* Time & Location Details */}
-                    <div className="space-y-2 text-xs sm:text-sm text-stone-700 bg-stone-50/90 rounded-2xl p-3.5 border border-stone-100">
-                      <div className="flex items-center space-x-2">
-                        <Clock className="w-4 h-4 text-amber-700 shrink-0" />
-                        <span className="font-semibold text-stone-800">{lang === 'zh' ? evt.timeZh : evt.time}</span>
-                      </div>
-
-                      <div className="flex items-start space-x-2">
-                        {evt.zoomId ? (
-                          <Video className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-                        ) : (
-                          <MapPin className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-                        )}
-                        <div className="leading-snug">
-                          <div className="font-medium text-stone-800">
-                            {lang === 'zh' ? evt.locationZh : evt.location}
+                    {((evt.timeZh || evt.time) || (evt.locationZh || evt.location)) ? (
+                      <div className="space-y-2 text-xs sm:text-sm text-stone-700 bg-stone-50/90 rounded-2xl p-3.5 border border-stone-100">
+                        {(evt.timeZh || evt.time) ? (
+                          <div className="flex items-center space-x-2">
+                            <Clock className="w-4 h-4 text-amber-700 shrink-0" />
+                            <span className="font-semibold text-stone-800">{lang === 'zh' ? evt.timeZh : evt.time}</span>
                           </div>
-                          {evt.zoomId && (
-                            <div className="flex items-center space-x-2 mt-1.5">
-                              <span className="text-xs font-mono text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
-                                ID: {evt.zoomId}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={handleCopyZoom}
-                                className="text-xs text-indigo-700 hover:text-indigo-900 underline font-semibold flex items-center space-x-0.5"
-                              >
-                                {copiedZoom ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : null}
-                                <span>{copiedZoom ? (lang === 'zh' ? '已複製' : 'Copied') : (lang === 'zh' ? '複製ID' : 'Copy')}</span>
-                              </button>
+                        ) : null}
+
+                        {(evt.locationZh || evt.location) ? (
+                          <div className="flex items-start space-x-2">
+                            {evt.zoomId ? (
+                              <Video className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                            ) : (
+                              <MapPin className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                            )}
+                            <div className="leading-snug">
+                              <div className="font-medium text-stone-800">
+                                {lang === 'zh' ? evt.locationZh : evt.location}
+                              </div>
+                              {evt.zoomId && (
+                                <div className="flex items-center space-x-2 mt-1.5">
+                                  <span className="text-xs font-mono text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                                    ID: {evt.zoomId}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={handleCopyZoom}
+                                    className="text-xs text-indigo-700 hover:text-indigo-900 underline font-semibold flex items-center space-x-0.5"
+                                  >
+                                    {copiedZoom ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : null}
+                                    <span>{copiedZoom ? (lang === 'zh' ? '已複製' : 'Copied') : (lang === 'zh' ? '複製ID' : 'Copy')}</span>
+                                  </button>
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        ) : null}
                       </div>
-                    </div>
+                    ) : null}
                   </div>
 
                   {/* Actions Footer */}

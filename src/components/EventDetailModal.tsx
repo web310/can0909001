@@ -65,19 +65,19 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
   const detectedMapUrl = extractMapUrl(desc) || (location.includes('http') ? extractMapUrl(location) : null);
 
-  // Check if event has a custom image or is the hiking event
-  const isHikingEvent =
+  // Check if event is specifically the Robert Ryan Park event
+  const isRyanParkEvent =
     event.id === 'event-1788806584933' ||
-    (event.titleZh && event.titleZh.includes('健行')) ||
-    (event.title && event.title.toLowerCase().includes('hiking'));
+    (event.titleZh && event.titleZh.includes('Robert Ryan')) ||
+    (event.locationZh && event.locationZh.includes('Robert Ryan'));
 
-  const mapImage = (isHikingEvent && customHikingMap) 
+  const mapImage = (isRyanParkEvent && customHikingMap) 
     ? customHikingMap 
-    : (event.imageUrl || (isHikingEvent ? '/images/ryan_park_hiking_map.jpg' : null));
+    : (event.imageUrl || (isRyanParkEvent ? '/images/ryan_park_hiking_map.jpg' : null));
 
   const mapCaption =
     (lang === 'zh' ? event.imageCaptionZh : event.imageCaptionEn) ||
-    (isHikingEvent
+    (isRyanParkEvent
       ? (lang === 'zh'
           ? 'Robert Ryan Park 健行路線地圖：集合/午餐野餐區、洗手間與東南峽灣觀景點'
           : 'Robert Ryan Park Trail Route Map: Meeting/Lunch Picnic Area, Restrooms & Scenic Overlook')
@@ -233,7 +233,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
           {/* Key Schedule Information Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {/* Date Box */}
-            <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-4 space-y-1">
+            <div className={`${time ? '' : 'sm:col-span-2'} bg-amber-50/80 border border-amber-200/80 rounded-2xl p-4 space-y-1`}>
               <div className="flex items-center space-x-2 text-amber-800 text-xs sm:text-sm font-bold uppercase tracking-wider">
                 <Calendar className="w-4 h-4 text-amber-700 shrink-0" />
                 <span>{lang === 'zh' ? '聚會 / 活動日期' : 'Date'}</span>
@@ -247,44 +247,48 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             </div>
 
             {/* Time Box */}
-            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-1">
-              <div className="flex items-center space-x-2 text-stone-700 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                <Clock className="w-4 h-4 text-amber-700 shrink-0" />
-                <span>{lang === 'zh' ? '活動時間' : 'Time'}</span>
+            {time ? (
+              <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-1">
+                <div className="flex items-center space-x-2 text-stone-700 text-xs sm:text-sm font-bold uppercase tracking-wider">
+                  <Clock className="w-4 h-4 text-amber-700 shrink-0" />
+                  <span>{lang === 'zh' ? '活動時間' : 'Time'}</span>
+                </div>
+                <div className="text-lg sm:text-xl font-serif font-bold text-stone-900">
+                  {time}
+                </div>
+                <div className="text-xs text-stone-500">
+                  {recurrence}
+                </div>
               </div>
-              <div className="text-lg sm:text-xl font-serif font-bold text-stone-900">
-                {time}
-              </div>
-              <div className="text-xs text-stone-500">
-                {recurrence}
-              </div>
-            </div>
+            ) : null}
 
             {/* Location Box */}
-            <div className="sm:col-span-2 bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-stone-700 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                  <MapPin className="w-4 h-4 text-amber-700 shrink-0" />
-                  <span>{lang === 'zh' ? '活動地點 / 集合處' : 'Location / Meeting Point'}</span>
+            {location ? (
+              <div className="sm:col-span-2 bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2 text-stone-700 text-xs sm:text-sm font-bold uppercase tracking-wider">
+                    <MapPin className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>{lang === 'zh' ? '活動地點 / 集合處' : 'Location / Meeting Point'}</span>
+                  </div>
+
+                  {detectedMapUrl && (
+                    <a
+                      href={detectedMapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-900 bg-amber-100/70 hover:bg-amber-100 px-3 py-1 rounded-lg transition-colors border border-amber-300/60"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>{lang === 'zh' ? '開啟地圖導航' : 'Directions'}</span>
+                    </a>
+                  )}
                 </div>
 
-                {detectedMapUrl && (
-                  <a
-                    href={detectedMapUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-900 bg-amber-100/70 hover:bg-amber-100 px-3 py-1 rounded-lg transition-colors border border-amber-300/60"
-                  >
-                    <Navigation className="w-3.5 h-3.5" />
-                    <span>{lang === 'zh' ? '開啟地圖導航' : 'Directions'}</span>
-                  </a>
-                )}
+                <div className="text-base sm:text-lg font-medium text-stone-800">
+                  {location}
+                </div>
               </div>
-
-              <div className="text-base sm:text-lg font-medium text-stone-800">
-                {location}
-              </div>
-            </div>
+            ) : null}
 
             {/* Zoom Meeting Box if present */}
             {event.zoomId && (
@@ -313,7 +317,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
           </div>
 
           {/* Route Map & Visual Guide Section */}
-          {isHikingEvent ? (
+          {isRyanParkEvent ? (
             <RobertRyanHikingMapGuide
               lang={lang}
               onOpenZoomModal={() => setIsImageZoomed(true)}

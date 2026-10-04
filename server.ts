@@ -1299,6 +1299,27 @@ Strictly output your answer as a JSON object matching this schema:
 
   const DEFAULT_EVENTS_LIST = [
     {
+      id: "event-1791147767000",
+      category: "devotion",
+      title: "Shin Sheng Hiking Club - Coastal Hiking Event",
+      titleZh: "新生健行隊 - 海岸健行活動",
+      date: "2026-10-10",
+      time: "",
+      timeZh: "",
+      location: "",
+      locationZh: "",
+      description: "Registration: Please sign up in the Shin Sheng Hiking Club LINE group or WeChat group, or send a text message to Simon Ma at (310) 989-4528",
+      descriptionZh: "報名：請在新生健行隊的LINE 群 或 微信群， 或傳簡報給 Simon Ma （310） 989-4528",
+      recurrenceRuleZh: "特別聚會日程",
+      recurrenceRuleEn: "Special Gathering Schedule",
+      recurrenceType: "specific_date",
+      dayOfWeek: 6,
+      zoomId: "",
+      zoomPasscode: "",
+      isCustom: true,
+      order: 0
+    },
+    {
       id: "event-1788806584933",
       category: "devotion",
       title: "Canaan Shin Sheng Hiking Group",
