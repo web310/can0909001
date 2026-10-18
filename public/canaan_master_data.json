@@ -1,9 +1,9 @@
 {
   "app": "Canaan Shin Sheng Christian Church",
-  "exportedAt": "2026-10-11T08:11:03.811Z",
+  "exportedAt": "2026-10-18T22:16:18.048Z",
   "version": "2.0",
   "stats": {
-    "totalSermons": 10,
+    "totalSermons": 9,
     "totalEvents": 6,
     "totalPhotos": 56,
     "totalCategories": 9,
@@ -12,6 +12,54 @@
   },
   "data": {
     "sermons": [
+      {
+        "id": "sermon-1792361693013",
+        "title": "從許多到一個",
+        "titleZh": "從許多到一個",
+        "speaker": "郭易君 牧師",
+        "speakerZh": "郭易君 牧師",
+        "date": "2026-10-18",
+        "scripture": "Philippians 三:1-11",
+        "scriptureZh": "腓立比書三章1-11節",
+        "series": "Sunday Message",
+        "seriesZh": "主日證道",
+        "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. 郭今天 on \"從許多到一個\", reflecting on Philippians 三:1-11.",
+        "summaryZh": "在加南新生基督教會主日崇拜中，郭牧師今天證道傳講《從許多到一個》，分享經文「腓立比書三章1-11節」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+        "points": [],
+        "pointsZh": [],
+        "videoUrl": "",
+        "videoPasscode": "25226",
+        "showVideo": false,
+        "showAudio": false
+      },
+      {
+        "id": "sermon-1791709300951",
+        "title": "How to Open Our Spiritual Eyes",
+        "titleZh": "如何打開屬靈的眼睛",
+        "speaker": "Elder Wansi",
+        "speakerZh": "萬四長老",
+        "date": "2026-10-04",
+        "scripture": "Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18",
+        "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
+        "series": "Sunday Message",
+        "seriesZh": "主日證道",
+        "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wansi on \"How to Open Our Spiritual Eyes\", reflecting on Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18.",
+        "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享經文「以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+        "points": [
+          "一、打開信心的眼睛（以弗所書 1:17-18）",
+          "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
+          "三、打開盼望的眼睛（羅馬書 8:18）"
+        ],
+        "pointsZh": [
+          "一、打開信心的眼睛（以弗所書 1:17-18）",
+          "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
+          "三、打開盼望的眼睛（羅馬書 8:18）"
+        ],
+        "videoUrl": "",
+        "videoPasscode": "25226",
+        "showVideo": false,
+        "showAudio": false
+      },
       {
         "id": "sermon-1791706122891",
         "title": "主是蔔萄樹，我是枝子",
@@ -32,30 +80,33 @@
         ],
         "pointsZh": [],
         "videoUrl": "",
-        "videoPasscode": "25226"
+        "videoPasscode": "25226",
+        "audioUrl": "",
+        "showVideo": false,
+        "showAudio": false
       },
       {
         "id": "sermon-1791014936583",
         "title": "How to Open Our Spiritual Eyes",
         "titleZh": "如何打開屬靈的眼睛",
-        "speaker": "萬四長老",
+        "speaker": "Elder Wansi",
         "speakerZh": "萬四長老",
         "date": "2026-10-04",
-        "scripture": "Ephesians 1:17–18, John 17:3, Philippians 3:10, Romans 8:18",
+        "scripture": "Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18",
         "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
         "series": "Sunday Message",
         "seriesZh": "主日證道",
-        "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wan Si on 'How to Open Our Spiritual Eyes', based on Ephesians 1:17-18, John 17:3, Philippians 3:10, and Romans 8:18. Encouraging believers through God's word to see God's works with eyes of faith, love those around us with eyes of love, and look up to the Lord with eyes of hope.",
-        "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享以弗所書第一章等多處經文，勉勵全體弟兄姊妹：藉著神的話語打開屬靈的眼睛，不只看見眼前的環境，更能憑著信心看見神的作為、用愛看待身邊的人，並帶著盼望仰望主。",
+        "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wansi on \"How to Open Our Spiritual Eyes\", reflecting on Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18.",
+        "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享經文「以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
         "points": [
-          "1. Opening the Eyes of Faith (Ephesians 1:17-18)",
-          "2. Opening the Eyes of Love (John 17:3, Philippians 3:10)",
-          "3. Opening the Eyes of Hope (Romans 8:18)"
+          "一、打開信心的眼睛（以弗所書 1:17-18）",
+          "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
+          "三、打開盼望的眼睛（羅馬書 8:18）"
         ],
         "pointsZh": [
-          "一、打開信心的眼睛",
-          "二、打開愛的眼睛",
-          "三、打開盼望的眼睛"
+          "一、打開信心的眼睛（以弗所書 1:17-18）",
+          "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
+          "三、打開盼望的眼睛（羅馬書 8:18）"
         ],
         "videoUrl": "",
         "videoPasscode": "25226",
@@ -213,92 +264,6 @@
           "2. 挺身來關愛鄰舍 (使徒行傳 28:4-8)",
           "3. 主恩典是夠用的",
           "4. 專心尋求神引領"
-        ],
-        "videoPasscode": "25226",
-        "showVideo": false,
-        "showAudio": false
-      },
-      {
-        "id": "sermon-4",
-        "title": "Is Life Really Gone in the Blink of an Eye?",
-        "titleZh": "人生真的轉眼成空嗎？",
-        "speaker": "Rev. Meng Sulun",
-        "speakerZh": "孟蘇倫 牧師",
-        "date": "2026-08-09",
-        "scripture": "Ecclesiastes 1:2-3",
-        "scriptureZh": "傳道書第 1 章第 2-3 節",
-        "series": "Sunday Message",
-        "seriesZh": "主日證道",
-        "summary": "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
-        "summaryZh": "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』在日光之下尋找上帝賜予永恆的生命目的與公義冠冕。",
-        "points": [
-          "Vanity under the sun — Ecclesiastes 1:2-3",
-          "Everything beautiful in its time — Ecclesiastes 3:11",
-          "The whole duty of humanity — Ecclesiastes 12:13"
-        ],
-        "pointsZh": [
-          "日光之下的虛空 — 傳道書 1:2-3",
-          "神造萬物，各按其時成為美好 — 傳道書 3:11",
-          "人所當盡的分 — 傳道書 12:13"
-        ],
-        "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
-        "videoPasscode": "8s4y?JHX",
-        "showVideo": false,
-        "showAudio": false
-      },
-      {
-        "id": "sermon-5",
-        "title": "Those Who Are Well Do Not Need a Physician",
-        "titleZh": "康健的人用不著醫生",
-        "speaker": "Rev. Yijun Guo",
-        "speakerZh": "郭易君 牧師",
-        "date": "2026-08-02",
-        "scripture": "Luke 5:27-32",
-        "scriptureZh": "路加福音第 5 章第 27-32 節",
-        "series": "Sunday Worship",
-        "seriesZh": "主日崇拜",
-        "summary": "Jesus called Levi at the tax booth to 'Follow Me.' Levi left everything and hosted a feast. Jesus proclaimed that the healthy do not need a physician, but those who are sick; He came to call sinners to repentance.",
-        "summaryZh": "耶穌看見稅吏利未坐在稅關上，呼召他『你跟從我來』。利未就撇下所有的，起來跟從了耶穌，並在自己家裡大擺筵席。耶穌親自宣告：康健的人用不著醫生，有病的人才用得著；祂來本不是召義人悔改，乃是召罪人悔改。",
-        "points": [
-          "1. Sitting at the Tax Booth (5:27a)",
-          "2. Follow Me (5:27b)",
-          "3. Followed Jesus (5:28)",
-          "4. Hosted a Great Feast (5:29-30)",
-          "5. Physician of Souls (5:31)"
-        ],
-        "pointsZh": [
-          "一、坐在稅關上 （5:27上）",
-          "二、你跟從我來 （5:27下）",
-          "三、跟從了耶穌 （5:28）",
-          "四、他大擺筵席 （5:29-30）",
-          "五、靈魂的醫生 （5:31）"
-        ],
-        "videoPasscode": "25226",
-        "showVideo": false,
-        "showAudio": false
-      },
-      {
-        "id": "sermon-6",
-        "title": "The Lord Jesus Personally Teaches Service",
-        "titleZh": "主耶穌親自教導事奉",
-        "speaker": "Brother Shaoxin Li",
-        "speakerZh": "李紹信 弟兄",
-        "date": "2026-07-26",
-        "scripture": "Luke 10:1-12, 17-21",
-        "scriptureZh": "路加福音第 10 章第 1-12，17-21 節",
-        "series": "Sunday Worship",
-        "seriesZh": "主日崇拜",
-        "summary": "Hoping that we will better understand the service that pleases the Lord, learning from Jesus sending out the seventy disciples to minister in humility, obedience, and joy.",
-        "summaryZh": "盼望我們更加認識主喜悅的事奉，學習主耶穌差遣七十個門徒出去傳道的事奉原則，在謙卑、倚靠與聖靈的喜樂中，做主所喜悅的忠心僕人。",
-        "points": [
-          "1. The Lord Personally Sends Disciples (Luke 10:1-3)",
-          "2. Principles and Attitudes of Ministry (Luke 10:4-12)",
-          "3. Rejoice That Your Names Are Written in Heaven (Luke 10:17-21)"
-        ],
-        "pointsZh": [
-          "一、主親自差遣門徒 (路加福音 10:1-3)",
-          "二、事奉的原則與態度 (路加福音 10:4-12)",
-          "三、因名記在天上而歡喜 (路加福音 10:17-21)"
         ],
         "videoPasscode": "25226",
         "showVideo": false,
@@ -1499,21 +1464,17 @@
       }
     ],
     "bulletin": {
-      "serviceDate": "2026-10-11",
-      "presider": "鄭育青弟兄",
-      "speaker": "邱正一 弟兄",
-      "speakerEn": "Brother Zhengyi Qiu",
-      "sermonTitle": "主是蔔萄樹，我是枝子",
-      "sermonTitleEn": "主是蔔萄樹，我是枝子",
-      "sermonScripture": "約翰福音十五章4-5節,",
-      "sermonScriptureEn": "John 十五:4-5,",
-      "sermonSummary": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《主是蔔萄樹，我是枝子》，分享經文「約翰福音十五章4-5節,」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+      "serviceDate": "2026-10-18",
+      "presider": "鄭育青 弟兄",
+      "speaker": "郭易君 牧師",
+      "speakerEn": "郭易君 牧師",
+      "sermonTitle": "從許多到一個",
+      "sermonTitleEn": "從許多到一個",
+      "sermonScripture": "腓立比書三章1-11節",
+      "sermonScriptureEn": "Philippians 三:1-11",
+      "sermonSummary": "在加南新生基督教會主日崇拜中，郭牧師今天證道傳講《從許多到一個》，分享經文「腓立比書三章1-11節」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
       "sermonPointsZh": [],
-      "sermonPoints": [
-        "1. Opening the Eyes of Faith (Ephesians 1:17-18)",
-        "2. Opening the Eyes of Love (John 17:3, Philippians 3:10)",
-        "3. Opening the Eyes of Hope (Romans 8:18)"
-      ],
+      "sermonPoints": [],
       "memoryVerseZh": "所以，你們要去，使萬民作我的門徒，奉父、子、聖靈的名給他們施洗，凡我所吩咐你們的，都教訓他們遵守，我就常與你們同在，直到世界的末了。（馬太福音第 28 章第 19-20 節）",
       "memoryVerseEn": "Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, and teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age. (Matthew 28:19-20)",
       "verseReference": "馬太福音 28:19-20 / Matthew 28:19-20",
@@ -1577,70 +1538,70 @@
         }
       ],
       "announcements": [
-        "鄭育青弟兄 頌榮 三一頌 會眾 祝禱 張文辛長老 殿樂 會眾"
+        "鄭育青 弟兄 頌 榮 三一頌 會 眾 祝 禱 郭易君 牧師 殿 樂 會 眾"
       ],
       "updatedAt": "2026-09-27T15:20:00.000Z",
-      "memoryVerse": "這禮拜背誦經文在詩篇第１篇第２-３節（：這禮拜背誦經文在詩篇第１篇第２-３節）",
-      "memoryVerseRef": "：這禮拜背誦經文在詩篇第１篇第２-３節",
-      "weeklyReadingRange": "10/12 - 10/18",
+      "memoryVerse": "這禮拜背誦經文在馬太福音第6篇第21節【代禱與感恩】（：這禮拜背誦經文在馬太福音第6篇第21節）",
+      "memoryVerseRef": "：這禮拜背誦經文在馬太福音第6篇第21節",
+      "weeklyReadingRange": "10/19 - 10/25",
       "weeklyReadingSchedule": [
         {
-          "date": "10/12 (週一)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/19 (週一)",
+          "oldTestament": "以賽亞書",
+          "newTestament": "56-58 帖後 2"
         },
         {
-          "date": "10/13 (週二)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/20 (週二)",
+          "oldTestament": "以賽亞書",
+          "newTestament": "59-61 帖後 3"
         },
         {
-          "date": "10/14 (週三)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/21 (週三)",
+          "oldTestament": "以賽亞書",
+          "newTestament": "62-64 提前 1"
         },
         {
-          "date": "10/15 (週四)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/22 (週四)",
+          "oldTestament": "以賽亞書",
+          "newTestament": "65-66 提前 2"
         },
         {
-          "date": "10/16 (週五)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/23 (週五)",
+          "oldTestament": "耶利米書",
+          "newTestament": "1-2 提前 3"
         },
         {
-          "date": "10/17 (週六)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/24 (週六)",
+          "oldTestament": "耶利米書",
+          "newTestament": "3-5 提前 4"
         },
         {
-          "date": "10/18 (週日)",
-          "oldTestament": "",
-          "newTestament": ""
+          "date": "10/25 (週日)",
+          "oldTestament": "耶利米書",
+          "newTestament": "6-8 提前 5"
         }
       ],
       "prayerRequests": [
-        "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。"
+        "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。"
       ],
       "zoomPasscode": "25226",
       "videoUrl": "",
-      "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"主是蔔萄樹，我是枝子\", reflecting on John 十五:4-5,."
+      "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. 郭今天 on \"從許多到一個\", reflecting on Philippians 三:1-11."
     },
     "prayers": [
       {
-        "id": "bulletin-prayer-1-1791706122892",
+        "id": "bulletin-prayer-1-1792361693014",
         "author": "教會同工會",
         "authorZh": "教會同工會",
         "authorEn": "Church Board",
         "category": "general",
-        "title": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
-        "titleZh": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
-        "titleEn": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
-        "content": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentZh": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
-        "contentEn": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。 請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。 求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。. Please join together in prayer for God's grace and guidance.",
-        "date": "2026-10-11",
+        "title": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
+        "titleZh": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
+        "titleEn": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。",
+        "content": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentZh": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。。請全體弟兄姊妹同心在主前守望代求，經歷神豐盛恩典與引導。",
+        "contentEn": "為談妮傳道與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。請大家為外出、旅行或因事未能參加聚會的弟兄姊妹禱告，求主保守他們一路平安，出入蒙恩，身體健康，也看顧他們在外的一切安排，讓他們經歷主的同在，並在適當的時候平安回到我們當中，一同敬拜神。求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。. Please join together in prayer for God's grace and guidance.",
+        "date": "2026-10-18",
         "isConfidential": false,
         "prayedCount": 15
       },
