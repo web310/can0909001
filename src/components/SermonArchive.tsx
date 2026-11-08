@@ -157,20 +157,21 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   };
 
   const syncSermonList = (newList: Sermon[], msg?: string) => {
-    setSermons(newList);
+    const cappedList = newList.slice(0, 9);
+    setSermons(cappedList);
     try {
-      localStorage.setItem('canaan_sermons_data', JSON.stringify(newList));
+      localStorage.setItem('canaan_sermons_data', JSON.stringify(cappedList));
     } catch {}
 
     fetch('/api/sermons', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sermons: newList })
+      body: JSON.stringify({ sermons: cappedList })
     }).catch(e => console.warn("Backend sermon sync error:", e));
 
     window.dispatchEvent(
       new CustomEvent('canaan_sermons_updated', {
-        detail: { allSermons: newList }
+        detail: { allSermons: cappedList }
       })
     );
 
@@ -244,10 +245,10 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       setSelectedSermon(savedSermon);
     }
 
-    // Determine updated list reliably from current sermons state
-    const fullList = sermons.some(s => s.id === savedSermon.id || s.date === savedSermon.date)
+    // Determine updated list reliably from current sermons state (strictly max 9)
+    const fullList = (sermons.some(s => s.id === savedSermon.id || s.date === savedSermon.date)
       ? sermons.map(s => (s.id === savedSermon.id || s.date === savedSermon.date) ? { ...s, ...savedSermon, id: s.id } : s)
-      : [savedSermon, ...sermons];
+      : [savedSermon, ...sermons]).slice(0, 9);
 
     try {
       localStorage.setItem('canaan_sermons_data', JSON.stringify(fullList));
@@ -434,23 +435,30 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
 
           {/* Search Box & Admin Add Sermon Action */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto">
+            {/* GitHub Sermons Sync Button - Direct access for updating Sunday sermons */}
+            <button
+              type="button"
+              onClick={() => setIsGitHubModalOpen(true)}
+              className="bg-slate-800/90 hover:bg-slate-750 text-amber-400 hover:text-amber-300 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-md border border-amber-500/40 hover:border-amber-400 transition-all shrink-0 cursor-pointer"
+              title={lang === 'zh' ? '同步主日講道最新 9 筆記錄至 GitHub 倉庫 (canaannewlife/canaan-shin-sheng-church)' : 'Sync Sunday Sermons Archive to GitHub Repo'}
+            >
+              <Github className="w-4 h-4 text-amber-400" />
+              <span>{lang === 'zh' ? '講道 GitHub 同步' : 'Sync Sermons to GitHub'}</span>
+            </button>
+
             {adminEmail && (
               <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onOpenGlobalSync) {
-                      onOpenGlobalSync();
-                    } else {
-                      setIsGitHubModalOpen(true);
-                    }
-                  }}
-                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-all shrink-0 border border-amber-400 cursor-pointer"
-                  title={lang === 'zh' ? '管理員專屬：一鍵將講道、相片、週報與所有資料同步至 GitHub' : 'Admin: Sync All Church Data to GitHub'}
-                >
-                  <Github className="w-4 h-4 text-slate-950" />
-                  <span>{lang === 'zh' ? '🚀 一鍵 GitHub 同步' : '🚀 Sync to GitHub'}</span>
-                </button>
+                {onOpenGlobalSync && (
+                  <button
+                    type="button"
+                    onClick={onOpenGlobalSync}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow-lg transition-all shrink-0 border border-amber-400 cursor-pointer"
+                    title={lang === 'zh' ? '管理員專屬：一鍵將講道、相片、週報與所有資料同步至 GitHub' : 'Admin: Sync All Church Data to GitHub'}
+                  >
+                    <Github className="w-4 h-4 text-slate-950" />
+                    <span>{lang === 'zh' ? '🚀 全站 GitHub 同步' : '🚀 Sync All to GitHub'}</span>
+                  </button>
+                )}
 
                 <button
                   type="button"

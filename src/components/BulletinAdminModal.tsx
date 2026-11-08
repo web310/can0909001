@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Language, Sermon } from '../types';
 import { SERMON_CONTENT_LIST, WEEKLY_BIBLE_READING } from '../data/churchData';
+import { INITIAL_BULLETIN_DATA } from '../data/bulletinData';
+import { parseBulletinFromText, translateTextWithAI, translateScriptureToEn, formatScriptureRefZh, BIBLE_VERSES_MAP } from '../utils/bulletinParser';
 import { SermonEditModal } from './SermonEditModal';
 import {
   Mail,
@@ -58,66 +60,28 @@ interface EditableBulletinForm {
 }
 
 const DEFAULT_OFFICIAL_BULLETIN: EditableBulletinForm = {
-  serviceDate: "2026-09-06",
-  presider: "鄭育青 弟兄",
-  speaker: "ITO 弟兄",
-  speakerEn: "Brother Ito",
-  sermonTitle: "安提阿教會",
-  sermonTitleEn: "The Antioch Church",
-  sermonScripture: "使徒行傳第 11 章第 19-40 節，第 13 章第 1-4 節",
-  sermonScriptureEn: "Acts 11:19-40, 13:1-4",
-  sermonSummary: "加南新生基督教會主日崇拜，ITO 弟兄透過使徒行傳第 11 章第 19-40 節與第 13 章第 1-4 節傳講《安提阿教會》，勉勵弟兄姊妹在患難中忠心傳揚福音、緊跟隨基督、顧念神國度的需要，並同心敬拜與迫切禱告，立志成為大使命的使者與活出基督之愛的人。",
-  sermonSummaryEn: "At Canaan Shin Sheng Christian Church Sunday Service, Brother Ito preached on 'The Antioch Church' from Acts 11:19-40 and Acts 13:1-4, urging believers to proclaim the Gospel in trials, follow Christ, meet kingdom needs, and pray in unity.",
-  sermonPointsZh: [
-    "1. 安提阿教會被神使用的特點",
-    "1) 一群患難中傳道的人",
-    "2) 一群跟隨基督的人",
-    "3) 顧念神國度的需要",
-    "4) 同心合意敬拜及禱告的教會",
-    "2. 立志成為安提阿教會",
-    "1) 立志成為一個大使命的使者",
-    "2) 立志成為活出愛的人",
-    "3) 立志與弟兄姐妹一起迫切禱告"
-  ],
-  sermonPoints: [
-    "1. Characteristics of the Antioch Church Used by God",
-    "1) People preaching in affliction",
-    "2) People following Christ faithfully",
-    "3) Caring for the needs of God's Kingdom",
-    "4) A church worshiping and praying in one accord",
-    "2. Resolving to Become the Antioch Church",
-    "1) Becoming ambassadors of the Great Commission",
-    "2) Living out Christ's love",
-    "3) Praying earnestly together with brothers and sisters"
-  ],
-  memoryVerse: "所以，你們要去，使萬民作我的門徒，奉父、子、聖靈的名給他們施洗，凡我所吩咐你們的，都教訓他們遵守，我就常與你們同在，直到世界的末了。（馬太福音第 28 章第 19-20 節）",
-  memoryVerseRef: "馬太福音第 28 章第 19-20 節",
-  weeklyReadingRange: "9/7 - 9/13",
-  weeklyReadingSchedule: [
-    { date: "9/7 (週一)", oldTestament: "箴言 1-2", newTestament: "哥林多前書 16" },
-    { date: "9/8 (週二)", oldTestament: "箴言 3-5", newTestament: "哥林多後書 1" },
-    { date: "9/9 (週三)", oldTestament: "箴言 6-7", newTestament: "哥林多後書 2" },
-    { date: "9/10 (週四)", oldTestament: "箴言 8-9", newTestament: "哥林多後書 3" },
-    { date: "9/11 (週五)", oldTestament: "箴言 10-12", newTestament: "哥林多後書 4" },
-    { date: "9/12 (週六)", oldTestament: "箴言 13-15", newTestament: "哥林多後書 5" },
-    { date: "9/13 (週日)", oldTestament: "箴言 16-18", newTestament: "哥林多後書 6" }
-  ],
-  prayerRequests: [
-    "為主日學及會友靈命成長禱告，求主賜福主日學事工，賜給講師智慧、愛心與力量，忠心傳講神的話語；求主使弟兄姊妹渴慕真理，在學習中生命得著造就與更新，在信仰與生活上不斷成長，更加成熟豐盛。",
-    "今日是 C3 教會在本教會聚會的最後一個主日，求主看顧保守他們未來的道路，引領前進的方向與服事，賜下平安、智慧與力量，使他們在新道路上繼續經歷主的恩典與帶領。",
-    "求主繼續保守談妮姊妹術後恢復，保護傷口，遠離發炎及肌肉、神經的突發狀況，賜她平安、力量與忍耐，天天經歷主的醫治與恩典，也藉著家人的陪伴與禱告堅固她。",
-    "為蔡長老、鄭長老及 Andrew 禱告，求主保守他們的身體健康，賜下力量與平安，保守身心靈蒙主看顧。",
-    "為彥勳弟兄目前前往中國及台灣，並處理母親相關事務禱告，求主一路保守平安，賜下智慧與力量，帶領各項事務順利；也為李艾姊即將外出旅遊禱告，求主保守旅途平安，一路看顧。"
-  ],
-  announcements: [
-    "感謝 ITO 弟兄帶給我們「安提阿教會」的信息，提醒我們要在患難中忠心傳福音，跟隨基督，顧念神國度的需要，並同心敬拜、迫切禱告。求主幫助我們立志成為大使命的使者，活出基督的愛，與弟兄姐妹同心禱告。",
-    "下週將由孟蘇倫牧師前來證道，請弟兄姊妹代禱，求主賜福牧師的服事，賜下智慧與能力，使他忠心傳講神的話語，也預備我們的心，明白並遵行主的心意。",
-    "週間禱告會為每個禮拜四晚上八點，有線上禱告會(Zoom 的ID 及 Passcode 和禮拜天的一樣)。福音效果需要禱告大能，請大家踴躍參加。",
-    "9/12 (週六) 將舉行教會健行活動，相關消息請參閱 WeChat「新生健行隊」，或洽 Simon。",
-    "背誦經文：本週背誦經文在馬太福音第 28 章第 19-20 節。"
-  ],
-  zoomPasscode: "25226",
-  videoUrl: ""
+  serviceDate: INITIAL_BULLETIN_DATA.serviceDate || new Date().toISOString().slice(0, 10),
+  presider: INITIAL_BULLETIN_DATA.presider || "鄭育青 弟兄",
+  speaker: INITIAL_BULLETIN_DATA.speaker || "萬四長老",
+  speakerEn: INITIAL_BULLETIN_DATA.speakerEn || "Elder Wansi",
+  sermonTitle: INITIAL_BULLETIN_DATA.sermonTitle || "",
+  sermonTitleEn: INITIAL_BULLETIN_DATA.sermonTitleEn || "",
+  sermonScripture: INITIAL_BULLETIN_DATA.sermonScripture || "",
+  sermonScriptureEn: INITIAL_BULLETIN_DATA.sermonScriptureEn || "",
+  sermonSummary: INITIAL_BULLETIN_DATA.sermonSummary || "",
+  sermonSummaryEn: INITIAL_BULLETIN_DATA.sermonSummaryEn || "",
+  sermonPointsZh: Array.isArray(INITIAL_BULLETIN_DATA.sermonPointsZh) ? INITIAL_BULLETIN_DATA.sermonPointsZh : [],
+  sermonPoints: Array.isArray(INITIAL_BULLETIN_DATA.sermonPoints) ? INITIAL_BULLETIN_DATA.sermonPoints : [],
+  memoryVerse: INITIAL_BULLETIN_DATA.memoryVerse || INITIAL_BULLETIN_DATA.memoryVerseZh || "",
+  memoryVerseRef: INITIAL_BULLETIN_DATA.memoryVerseRef || INITIAL_BULLETIN_DATA.verseReference || "",
+  weeklyReadingRange: INITIAL_BULLETIN_DATA.weeklyReadingRange || INITIAL_BULLETIN_DATA.readingRange || "",
+  weeklyReadingSchedule: Array.isArray(INITIAL_BULLETIN_DATA.weeklyReadingSchedule) && INITIAL_BULLETIN_DATA.weeklyReadingSchedule.length > 0
+    ? INITIAL_BULLETIN_DATA.weeklyReadingSchedule
+    : (Array.isArray(INITIAL_BULLETIN_DATA.schedule) ? INITIAL_BULLETIN_DATA.schedule : []),
+  prayerRequests: Array.isArray(INITIAL_BULLETIN_DATA.prayerRequests) ? INITIAL_BULLETIN_DATA.prayerRequests : [],
+  announcements: Array.isArray(INITIAL_BULLETIN_DATA.announcements) ? INITIAL_BULLETIN_DATA.announcements : [],
+  zoomPasscode: INITIAL_BULLETIN_DATA.zoomPasscode || "25226",
+  videoUrl: INITIAL_BULLETIN_DATA.videoUrl || ""
 };
 
 export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
@@ -177,11 +141,11 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
     try {
       const currentSermons = SERMON_CONTENT_LIST;
 
-      // Prepend or replace if same date or same id
+      // Prepend or replace if same date or same id (ensure strictly one sermon per Sunday date)
       const filtered = currentSermons.filter(
-        s => s.id !== sermonToSave.id && !(s.date === sermonToSave.date && s.titleZh === sermonToSave.titleZh)
+        s => s.id !== sermonToSave.id && s.date !== sermonToSave.date
       );
-      const updatedSermons = [sermonToSave, ...filtered];
+      const updatedSermons = [sermonToSave, ...filtered].slice(0, 9);
 
       // Dispatch global events for instant reactive UI updates
       window.dispatchEvent(
@@ -209,36 +173,88 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
     if (rawExtractedText) {
       setExtractedRawText(rawExtractedText);
     }
+
+    const titleZh = rawBulletin.sermonTitle || "";
+    let titleEn = rawBulletin.sermonTitleEn || "";
+
+    const speakerZh = rawBulletin.speaker || "";
+    let spEn = rawBulletin.speakerEn || "";
+
+    const scZh = rawBulletin.sermonScripture || "";
+    let scEn = rawBulletin.sermonScriptureEn || "";
+    if (scZh && (!scEn || /[\u4e00-\u9fa5]/.test(scEn))) {
+      scEn = translateScriptureToEn(scZh);
+    }
+
+    let memRef = rawBulletin.memoryVerseRef || "";
+    let memVerse = rawBulletin.memoryVerse || "";
+    if (memRef) {
+      memRef = formatScriptureRefZh(memRef);
+      if (!memVerse || memVerse.startsWith("：") || memVerse.startsWith(":") || memVerse.includes("（：")) {
+        if (BIBLE_VERSES_MAP[memRef]) {
+          memVerse = `${BIBLE_VERSES_MAP[memRef]}（${memRef}）`;
+        }
+      }
+    }
+
+    // Strictly populate from the newly uploaded document's extracted fields - NEVER inherit stale data from previous bulletin!
     const updatedForm: EditableBulletinForm = {
-      serviceDate: rawBulletin.serviceDate || DEFAULT_OFFICIAL_BULLETIN.serviceDate,
-      presider: rawBulletin.presider || DEFAULT_OFFICIAL_BULLETIN.presider,
-      speaker: rawBulletin.speaker || DEFAULT_OFFICIAL_BULLETIN.speaker,
-      speakerEn: rawBulletin.speakerEn || DEFAULT_OFFICIAL_BULLETIN.speakerEn,
-      sermonTitle: rawBulletin.sermonTitle || DEFAULT_OFFICIAL_BULLETIN.sermonTitle,
-      sermonTitleEn: rawBulletin.sermonTitleEn || DEFAULT_OFFICIAL_BULLETIN.sermonTitleEn,
-      sermonScripture: rawBulletin.sermonScripture || DEFAULT_OFFICIAL_BULLETIN.sermonScripture,
-      sermonScriptureEn: rawBulletin.sermonScriptureEn || DEFAULT_OFFICIAL_BULLETIN.sermonScriptureEn,
-      sermonSummary: rawBulletin.sermonSummary || DEFAULT_OFFICIAL_BULLETIN.sermonSummary,
-      sermonSummaryEn: rawBulletin.sermonSummaryEn || DEFAULT_OFFICIAL_BULLETIN.sermonSummaryEn,
-      sermonPointsZh: Array.isArray(rawBulletin.sermonPointsZh) && rawBulletin.sermonPointsZh.length > 0 ? rawBulletin.sermonPointsZh : DEFAULT_OFFICIAL_BULLETIN.sermonPointsZh,
-      sermonPoints: Array.isArray(rawBulletin.sermonPoints) && rawBulletin.sermonPoints.length > 0 ? rawBulletin.sermonPoints : DEFAULT_OFFICIAL_BULLETIN.sermonPoints,
-      memoryVerse: rawBulletin.memoryVerse || DEFAULT_OFFICIAL_BULLETIN.memoryVerse,
-      memoryVerseRef: rawBulletin.memoryVerseRef || DEFAULT_OFFICIAL_BULLETIN.memoryVerseRef,
-      weeklyReadingRange: rawBulletin.weeklyReadingRange || DEFAULT_OFFICIAL_BULLETIN.weeklyReadingRange,
-      weeklyReadingSchedule: Array.isArray(rawBulletin.weeklyReadingSchedule) && rawBulletin.weeklyReadingSchedule.length > 0 ? rawBulletin.weeklyReadingSchedule : DEFAULT_OFFICIAL_BULLETIN.weeklyReadingSchedule,
-      prayerRequests: Array.isArray(rawBulletin.prayerRequests) && rawBulletin.prayerRequests.length > 0 ? rawBulletin.prayerRequests : DEFAULT_OFFICIAL_BULLETIN.prayerRequests,
-      announcements: Array.isArray(rawBulletin.announcements) && rawBulletin.announcements.length > 0 ? rawBulletin.announcements : DEFAULT_OFFICIAL_BULLETIN.announcements,
-      zoomPasscode: rawBulletin.zoomPasscode || DEFAULT_OFFICIAL_BULLETIN.zoomPasscode,
-      videoUrl: rawBulletin.videoUrl || ""
+      serviceDate: rawBulletin.serviceDate || new Date().toISOString().slice(0, 10),
+      presider: rawBulletin.presider || "鄭育青 弟兄",
+      speaker: speakerZh,
+      speakerEn: spEn,
+      sermonTitle: titleZh,
+      sermonTitleEn: titleEn,
+      sermonScripture: scZh,
+      sermonScriptureEn: scEn,
+      sermonSummary: rawBulletin.sermonSummary || (
+        titleZh && scZh
+          ? `在加南新生基督教會主日崇拜中，${speakerZh || '講員'}證道傳講《${titleZh}》，分享經文「${scZh}」，勸勉弟兄姊妹同心扎根信仰、數算主恩。`
+          : ""
+      ),
+      sermonSummaryEn: rawBulletin.sermonSummaryEn || (
+        (titleEn || titleZh) && (scEn || scZh)
+          ? `Sunday sermon delivered at Canaan Shin Sheng Christian Church by ${spEn || speakerZh || 'Speaker'} on "${titleEn || titleZh}", reflecting on ${scEn || scZh}.`
+          : ""
+      ),
+      sermonPointsZh: Array.isArray(rawBulletin.sermonPointsZh) ? rawBulletin.sermonPointsZh : [],
+      sermonPoints: Array.isArray(rawBulletin.sermonPoints) ? rawBulletin.sermonPoints : (rawBulletin.sermonPointsZh || []),
+      memoryVerse: memVerse,
+      memoryVerseRef: memRef,
+      weeklyReadingRange: rawBulletin.weeklyReadingRange || "",
+      weeklyReadingSchedule: Array.isArray(rawBulletin.weeklyReadingSchedule) ? rawBulletin.weeklyReadingSchedule : [],
+      prayerRequests: Array.isArray(rawBulletin.prayerRequests) && rawBulletin.prayerRequests.length > 0 
+        ? rawBulletin.prayerRequests 
+        : [],
+      announcements: Array.isArray(rawBulletin.announcements) && rawBulletin.announcements.length > 0 
+        ? rawBulletin.announcements 
+        : [],
+      zoomPasscode: rawBulletin.zoomPasscode || "25226",
+      videoUrl: rawBulletin.videoUrl !== undefined ? rawBulletin.videoUrl : ""
     };
 
     setFormData(updatedForm);
     setActiveTab('edit-form');
-    if (isFallback) {
-      setSuccessMsg(lang === 'zh' ? '✅ 已成功載入教會最新主日資訊（8/16 ITO傳道《永不失望的人生》），請在下方確認或微調後點擊「發布更新」。' : 'Loaded latest official bulletin data. Please review below and click Publish.');
-    } else {
-      setSuccessMsg(lang === 'zh' ? '✅ AI 與智慧引擎已精準解析週報資訊！請在下方檢查確認各欄位，確認無誤後點擊「發布更新」。' : 'AI extracted bulletin data! Please review and confirm below.');
+    
+    // Async background AI translation trigger if English translations are missing
+    if (titleZh && (!titleEn || titleEn === titleZh || /[\u4e00-\u9fa5]/.test(titleEn))) {
+      translateTextWithAI(titleZh, 'title').then(trans => {
+        if (trans) setFormData(prev => ({ ...prev, sermonTitleEn: trans }));
+      });
     }
+    if (speakerZh && (!spEn || /[\u4e00-\u9fa5]/.test(spEn))) {
+      translateTextWithAI(speakerZh, 'speaker').then(trans => {
+        if (trans) setFormData(prev => ({ ...prev, speakerEn: trans }));
+      });
+    }
+
+    const titleDisp = updatedForm.sermonTitle ? `《${updatedForm.sermonTitle}》` : '';
+    const scriptureDisp = updatedForm.sermonScripture ? `（經文：${updatedForm.sermonScripture}）` : '';
+    setSuccessMsg(
+      lang === 'zh'
+        ? `✅ 已成功從上傳檔案解析出主日內容${titleDisp}${scriptureDisp}！請在下方檢查確認各欄位，確認無誤後點擊「發布更新」。`
+        : `Successfully extracted bulletin data from uploaded file${titleDisp ? ` "${updatedForm.sermonTitle}"` : ''}! Please review below and click Publish.`
+    );
   };
 
   const handleProcessFile = async () => {
@@ -254,13 +270,18 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
       setSuccessMsg(null);
 
       try {
+        const storedGeminiKey = localStorage.getItem('canaan_gemini_api_key') || undefined;
         const res = await fetch('/api/process-bulletin-file', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(storedGeminiKey ? { 'x-gemini-key': storedGeminiKey } : {})
+          },
           body: JSON.stringify({
             fileText: rawText,
             filename: "pasted-bulletin.txt",
-            emailSubject: "website update"
+            emailSubject: "website update",
+            geminiApiKey: storedGeminiKey
           })
         });
         const data = await res.json();
@@ -270,12 +291,14 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
         if (data.success && data.data) {
           applyParsedDataToForm(data.data, data.isFallback, data.extractedRawText || rawText);
         } else {
-          setErrorMsg(data.error || (lang === 'zh' ? '解析週報文字失敗，請手動填寫或重試。' : 'Failed to parse bulletin text.'));
+          const clientParsed = parseBulletinFromText(rawText);
+          applyParsedDataToForm(clientParsed, false, rawText);
         }
       } catch (err: any) {
         setLoading(false);
         setLoadingStep('');
-        setErrorMsg(err.message || (lang === 'zh' ? '解析週報文字發生錯誤' : 'Error processing bulletin text.'));
+        const clientParsed = parseBulletinFromText(rawText);
+        applyParsedDataToForm(clientParsed, false, rawText);
       }
       return;
     }
@@ -300,20 +323,25 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
         reader.readAsText(selectedFile);
         reader.onload = async () => {
           const textContent = reader.result as string;
-          setLoadingStep(lang === 'zh' ? 'Gemini AI 正在智能解析 TXT 週報內容...' : 'AI parsing TXT bulletin content...');
+          setLoadingStep(lang === 'zh' ? '正在智能解析 TXT 週報內容...' : 'Parsing TXT bulletin content...');
 
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 60000);
 
           try {
+            const storedGeminiKey = localStorage.getItem('canaan_gemini_api_key') || undefined;
             const res = await fetch('/api/process-bulletin-file', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 
+                'Content-Type': 'application/json',
+                ...(storedGeminiKey ? { 'x-gemini-key': storedGeminiKey } : {})
+              },
               body: JSON.stringify({
                 fileText: textContent,
                 filename: selectedFile.name,
                 fileType: selectedFile.type,
-                emailSubject: "website update"
+                emailSubject: "website update",
+                geminiApiKey: storedGeminiKey
               }),
               signal: controller.signal
             });
@@ -326,13 +354,15 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
             if (data.success && data.data) {
               applyParsedDataToForm(data.data, data.isFallback, data.extractedRawText || textContent);
             } else {
-              setErrorMsg(data.error || (lang === 'zh' ? '解析 TXT 檔案失敗，請手動填寫或重試。' : 'Failed to parse TXT file.'));
+              const clientParsed = parseBulletinFromText(textContent);
+              applyParsedDataToForm(clientParsed, false, textContent);
             }
           } catch (fetchErr: any) {
             clearTimeout(timeoutId);
             setLoading(false);
             setLoadingStep('');
-            setErrorMsg(fetchErr.message || (lang === 'zh' ? '解析 TXT 發生錯誤' : 'Error processing TXT file.'));
+            const clientParsed = parseBulletinFromText(textContent);
+            applyParsedDataToForm(clientParsed, false, textContent);
           }
         };
         reader.onerror = () => {
@@ -353,15 +383,20 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
           const timeoutId = setTimeout(() => controller.abort(), 60000);
 
           try {
+            const storedGeminiKey = localStorage.getItem('canaan_gemini_api_key') || undefined;
             const res = await fetch('/api/process-bulletin-file', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 
+                'Content-Type': 'application/json',
+                ...(storedGeminiKey ? { 'x-gemini-key': storedGeminiKey } : {})
+              },
               body: JSON.stringify({
                 fileBase64: base64Data,
                 pdfBase64: base64Data,
                 filename: selectedFile.name,
                 fileType: selectedFile.type,
-                emailSubject: "website update"
+                emailSubject: "website update",
+                geminiApiKey: storedGeminiKey
               }),
               signal: controller.signal
             });
@@ -730,7 +765,7 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
                     className="text-xs font-semibold text-rose-700 hover:text-rose-900 inline-flex items-center space-x-1.5 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    <span>{lang === 'zh' ? '重設為官方預設週報與講道 (2026-08-16)' : 'Reset to official defaults'}</span>
+                    <span>{lang === 'zh' ? '重設為最新主日週報與講道' : 'Reset to latest Sunday defaults'}</span>
                   </button>
                 </div>
               </div>

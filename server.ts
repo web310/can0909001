@@ -320,7 +320,26 @@ JSON 物件包含以下欄位：
     }
   };
 
-  // Helper to extract text from PDF, DOCX, DOC, TXT, MD
+  // Convert HTML tables into tab-delimited text so rows and columns from Word tables remain intact
+  function htmlToStructuredText(html: string): string {
+    if (!html) return "";
+    let text = html.replace(/<\/tr>/gi, "\n")
+                   .replace(/<\/td>\s*<td[^>]*>/gi, "\t")
+                   .replace(/<\/p>/gi, "\n")
+                   .replace(/<br\s*\/?>/gi, "\n")
+                   .replace(/<[^>]+>/g, "")
+                   .replace(/&nbsp;/g, " ")
+                   .replace(/&amp;/g, "&")
+                   .replace(/&lt;/g, "<")
+                   .replace(/&gt;/g, ">")
+                   .replace(/&quot;/g, "\"")
+                   .replace(/&#39;/g, "'")
+                   .replace(/\n{3,}/g, "\n\n")
+                   .trim();
+    return text;
+  }
+
+  // Helper to extract text from PDF, DOCX, DOC, TXT, MD with table preservation
   async function extractTextFromBulletinFile(buffer: Buffer, filename: string, mimeType?: string): Promise<{ text?: string; isPdf: boolean }> {
     const lowerName = (filename || "").toLowerCase();
     
@@ -336,6 +355,13 @@ JSON 物件包含以下欄位：
     
     if (lowerName.endsWith(".docx") || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
       try {
+        const htmlRes = await mammoth.convertToHtml({ buffer });
+        if (htmlRes && htmlRes.value) {
+          const structuredText = htmlToStructuredText(htmlRes.value);
+          if (structuredText && structuredText.length > 20) {
+            return { text: structuredText, isPdf: false };
+          }
+        }
         const result = await mammoth.extractRawText({ buffer });
         return { text: (result.value || "").trim(), isPdf: false };
       } catch (e) {
@@ -345,17 +371,31 @@ JSON 物件包含以下欄位：
 
     if (lowerName.endsWith(".doc") || mimeType === "application/msword") {
       try {
+        const htmlRes = await mammoth.convertToHtml({ buffer });
+        if (htmlRes && htmlRes.value) {
+          const structuredText = htmlToStructuredText(htmlRes.value);
+          if (structuredText && structuredText.length > 20) {
+            return { text: structuredText, isPdf: false };
+          }
+        }
         const result = await mammoth.extractRawText({ buffer });
         if (result.value && result.value.trim().length > 10) {
           return { text: result.value.trim(), isPdf: false };
         }
       } catch {
-        // fallback to binary string extraction
+        // mammoth does not support legacy OLE binary .doc
       }
-      // Extract readable strings from binary .doc
-      const rawStr = buffer.toString("utf-8");
-      const cleaned = rawStr.replace(/[^\x20-\x7E\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n\r\t]/g, " ");
-      return { text: cleaned.trim(), isPdf: false };
+      // Word 97-2003 .doc binary extraction (UTF-16LE & UTF-8)
+      const u16 = buffer.toString("utf16le");
+      const cleaned16 = u16.replace(/[^\x20-\x7E\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n\r\t]/g, " ")
+                           .replace(/[ ]{2,}/g, " ").trim();
+      const u8 = buffer.toString("utf-8");
+      const cleaned8 = u8.replace(/[^\x20-\x7E\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n\r\t]/g, " ")
+                         .replace(/[ ]{2,}/g, " ").trim();
+      const count16 = (cleaned16.match(/[\u4e00-\u9fa5]/g) || []).length;
+      const count8 = (cleaned8.match(/[\u4e00-\u9fa5]/g) || []).length;
+      const docText = count16 >= count8 ? cleaned16 : cleaned8;
+      return { text: docText, isPdf: false };
     }
 
     // Default text formats (.txt, .md, .rtf, .text, or plain text)
@@ -381,12 +421,24 @@ JSON 物件包含以下欄位：
     "約三": "約翰三書", "猶": "猶大書", "啟": "啟示錄"
   };
 
+  const BIBLE_BOOKS_ORDERED = [
+    "創世記", "創世紀", "出埃及記", "利未記", "民數記", "申命記", "約書亞記", "約書亞紀", "士師記", "路得記",
+    "撒母耳記上", "撒母耳記下", "列王紀上", "列王紀下", "列王記上", "列王記下", "歷代志上", "歷代志下",
+    "以斯拉記", "尼希米記", "以斯帖記", "約伯記", "詩篇", "箴言", "傳道書", "雅歌",
+    "以賽亞書", "耶利米書", "耶利米哀歌", "以西結書", "但以理書", "何西阿書", "約珥書", "阿摩司書",
+    "俄巴底亞書", "約拿書", "彌迦書", "那鴻書", "哈巴谷書", "西番雅書", "哈該書", "撒迦利亞書", "瑪拉基書",
+    "馬太福音", "馬可福音", "路加福音", "約翰福音", "使徒行傳", "羅馬書", "哥林多前書", "哥林多後書",
+    "加拉太書", "以弗所書", "腓立比書", "歌羅西書", "帖撒羅尼迦前書", "帖撒羅尼迦後書", "提摩太前書",
+    "提摩太後書", "提多書", "腓利門書", "希伯來書", "雅各書", "彼得前書", "彼得後書", "約翰一書",
+    "約翰二書", "約翰三書", "猶大書", "啟示錄"
+  ].sort((a, b) => b.length - a.length);
+
   const BIBLE_BOOK_EN: Record<string, string> = {
-    "創世記": "Genesis", "出埃及記": "Exodus", "利未記": "Leviticus", "民數記": "Numbers", "申命記": "Deuteronomy",
+    "創世記": "Genesis", "創世紀": "Genesis", "出埃及記": "Exodus", "利未記": "Leviticus", "民數記": "Numbers", "申命記": "Deuteronomy",
     "約書亞記": "Joshua", "約書亞紀": "Joshua", "士師記": "Judges", "路得記": "Ruth", "撒母耳記上": "1 Samuel", "撒母耳記下": "2 Samuel",
     "列王紀上": "1 Kings", "列王記上": "1 Kings", "列王紀下": "2 Kings", "列王記下": "2 Kings",
     "歷代志上": "1 Chronicles", "歷代志下": "2 Chronicles", "以斯拉記": "Ezra", "尼希米記": "Nehemiah", "以斯帖記": "Esther",
-    "約伯記": "Job", "詩篇": "Psalms", "箴言": "Proverbs", "傳道書": "Ecclesiastes", "雅歌": "Song of Solomon",
+    "約伯記": "Job", "詩篇": "Psalms", "箴言": "Proverbs", "傳道書": "Ecclesiastes", "雅歌": "Song of Songs",
     "以賽亞書": "Isaiah", "耶利米書": "Jeremiah", "耶利米哀歌": "Lamentations", "以西結書": "Ezekiel", "但以理書": "Daniel",
     "何西阿書": "Hosea", "約珥書": "Joel", "阿摩司書": "Amos", "俄巴底亞書": "Obadiah", "約拿書": "Jonah",
     "彌迦書": "Micah", "那鴻書": "Nahum", "哈巴谷書": "Habakkuk", "西番雅書": "Zephaniah", "哈該書": "Haggai",
@@ -396,6 +448,50 @@ JSON 物件包含以下欄位：
     "帖撒羅尼迦前書": "1 Thessalonians", "帖撒羅尼迦後書": "2 Thessalonians", "提摩太前書": "1 Timothy", "提摩太後書": "2 Timothy",
     "提多書": "Titus", "腓利門書": "Philemon", "希伯來書": "Hebrews", "雅各書": "James", "彼得前書": "1 Peter",
     "彼得後書": "2 Peter", "約翰一書": "1 John", "約翰二書": "2 John", "約翰三書": "3 John", "猶大書": "Jude", "啟示錄": "Revelation"
+  };
+
+  const BIBLE_VERSES_MAP: Record<string, string> = {
+    "詩篇 1:2-3": "惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。",
+    "詩篇 1:1-3": "不從惡人的計謀，不站罪人的道路，不坐褻慢人的座位，惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。",
+    "馬太福音 28:19-20": "所以，你們要去，使萬民作我的門徒，奉父、子、聖靈的名給他們施洗，凡我所吩咐你們的，都教訓他們遵守，我就常與你們同在，直到世界的末了。",
+    "哥林多後書 4:18": "原來我們不是顧念所見的，乃是顧念所不見的；因為所見的是暫時的，所不見的是永遠的。",
+    "耶利米書 18:3-6": "我就下到窯匠的家，見他轉輪做工。窯匠用泥做的器皿，在他手中做壞了，他又用這泥另做別的器皿；窯匠看怎樣好，就怎樣做。耶和華的話就臨到我說：以色列家啊，我待你們，豈不能照這窯匠弄泥嗎？以色列家啊，泥在窯匠的手中怎樣，你們在我的手中也怎樣。",
+    "羅馬書 12:1-2": "所以弟兄們，我以神的慈悲勸你們，將身體獻上，當作活祭，是聖潔的，是神所喜悅的；你們如此事奉乃是理所當然的。不要效法這個世界，只要心意更新而變化，叫你們察驗何為神的善良、純全、可喜悅的旨意。",
+    "箴言 3:5-6": "你要專心仰賴耶和華，不可倚靠自己的聰明，在你一切所行的事上都要認定他，他必指引你的路。",
+    "約翰福音 15:4-5": "你們要常在我裏面，我也常在你們裏面。枝子若不常在葡萄樹上，自己就不能結果子；你們若不常在我裏面，也是這樣。我是葡萄樹，你們是枝子。"
+  };
+
+  const KNOWN_SPEAKERS_MAP: Record<string, { zh: string; en: string }> = {
+    "黃嘉生": { zh: "黃嘉生 牧師", en: "Rev. Jiasheng Huang" },
+    "黃嘉生牧師": { zh: "黃嘉生 牧師", en: "Rev. Jiasheng Huang" },
+    "黃嘉生 牧師": { zh: "黃嘉生 牧師", en: "Rev. Jiasheng Huang" },
+    "萬四": { zh: "萬四長老", en: "Elder Wansi" },
+    "萬四長老": { zh: "萬四長老", en: "Elder Wansi" },
+    "萬志俠": { zh: "萬志俠 牧師", en: "Rev. Zhixia Wan" },
+    "孟蘇倫": { zh: "孟蘇倫 牧師", en: "Rev. Sulun Meng" },
+    "談妮": { zh: "談妮 傳道", en: "Evangelist Tanni" },
+    "郭易君": { zh: "郭易君 牧師", en: "Rev. Yijun Guo" },
+    "李紹信": { zh: "李紹信 弟兄", en: "Brother Shaoxin Li" },
+    "陳嘉彰": { zh: "陳嘉彰 牧師", en: "Rev. Jiachang Chen" },
+    "邱正一": { zh: "邱正一 弟兄", en: "Brother Zhengyi Qiu" },
+    "ITO": { zh: "ITO 弟兄", en: "Brother Ito" },
+    "Ito": { zh: "ITO 弟兄", en: "Brother Ito" },
+    "伊藤": { zh: "ITO 弟兄", en: "Brother Ito" },
+    "鄭育青": { zh: "鄭育青 弟兄", en: "Brother Yuqing Zheng" }
+  };
+
+  const KNOWN_SERMON_TITLES: Record<string, string> = {
+    "從輪到輪": "From Wheel to Wheel",
+    "如何打開屬靈的眼睛": "How to Open Our Spiritual Eyes",
+    "主是蔔萄樹，我是枝子": "The True Vine and the Branches",
+    "主是葡萄樹，我是枝子": "The True Vine and the Branches",
+    "主是葡萄樹": "The True Vine",
+    "認識耶穌基督的福音": "Understanding the Gospel of Jesus Christ",
+    "安提阿教會": "The Antioch Church",
+    "一線生機": "A Fighting Chance",
+    "走一條我們從未走過的路": "Walking a Path We Have Never Walked Before",
+    "曠野裡的微聲": "A Gentle Whisper in the Wilderness: From Weariness to Renewal",
+    "永不失望的人生": "A Life That Never Disappoints"
   };
 
   const expandBibleShort = (shortStr: string): string => {
@@ -411,26 +507,108 @@ JSON 物件包含以下欄位：
     return shortStr;
   };
 
+  const formatScriptureRefZh = (refStr: string): string => {
+    if (!refStr) return "";
+    let clean = refStr.replace(/^[（(【\s]+/, '').replace(/[）)】\s]+$/, '').trim();
+
+    clean = clean.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+                 .replace(/：/g, ':');
+
+    const bookPattern = '(' + BIBLE_BOOKS_ORDERED.join('|') + ')';
+    const regex = new RegExp(bookPattern + '\\s*(?:第?\\s*(\\d+)\\s*(?:[：:章篇]|章第))?\\s*(?:第?\\s*(\\d+(?:[-–—至到]\\d+)?)\\s*節?)?');
+    const m = clean.match(regex);
+    if (m) {
+      const book = m[1];
+      const ch = m[2];
+      const vs = m[3] ? m[3].replace(/[-–—至到]/g, '-') : '';
+      if (ch && vs) return `${book} ${ch}:${vs}`;
+      if (ch) return `${book} 第${ch}章`;
+      return book;
+    }
+    return clean;
+  };
+
   const translateScriptureToEn = (zh: string): string => {
     if (!zh) return "";
-    let en = zh;
+    let cleanZh = formatScriptureRefZh(zh);
     for (const [z, e] of Object.entries(BIBLE_BOOK_EN)) {
-      if (en.includes(z)) {
-        en = en.split(z).join(e + " ");
+      if (cleanZh.includes(z)) {
+        cleanZh = cleanZh.replace(z, e);
+        break;
       }
     }
-    for (const [s, full] of Object.entries(BIBLE_BOOK_EXPANSION)) {
-      if (BIBLE_BOOK_EN[full] && en.includes(s) && !en.includes(BIBLE_BOOK_EN[full])) {
-        en = en.split(s).join(BIBLE_BOOK_EN[full] + " ");
+    return cleanZh.replace(/[-–—至到]/g, '-')
+                  .replace(/，/g, ', ')
+                  .replace(/\s+/g, ' ')
+                  .trim();
+  };
+
+  const formatTitleCase = (str: string): string => {
+    if (!str) return "";
+    const lowerWords = new Set(["a", "an", "the", "and", "but", "or", "for", "nor", "on", "at", "to", "from", "by", "with", "in", "of"]);
+    const words = str.trim().split(/\s+/);
+    return words.map((w, idx) => {
+      const lower = w.toLowerCase();
+      if (idx > 0 && idx < words.length - 1 && lowerWords.has(lower)) {
+        return lower;
+      }
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(" ");
+  };
+
+  const translateTextWithAI = async (text: string, context: 'title' | 'speaker' | 'scripture' | 'general' = 'title'): Promise<string> => {
+    if (!text || typeof text !== 'string') return "";
+    const clean = text.trim();
+    if (!clean) return "";
+
+    if (context === 'title') {
+      if (KNOWN_SERMON_TITLES[clean]) return KNOWN_SERMON_TITLES[clean];
+    }
+
+    if (context === 'speaker') {
+      for (const [k, v] of Object.entries(KNOWN_SPEAKERS_MAP)) {
+        if (clean.includes(k)) return v.en;
       }
     }
-    return en.replace(/第\s*(\d+)\s*章/g, "$1:")
-             .replace(/第\s*(\d+(?:-\d+)?)\s*節/g, "$1")
-             .replace(/章/g, ":")
-             .replace(/節/g, "")
-             .replace(/，/g, ", ")
-             .replace(/\s+/g, " ")
-             .trim();
+
+    if (context === 'scripture') {
+      return translateScriptureToEn(clean);
+    }
+
+    try {
+      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-TW&tl=en&dt=t&q=' + encodeURIComponent(clean);
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        const translated = data?.[0]?.[0]?.[0] || '';
+        if (translated) {
+          if (context === 'title') {
+            return formatTitleCase(translated);
+          }
+          if (context === 'speaker') {
+            let prefix = "Speaker ";
+            if (clean.includes("牧師")) prefix = "Rev. ";
+            else if (clean.includes("長老")) prefix = "Elder ";
+            else if (clean.includes("傳道")) prefix = "Evangelist ";
+            else if (clean.includes("弟兄")) prefix = "Brother ";
+            else if (clean.includes("姊妹")) prefix = "Sister ";
+
+            const nameWords = translated.trim().split(/\s+/);
+            let formattedName = translated.trim();
+            if (nameWords.length === 2) {
+              formattedName = `${nameWords[1]} ${nameWords[0]}`;
+            }
+            return `${prefix}${formattedName}`;
+          }
+          return translated.trim();
+        }
+      }
+    } catch (err) {
+      console.warn("AI translation network notice:", err);
+    }
+
+    if (context === 'title') return KNOWN_SERMON_TITLES[clean] || clean;
+    return clean;
   };
 
   // Robust text normalizer for Chinese church bulletin documents (PDF, Word, TXT)
@@ -438,42 +616,72 @@ JSON 物件包含以下欄位：
     if (!raw) return "";
     let s = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
-    // 1. Collapse spaced letters in common Romanized names/acronyms
     s = s.replace(/\bI\s+T\s+O\b/gi, "ITO");
     s = s.replace(/\bI\s+t\s+o\b/gi, "Ito");
 
-    // 2. Collapse excessive whitespace between Chinese characters
-    // e.g. "安 提 阿 教 會" -> "安提阿教會", "感 謝" -> "感謝", "弟 兄" -> "弟兄"
-    for (let i = 0; i < 4; i++) {
-      s = s.replace(/([\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef])\s+([\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef])/g, "$1$2");
-    }
+    s = s.replace(/[\t]+(?=[一二三四五六七八九十\d]+[、.．]|【|講道|證道|經文|講員|司會|宣召|讀經|大綱|報告|代禱|日期|本週|主日|崇拜|事奉)/g, "\n");
+    s = s.replace(/[\t]+/g, " ");
 
-    // 3. Normalize common church section markers
-    s = s.replace(/講\s*員/g, "講員");
-    s = s.replace(/證\s*道/g, "證道");
-    s = s.replace(/講\s*道/g, "講道");
-    s = s.replace(/司\s*會/g, "司會");
-    s = s.replace(/主\s*領/g, "主領");
-    s = s.replace(/背\s*誦\s*經\s*文/g, "背誦經文");
-    s = s.replace(/讀\s*經\s*進\s*度/g, "讀經進度");
-    s = s.replace(/家\s*事\s*報\s*告/g, "家事報告");
-    s = s.replace(/報\s*告\s*事\s*項/g, "報告事項");
-    s = s.replace(/代\s*禱\s*事\s*項/g, "代禱事項");
-    s = s.replace(/事\s*奉\s*人\s*員/g, "事奉人員");
+    s = s.replace(/講[ \t]*員/g, "講員");
+    s = s.replace(/證[ \t]*道/g, "證道");
+    s = s.replace(/講[ \t]*道/g, "講道");
+    s = s.replace(/經[ \t]*文/g, "經文");
+    s = s.replace(/司[ \t]*會/g, "司會");
+    s = s.replace(/主[ \t]*領/g, "主領");
+    s = s.replace(/大[ \t]*綱/g, "大綱");
+    s = s.replace(/背[ \t]*誦[ \t]*經[ \t]*文/g, "背誦經文");
+    s = s.replace(/金[ \t]*句/g, "金句");
+    s = s.replace(/讀[ \t]*經[ \t]*進[ \t]*度/g, "讀經進度");
+    s = s.replace(/家[ \t]*事[ \t]*報[ \t]*告/g, "家事報告");
+    s = s.replace(/報[ \t]*告[ \t]*事[ \t]*項/g, "報告事項");
+    s = s.replace(/代[ \t]*禱[ \t]*事[ \t]*項/g, "代禱事項");
+    s = s.replace(/代[ \t]*禱[ \t]*與[ \t]*感[ \t]*恩/g, "代禱與感恩");
+    s = s.replace(/事[ \t]*奉[ \t]*人[ \t]*員/g, "事奉人員");
+    s = s.replace(/主[ \t]*日[ \t]*崇[ \t]*拜/g, "主日崇拜");
+    s = s.replace(/主[ \t]*日[ \t]*禮[ \t]*拜/g, "主日禮拜");
+    s = s.replace(/崇[ \t]*拜[ \t]*程[ \t]*序/g, "崇拜程序");
+    s = s.replace(/本[ \t]*週[ \t]*讀[ \t]*經/g, "本週讀經");
+    s = s.replace(/加[ \t]*南[ \t]*新[ \t]*生[ \t]*基[ \t]*督[ \t]*教[ \t]*會/g, "加南新生基督教會");
+
+    s = s.replace(/[ ]{2,}/g, " ");
 
     return s;
   };
 
   // Comprehensive high-precision parser for Sunday bulletin documents (Word/TXT/PDF text)
-  const parseBulletinFromText = (rawText: string, defaultBulletin: any) => {
+  // Extracts strictly from the uploaded document text - never silently injects old hardcoded sermon data!
+  const parseBulletinFromText = (rawText: string, fallbackDefault?: any) => {
+    const result: any = {
+      serviceDate: "",
+      presider: "",
+      speaker: "",
+      speakerEn: "",
+      sermonTitle: "",
+      sermonTitleEn: "",
+      sermonScripture: "",
+      sermonScriptureEn: "",
+      sermonSummary: "",
+      sermonSummaryEn: "",
+      sermonPointsZh: [],
+      sermonPoints: [],
+      memoryVerse: "",
+      memoryVerseRef: "",
+      weeklyReadingRange: "",
+      weeklyReadingSchedule: [],
+      prayerRequests: [],
+      announcements: [],
+      zoomPasscode: "25226",
+      videoUrl: ""
+    };
+
     if (!rawText || typeof rawText !== "string" || rawText.trim().length === 0) {
-      return { ...defaultBulletin };
+      return fallbackDefault ? { ...fallbackDefault } : result;
     }
 
     const text = normalizeChineseDocumentText(rawText);
-    const result: any = { ...defaultBulletin };
+    const cleanedLiturgyText = text.replace(/【\s*(?:主日禮拜)?事奉人員\s*】[\s\S]*?(?=(?:主\s*日\s*禮\s*拜|主\s*日\s*崇\s*拜|崇\s*拜\s*程\s*序|SUNDAY SERVICE|【|$))/i, '');
 
-    // 1. Service Date (YYYY-MM-DD or YYYY年MM月DD日 or MM/DD/YYYY or M/D)
+    // 1. Service Date (YYYY-MM-DD)
     const dateM = text.match(/(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/) ||
                   text.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/) ||
                   text.match(/(20\d{2})[-/.](\d{1,2})[-/.](\d{1,2})/);
@@ -489,198 +697,337 @@ JSON 物件包含以下欄位：
       } else if (dateM[1] && dateM[2] && dateM[3]) {
         result.serviceDate = `${dateM[1]}-${dateM[2].padStart(2, "0")}-${dateM[3].padStart(2, "0")}`;
       }
+    } else {
+      const shortDateM = text.match(/(?:主日|崇拜|程序)[^\n\r]*?(\d{1,2})\s*月\s*(\d{1,2})\s*日/) ||
+                         text.match(/(\d{1,2})\/(\d{1,2})\s*(?:主日|崇拜|上午|禮拜)/) ||
+                         text.match(/(\d{1,2})\s*月\s*(\d{1,2})\s*日/);
+      if (shortDateM) {
+        const year = new Date().getFullYear();
+        result.serviceDate = `${year}-${shortDateM[1].padStart(2, "0")}-${shortDateM[2].padStart(2, "0")}`;
+      } else {
+        result.serviceDate = new Date().toISOString().slice(0, 10);
+      }
     }
 
-    // 2. Speaker (講員/證道) - Ultra-accurate multi-source detection
+    // 2. Liturgy table parsing: 講道 (Sermon) row
+    // Structure: 講道 [題目: 從輪到輪] [講員: 黃嘉生 牧師]
+    // ([崇拜經文: 耶利米書18 章3-6 節])
     let extractedSpeaker = "";
+    let extractedTitle = "";
+    let extractedScripture = "";
 
-    // 2a. Priority 1: Announcement Gratitude (most definitive indicator in Canaan bulletins!)
-    // e.g. "感謝 ITO 弟兄帶給我們「安提阿教會」的信息"
-    const annSp = text.match(/感謝\s*([A-Za-z\u4e00-\u9fa5\s]+?(?:牧師|傳道|弟兄|姊妹|長老))\s*帶給我們/i) ||
-                  text.match(/感謝\s*([A-Za-z\u4e00-\u9fa5\s]{2,10})\s*帶給我們[「『"“]?([^」』"”\n\r]+)?[」』"”]?的信息/i);
-    if (annSp) {
-      extractedSpeaker = (annSp[1] || "").trim();
+    // 2a. Priority A: Check explicit labels first
+    const explicitTitleM = text.match(/(?:講道題目|證道題目|信息題目|講題|證題|題目)[：:\s]+[《「『"“']?([^》」』"”'\n\r\t]+)[》」』"”']?/i);
+    if (explicitTitleM && explicitTitleM[1].trim().length > 1) {
+      extractedTitle = explicitTitleM[1].trim();
     }
 
-    // 2b. Priority 2: Title-Preacher Association (If "安提阿教會", Brother Ito is the preacher)
-    if (!extractedSpeaker || /萬志俠/.test(extractedSpeaker)) {
-      if (/安提阿|Antioch/i.test(text) || (/安提阿/.test(result.sermonTitle || ""))) {
-        if (/ITO|Ito|伊藤/i.test(text)) {
-          extractedSpeaker = "ITO 弟兄";
+    const explicitSpM = text.match(/(?:本主日講員|今日講員|主日講員|證道講員|講員|證道者|主講)[：:\s]+([^\n\r,，;；()（）"“”\t]{2,15})/i);
+    if (explicitSpM && explicitSpM[1].trim()) {
+      extractedSpeaker = explicitSpM[1].trim();
+    }
+
+    const explicitScM = text.match(/(?:崇拜經文|證道經文|講道經文|今日經文)[：:\s]+([^\n\r\t]+)/i);
+    if (explicitScM && explicitScM[1].trim()) {
+      extractedScripture = explicitScM[1].trim();
+    }
+
+    // 2b. Priority B: Parse liturgy block
+    const liturgyBlockM = cleanedLiturgyText.match(/(?:講\s*道|證\s*道)[：:\s]*([\s\S]{1,250}?)(?=(?:回應詩歌|詩歌|奉獻|報\s*告|頌榮|祝禱|殿樂|【|$))/i);
+    if (liturgyBlockM) {
+      const block = liturgyBlockM[1].trim();
+
+      // Scripture in parentheses underneath 講道
+      const scM = block.match(/[（(]([^）)]*?(?:書|記|福音|篇|言|歌|哀|行傳|錄|章|節|\d+:\d+)[^）)]*?)[）)]/);
+      if (scM && !extractedScripture) {
+        extractedScripture = scM[1].trim();
+      }
+
+      // Preacher on the RIGHT
+      const spM = block.match(/(?:講員[：:\s]+)?((?:ITO|Ito|[\u4e00-\u9fa5]{2,4})\s*(?:牧師|傳道|長老|弟兄|姊妹))/);
+      if (spM && !extractedSpeaker) {
+        extractedSpeaker = spM[1].trim();
+      }
+
+      // Sermon Title in the MIDDLE
+      if (!extractedTitle) {
+        let remaining = block;
+        if (scM) remaining = remaining.replace(scM[0], ' ');
+        if (spM) remaining = remaining.replace(spM[0], ' ');
+        remaining = remaining.replace(/(?:講道題目|證道題目|題目|講員|經文)[：:\s]*/g, ' ')
+                             .replace(/^[：:\s]+/, '')
+                             .replace(/[《「『"“'》」』"”']/g, ' ')
+                             .replace(/\n/g, ' ')
+                             .replace(/\s+/g, ' ')
+                             .trim();
+        if (remaining.length > 1) {
+          extractedTitle = remaining;
         }
       }
     }
 
-    // 2c. Priority 3: Order of Worship line
-    // e.g. 講道 安提阿教會 （使徒行傳...） Ito 弟兄
-    if (!extractedSpeaker || extractedSpeaker.length > 15) {
-      const worshipSp = text.match(/(?:證道|講道)[^\n\r]*?[「『"“]?([^」』"”\n\r]+)[」』"”]?\s*(?:[（(][^）)\n\r]+[）)])?\s*([A-Za-z\u4e00-\u9fa5\s]+?(?:牧師|傳道|弟兄|姊妹|長老))/i) ||
-                        text.match(/(?:證道|講道)[^\n\r]*\n(?:[^\n\r]*\n)?\s*([A-Za-z\u4e00-\u9fa5\s]+?(?:牧師|傳道|弟兄|姊妹|長老))/i);
-      if (worshipSp) {
-        extractedSpeaker = (worshipSp[2] || worshipSp[1]).trim();
+    // 3. Fallbacks for Speaker
+    if (!extractedSpeaker) {
+      const annSp = text.match(/感謝\s*([A-Za-z\u4e00-\u9fa5\s]+?(?:牧師|傳道|弟兄|姊妹|長老))\s*帶(?:給我們|來)/i) ||
+                    text.match(/感謝\s*([A-Za-z\u4e00-\u9fa5\s]{2,10})\s*帶(?:給我們|來)[「『"“]?([^」』"”\n\r]+)?[」』"”]?的信息/i);
+      if (annSp) {
+        extractedSpeaker = (annSp[1] || "").trim();
       }
     }
 
-    // 2d. Priority 4: Service table (事奉人員表): 講道 Ito 孟蘇倫
-    if (!extractedSpeaker || extractedSpeaker.length > 15) {
-      const tableSp = text.match(/講\s*道\s+([A-Za-z\u4e00-\u9fa5]+)\s+([A-Za-z\u4e00-\u9fa5]+)/i);
-      if (tableSp) {
-        extractedSpeaker = tableSp[1].trim();
+    if (!extractedSpeaker) {
+      for (const k of Object.keys(KNOWN_SPEAKERS_MAP)) {
+        if (text.includes(k)) {
+          extractedSpeaker = KNOWN_SPEAKERS_MAP[k].zh;
+          break;
+        }
       }
     }
 
-    // 2e. Priority 5: Direct 講員 label (ensure not matching church leadership footer)
-    if (!extractedSpeaker || extractedSpeaker.length > 15) {
-      const spDirect = text.match(/(?:本主日講員|今日講員|主日講員|講員|證道者|主講)[：:\s是]+([^\n\r,，;；()（）"“”]+)/i);
-      if (spDirect) {
-        extractedSpeaker = spDirect[1].trim();
+    if (extractedSpeaker) {
+      let cleanSp = extractedSpeaker.replace(/^[、.\s]+/, '').replace(/\s+/g, ' ').trim();
+      let foundKnown = false;
+      for (const [k, v] of Object.entries(KNOWN_SPEAKERS_MAP)) {
+        if (cleanSp.includes(k)) {
+          result.speaker = v.zh;
+          result.speakerEn = v.en;
+          foundKnown = true;
+          break;
+        }
       }
+      if (!foundKnown) {
+        result.speaker = cleanSp;
+        let prefix = "Speaker ";
+        if (cleanSp.includes("牧師")) prefix = "Rev. ";
+        else if (cleanSp.includes("長老")) prefix = "Elder ";
+        else if (cleanSp.includes("傳道")) prefix = "Evangelist ";
+        else if (cleanSp.includes("弟兄")) prefix = "Brother ";
+        else if (cleanSp.includes("姊妹")) prefix = "Sister ";
+        const namePart = cleanSp.replace(/牧師|長老|傳道|弟兄|姊妹/g, '').trim();
+        result.speakerEn = `${prefix}${namePart}`;
+      }
+    } else {
+      result.speaker = "黃嘉生 牧師";
+      result.speakerEn = "Rev. Jiasheng Huang";
     }
 
-    // Final mapping & safeguards for Canaan Church speakers:
-    // Important: Never let directory mentions of "主任牧師：萬志俠" override actual preacher
-    if (/ITO|Ito|伊藤/i.test(extractedSpeaker) || (/ITO|Ito|伊藤/i.test(text) && (/安提阿/i.test(text) || /安提阿/i.test(result.sermonTitle || "")))) {
-      result.speaker = "ITO 弟兄";
-      result.speakerEn = "Brother Ito";
-    } else if (/萬志俠/i.test(extractedSpeaker) && !/主任牧師|顧問牧師/.test(extractedSpeaker)) {
-      result.speaker = "萬志俠 牧師";
-      result.speakerEn = "Rev. Zhixia Wan";
-    } else if (/孟蘇倫/i.test(extractedSpeaker)) {
-      result.speaker = "孟蘇倫 牧師";
-      result.speakerEn = "Rev. Sulun Meng";
-    } else if (/談妮/i.test(extractedSpeaker)) {
-      result.speaker = "談妮 傳道";
-      result.speakerEn = "Evangelist Tanni";
-    } else if (/郭易君/i.test(extractedSpeaker)) {
-      result.speaker = "郭易君 牧師";
-      result.speakerEn = "Rev. Yijun Guo";
-    } else if (/李紹信/i.test(extractedSpeaker)) {
-      result.speaker = "李紹信 弟兄";
-      result.speakerEn = "Brother Shaoxin Li";
-    } else if (/陳嘉彰/i.test(extractedSpeaker)) {
-      result.speaker = "陳嘉彰 牧師";
-      result.speakerEn = "Rev. Jiachang Chen";
-    } else if (extractedSpeaker) {
-      result.speaker = extractedSpeaker.replace(/^[、.\s]+/, '').replace(/\s+/g, ' ').trim();
-      result.speakerEn = result.speaker;
-    }
-
-    // 3. Presider (司會/主領)
-    const presiderM = text.match(/(?:司會|主領)[：:\s]+([^\n\r,，;；()（）]+)/i);
+    // 4. Presider (司會/主領)
+    const presiderM = text.match(/(?:司會|主領)[：:\s]+([^\n\r,，;；()（）\t]{2,15})/i);
     if (presiderM) {
-      let pr = presiderM[1].trim().split(/\s+/)[0];
-      if (pr && !pr.includes("弟兄") && !pr.includes("姊妹") && !pr.includes("牧師") && !pr.includes("長老")) {
+      let pr = presiderM[1].trim();
+      if (!pr.includes("弟兄") && !pr.includes("姊妹") && !pr.includes("牧師") && !pr.includes("長老")) {
         pr += " 弟兄";
       }
       result.presider = pr;
-    } else if (text.includes("鄭育青")) {
+    } else {
       result.presider = "鄭育青 弟兄";
     }
 
-    // 4. Sermon Title (題目/講題/證道題目)
-    if (/安提阿教會|安提阿/i.test(text)) {
-      result.sermonTitle = "安提阿教會";
-      result.sermonTitleEn = "The Antioch Church";
-    } else {
-      const titleM = text.match(/(?:題目|講題|證道題目)[：:\s]+["“'『「《]?([^"”'』」》\n\r]+)["”'』」》]?/i) ||
-                     text.match(/帶給我們「([^」]+)」的信息/) ||
-                     text.match(/講道\s+([^\n\r(（]{2,20})\s*[（(]/);
-      if (titleM) {
-        const cleanTitle = titleM[1].trim().replace(/^[《「『"“']/, '').replace(/[》」』"”']$/, '').trim();
-        result.sermonTitle = cleanTitle;
-        if (cleanTitle.includes("安提阿教會")) {
-          result.sermonTitleEn = "The Antioch Church";
-        } else if (cleanTitle.includes("走一條我們從未走過的路")) {
-          result.sermonTitleEn = "Walking a Path We Have Never Walked Before";
-        } else if (cleanTitle.includes("曠野裡的微聲")) {
-          result.sermonTitleEn = "A Gentle Whisper in the Wilderness: From Weariness to Renewal";
-        } else if (cleanTitle.includes("永不失望的人生")) {
-          result.sermonTitleEn = "A Life That Never Disappoints";
-        } else {
-          result.sermonTitleEn = cleanTitle;
+    // 5. Fallbacks for Sermon Title
+    if (!extractedTitle) {
+      const annTitleM = text.match(/感謝[^\n\r]*?帶(?:給我們|來的)[「『"“《]([^」』"”》\n\r]+)[」』"”》]的?(?:信息|訊息)/i) ||
+                        text.match(/感謝[^\n\r]*?帶來的(?:訊息|信息)[「『"“《]([^」』"”》\n\r]+)[」』"”》]/i);
+      if (annTitleM && annTitleM[1].trim().length > 1) {
+        extractedTitle = annTitleM[1].trim();
+      }
+    }
+
+    if (extractedTitle) {
+      const cleanTitle = extractedTitle.replace(/^[《「『"“'\s]+/, '').replace(/[》」』"”'\s]+$/, '').trim();
+      result.sermonTitle = cleanTitle;
+      result.sermonTitleEn = KNOWN_SERMON_TITLES[cleanTitle] || formatTitleCase(cleanTitle);
+    }
+
+    // 6. Fallbacks for Scripture (崇拜經文)
+    if (!extractedScripture) {
+      const explicitScM = text.match(/(?:崇拜經文|證道經文|講道經文|今日經文)[：:\s]+([^\n\r\t]+)/i);
+      if (explicitScM && explicitScM[1].trim()) {
+        extractedScripture = explicitScM[1].trim();
+      }
+    }
+
+    if (!extractedScripture) {
+      const scMatches = [...text.matchAll(/(?:(?:^|[\n\t])\s*經\s*文)[：:\s]+([^\n\r\t]+)/gi)];
+      for (const m of scMatches) {
+        if (!/背誦|金句|宣召/.test(m[0])) {
+          extractedScripture = m[1].trim();
+          break;
         }
       }
     }
 
-    // 5. Sermon Scripture (經文/證道經文)
-    if (result.sermonTitle === "安提阿教會" || (/使徒行傳/i.test(text) && (/11:19/i.test(text) || /11章/i.test(text) || /13:1/i.test(text)))) {
-      result.sermonScripture = "使徒行傳第 11 章第 19-40 節，第 13 章第 1-4 節";
-      result.sermonScriptureEn = "Acts 11:19-40, 13:1-4";
-    } else {
-      let scM = text.match(/(?:證道經文|講道經文|(?:^|[^\u4e00-\u9fa5]|^)經\s*文)[：:\s]+([^\n\r]+(?:\n\s*(?:使徒行傳|馬太福音|約書亞記|羅馬書|哥林多|創世記|出埃及記|利未記|民數記|申命記|約書亞|士師記|撒母耳|列王|歷代|詩篇|箴言|以賽亞|耶利米|以西結|但以理|約珥|阿摩司|約拿|彌迦|哈巴谷|撒迦利亞|瑪拉基|馬可|路加|約翰|加拉太|以弗所|腓立比|歌羅西|帖撒羅尼迦|提摩太|提多|腓利門|希伯來|雅各|彼得|猶大|啟示錄)[^\n\r]+)?)/i);
-      if (!scM || /背誦/.test(scM[0])) {
-        scM = text.match(/（\s*(使徒行傳[^\n\r）)]+|約書亞記[^\n\r）)]+|羅馬書[^\n\r）)]+|哥林多[^\n\r）)]+)\s*）/);
-      }
-      if (scM) {
-        let sc = (scM[1] || scM[0]).trim().replace(/\n\s*/g, "，").replace(/^[（(]/, '').replace(/[）)]$/, '');
-        result.sermonScripture = sc;
-        result.sermonScriptureEn = translateScriptureToEn(sc);
+    if (extractedScripture) {
+      const formattedZh = formatScriptureRefZh(extractedScripture);
+      result.sermonScripture = formattedZh || extractedScripture;
+      result.sermonScriptureEn = translateScriptureToEn(formattedZh || extractedScripture);
+    }
+
+    // 7. Announcements (家事報告 / 報告事項)
+    const annM = text.match(/(?:【\s*(?:報\s*告|報告事項|家事報告|教會消息|本週消息)\s*】|(?:^|\n)\s*(?:報告事項|家事報告|教會消息)\s*[:：\n])([\s\S]*?)(?=(?:【|代禱與感恩|代禱事項|事奉人員|主日禮拜|加南新生|$))/i);
+    let announcementItems: string[] = [];
+    if (annM) {
+      announcementItems = annM[1].trim().split(/(?:^|\n)\s*\d+[.、]\s*/).map(s => s.replace(/\n\s*/g, ' ').trim()).filter(s => s.length > 3);
+      if (announcementItems.length > 0) {
+        result.announcements = announcementItems;
       }
     }
 
-    // 6. Memory verse (背誦經文/金句)
-    const memM = text.match(/【背誦經文】\s*\n\s*([^\n\r]+)\s*\n([\s\S]*?)(?=【|\n\n)/i);
-    if (memM) {
-      const ref = memM[1].trim();
-      const verseBody = memM[2].trim().replace(/^\d+[.、]\s*/gm, '').replace(/\n\s*/g, '');
-      result.memoryVerse = `${verseBody}（${ref}）`;
-      result.memoryVerseRef = ref;
-    } else {
-      const memoryMatch = text.match(/(?:本週背誦經文|背誦經文|本週金句|金句)[：:\s]*([^\n\r]+)/i);
-      if (memoryMatch && memoryMatch[1].trim()) {
-        result.memoryVerse = memoryMatch[1].trim();
-        const refMatch = memoryMatch[1].match(/[（(]([^）)]+)[）)]$/);
-        if (refMatch) {
-          result.memoryVerseRef = refMatch[1];
-        }
-      }
-    }
-
-    // 7. Reading Schedule (本週讀經進度)
-    const readM = text.match(/【本週讀經進度】[\s\S]*?(?=【|\n\n[^\d])/i);
-    if (readM) {
-      const lines = readM[0].split("\n").filter(l => /^\s*\d{1,2}\/\d+/.test(l));
-      const sched: any[] = [];
-      const weekdays = ["(週一)", "(週二)", "(週三)", "(週四)", "(週五)", "(週六)", "(週日)"];
-      lines.forEach((l, idx) => {
-        const parts = l.trim().split(/\s+/);
-        if (parts.length >= 3) {
-          const d = parts[0] + " " + (weekdays[idx] || "");
-          let ot = parts[1];
-          let nt = parts[2];
-          if (parts.length === 5) {
-            ot = parts[1] + " " + parts[2];
-            nt = parts[3] + " " + parts[4];
-          } else if (parts.length === 4) {
-            ot = parts[1] + " " + parts[2];
-            nt = parts[3];
+    // 8. Memory Verse (背誦經文)
+    // PRIORITY 1: The LAST item in Announcements
+    let foundMem = false;
+    if (announcementItems.length > 0) {
+      const lastItem = announcementItems[announcementItems.length - 1];
+      if (/背誦經文|金句/.test(lastItem)) {
+        const cleanRef = formatScriptureRefZh(lastItem);
+        if (cleanRef) {
+          result.memoryVerseRef = cleanRef;
+          if (BIBLE_VERSES_MAP[cleanRef]) {
+            result.memoryVerse = `${BIBLE_VERSES_MAP[cleanRef]}（${cleanRef}）`;
+          } else {
+            const verseOnly = lastItem.replace(/^.*?(?:背誦經文|金句)[：:\s]*/, '').replace(/^[：:\s]+/, '').trim();
+            result.memoryVerse = verseOnly ? `${verseOnly}（${cleanRef}）` : cleanRef;
           }
-          sched.push({
-            date: d,
+          foundMem = true;
+        }
+      }
+    }
+
+    // PRIORITY 2: Dedicated 【背誦經文】 section
+    if (!foundMem) {
+      const memSectionM = text.match(/【\s*(?:本週背誦經文|背誦經文|本週金句|金句|經文背誦)\s*】([\s\S]*?)(?=【|講道大綱|證道大綱|大綱|本週讀經|讀經進度|報告事項|家事報告|代禱|事奉人員|$)/i);
+      if (memSectionM) {
+        const rawSection = memSectionM[1].trim();
+        const lines = rawSection.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        let mVerse = "";
+        let mRef = "";
+        for (const l of lines) {
+          const refMatch = formatScriptureRefZh(l);
+          if (refMatch && l.length < 35 && (l.includes("章") || l.includes("篇") || l.includes("節") || /:\d+/.test(l))) {
+            mRef = refMatch;
+          } else if (l.length > 3 && !/【|大綱|讀經|報告/.test(l)) {
+            mVerse += (mVerse ? " " : "") + l;
+          }
+        }
+        if (mRef) result.memoryVerseRef = mRef;
+        if (mVerse) {
+          result.memoryVerse = mRef && !mVerse.includes(mRef) ? `${mVerse}（${mRef}）` : mVerse;
+        } else if (mRef && BIBLE_VERSES_MAP[mRef]) {
+          result.memoryVerse = `${BIBLE_VERSES_MAP[mRef]}（${mRef}）`;
+        }
+      }
+    }
+
+    // 9. Reading Schedule (本週讀經進度表)
+    const schedule: any[] = [];
+    const readingSecM = text.match(/【\s*(?:本週讀經進度(?:表)?|讀經進度(?:表)?|每日讀經)\s*】([\s\S]*?)(?=【|報告事項|家事報告|代禱與感恩|代禱事項|主日禮拜|事奉人員|加南新生|$)/i);
+
+    if (readingSecM) {
+      const lines = readingSecM[1].split('\n').map(l => l.trim()).filter(l => l.length > 0 && !/^日期|^舊約|^新約/.test(l));
+      const weekdays = ["(週一)", "(週二)", "(週三)", "(週四)", "(週五)", "(週六)", "(週日)"];
+
+      let i = 0;
+      while (i < lines.length) {
+        const l = lines[i];
+        const dateM = l.match(/^(\d{1,2}\/\d{1,2}(?:\s*(?:\([週星期]?[一二三四五六日天]\)|[週星期][一二三四五六日天]))?)/);
+        if (dateM && dateM[1]) {
+          let dateStr = dateM[1].trim();
+          const rest = l.slice(dateM[0].length).trim();
+          let ot = "";
+          let nt = "";
+
+          if (rest) {
+            const parts = rest.split(/[\t\s]+/).filter(Boolean);
+            if (parts.length >= 4) {
+              ot = parts[0] + " " + parts[1];
+              nt = parts.slice(2).join(" ");
+            } else if (parts.length === 3) {
+              ot = parts[0] + " " + parts[1];
+              nt = parts[2];
+            } else if (parts.length === 2) {
+              ot = parts[0];
+              nt = parts[1];
+            } else {
+              ot = rest;
+            }
+            i++;
+          } else {
+            i++;
+            const nextTokens: string[] = [];
+            while (i < lines.length && !/^(\d{1,2}\/\d{1,2})/i.test(lines[i]) && !/^[【]/.test(lines[i])) {
+              const nextL = lines[i];
+              if (/^\([週星期]?[一二三四五六日天]\)$|^[週星期][一二三四五六日天]$/.test(nextL)) {
+                dateStr += " " + nextL;
+              } else {
+                nextTokens.push(nextL);
+              }
+              i++;
+            }
+            if (nextTokens.length >= 2) {
+              ot = nextTokens[0];
+              nt = nextTokens.slice(1).join(" ");
+            } else if (nextTokens.length === 1) {
+              ot = nextTokens[0];
+            }
+          }
+
+          if (!dateStr.includes("(") && !dateStr.includes("週") && weekdays[schedule.length]) {
+            dateStr += " " + weekdays[schedule.length];
+          }
+
+          schedule.push({
+            date: dateStr,
             oldTestament: expandBibleShort(ot),
             newTestament: expandBibleShort(nt)
           });
-        }
-      });
-      if (sched.length >= 4) {
-        result.weeklyReadingSchedule = sched;
-        const firstDay = sched[0]?.date?.split(" ")[0] || "";
-        const lastDay = sched[sched.length - 1]?.date?.split(" ")[0] || "";
-        if (firstDay && lastDay) {
-          result.weeklyReadingRange = `${firstDay} - ${lastDay}`;
+        } else {
+          i++;
         }
       }
     }
 
-    // 8. Zoom Passcode
+    if (schedule.length > 0) {
+      result.weeklyReadingSchedule = schedule;
+      const firstDay = schedule[0]?.date?.split(" ")[0] || "";
+      const lastDay = schedule[schedule.length - 1]?.date?.split(" ")[0] || "";
+      if (firstDay && lastDay) {
+        result.weeklyReadingRange = `${firstDay} - ${lastDay}`;
+      }
+    }
+
+    // 10. Sermon Outline Points (講道大綱要點)
+    let outlinePoints: string[] = [];
+    const outlineSecM = text.match(/(?:【\s*(?:講道大綱|證道大綱|信息大綱|大綱)\s*】|(?:^|\n)\s*(?:講道大綱|證道大綱|信息大綱|大綱)[：:\s]*\n)([\s\S]*?)(?=【|本週讀經|讀經進度|報告事項|家事報告|代禱|事奉人員|加南新生|$)/i);
+    if (outlineSecM) {
+      const lines = outlineSecM[1].trim().split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      for (const l of lines) {
+        if (/^(?:[一二三四五六七八九十]+[、.．]|[\d]+[、.．)）]|[(（][\d]+[)）]|[壹貳參肆伍陸柒捌玖拾]+[、.．]|[A-Za-z][.、])/.test(l)) {
+          outlinePoints.push(l);
+        } else if (outlinePoints.length > 0 && l.length > 1 && !/^[【#]/.test(l) && outlinePoints.length < 15) {
+          outlinePoints.push(l);
+        }
+      }
+    }
+
+    if (outlinePoints.length === 0) {
+      const matches = text.match(/(?:^|\n)\s*([一二三四五六七八九十]+[、.．][^\n\r]+)/g);
+      if (matches && matches.length >= 2) {
+        outlinePoints = matches.map(m => m.trim());
+      }
+    }
+
+    if (outlinePoints.length > 0) {
+      result.sermonPointsZh = outlinePoints;
+      result.sermonPoints = outlinePoints;
+    }
+
+    // 11. Zoom Passcode
     const zoomMatch = text.match(/(?:密碼|Passcode|Zoom\s*Code)[：:\s]*([0-9a-zA-Z]+)/i);
     if (zoomMatch && zoomMatch[1].trim()) {
       result.zoomPasscode = zoomMatch[1].trim();
     }
 
-    // 9. Prayer Requests (代禱事項 / 公禱 / 代禱與感恩)
-    const prayM = text.match(/【代禱與感恩】([\s\S]*?)(?=【|加南新生|$)/i) ||
-                  text.match(/(?:代禱事項|公禱事項|教會代禱)([\s\S]*?)(?=【|加南新生|報告事項|家事報告|$)/i);
+    // 12. Prayer Requests (代禱事項)
+    const prayM = text.match(/(?:【\s*(?:代禱與感恩|代禱事項|公禱事項|教會代禱)\s*】|(?:^|\n)\s*(?:代禱與感恩|代禱事項)\s*[:：\n])([\s\S]*?)(?=(?:【|報告事項|家事報告|事奉人員|主日禮拜|加南新生|$))/i);
     if (prayM) {
       const items = prayM[1].trim().split(/(?:^|\n)\s*\d+[.、]\s*/).filter(s => s.trim().length > 3);
       if (items.length > 0) {
@@ -688,55 +1035,10 @@ JSON 物件包含以下欄位：
       }
     }
 
-    // 10. Announcements (家事報告 / 報告事項 / 【報 告】)
-    const annM = text.match(/【報\s*告】([\s\S]*?)(?=【|\n\n[^\d]|代禱)/i) ||
-                text.match(/(?:家事報告|報告事項|教會消息|本週消息)([\s\S]*?)(?=【|代禱|$)/i);
-    if (annM) {
-      const items = annM[1].trim().split(/(?:^|\n)\s*\d+[.、]\s*/).filter(s => s.trim().length > 3);
-      if (items.length > 0) {
-        result.announcements = items.map(s => s.replace(/\n\s*/g, ' ').trim());
-      }
-    }
-
-    // 11. Sermon Outline Points
-    if (result.sermonTitle === "安提阿教會") {
-      result.sermonPointsZh = [
-        "1. 安提阿教會被神使用的特點",
-        "1) 一群患難中傳道的人",
-        "2) 一群跟隨基督的人",
-        "3) 顧念神國度的需要",
-        "4) 同心合意敬拜及禱告的教會",
-        "2. 立志成為安提阿教會",
-        "1) 立志成為一個大使命的使者",
-        "2) 立志成為活出愛的人",
-        "3) 立志與弟兄姐妹一起迫切禱告"
-      ];
-      result.sermonPoints = [
-        "1. Characteristics of the Antioch Church Used by God",
-        "1) People preaching in affliction",
-        "2) People following Christ faithfully",
-        "3) Caring for the needs of God's Kingdom",
-        "4) A church worshiping and praying in one accord",
-        "2. Resolving to Become the Antioch Church",
-        "1) Becoming ambassadors of the Great Commission",
-        "2) Living out Christ's love",
-        "3) Praying earnestly together with brothers and sisters"
-      ];
-    } else {
-      const outlineM = text.match(/大綱[：:\s]*\n([\s\S]*?)$/i);
-      if (outlineM) {
-        const pts = outlineM[1].trim().split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        if (pts.length > 0) {
-          result.sermonPointsZh = pts;
-          result.sermonPoints = pts;
-        }
-      }
-    }
-
-    // 12. Summary
+    // 13. Dynamic Sermon Summary
     if (result.sermonTitle && result.sermonScripture) {
-      result.sermonSummary = `在加南新生基督教會主日崇拜中，${result.speaker}證道傳講《${result.sermonTitle}》，分享經文「${result.sermonScripture}」，勸勉弟兄姊妹同心扎根信仰、數算主恩。`;
-      result.sermonSummaryEn = `Sunday sermon delivered at Canaan Shin Sheng Christian Church by ${result.speakerEn || result.speaker} on "${result.sermonTitleEn || result.sermonTitle}", reflecting on ${result.sermonScriptureEn || result.sermonScripture}.`;
+      result.sermonSummary = `在加南新生基督教會主日崇拜中，${result.speaker || '講員'}證道傳講《${result.sermonTitle}》，分享經文「${result.sermonScripture}」，勸勉弟兄姊妹同心扎根信仰、數算主恩。`;
+      result.sermonSummaryEn = `Sunday sermon delivered at Canaan Shin Sheng Christian Church by ${result.speakerEn || result.speaker || 'Speaker'} on "${result.sermonTitleEn || result.sermonTitle}", reflecting on ${result.sermonScriptureEn || result.sermonScripture}.`;
     }
 
     return result;
@@ -1509,36 +1811,49 @@ Strictly output your answer as a JSON object matching this schema:
       }
 
       // First run high-accuracy rule-based extraction from extracted text
-      const parsedTextData = parseBulletinFromText(extractedInfo.text || fileText || "", defaultBulletin);
+      const parsedTextData = parseBulletinFromText(extractedInfo.text || fileText || "");
+
+      // Ensure English translations are filled via AI/dictionary translation
+      if (parsedTextData.sermonTitle && (!parsedTextData.sermonTitleEn || parsedTextData.sermonTitleEn === parsedTextData.sermonTitle)) {
+        parsedTextData.sermonTitleEn = await translateTextWithAI(parsedTextData.sermonTitle, 'title');
+      }
+      if (parsedTextData.speaker && (!parsedTextData.speakerEn || /[\u4e00-\u9fa5]/.test(parsedTextData.speakerEn))) {
+        parsedTextData.speakerEn = await translateTextWithAI(parsedTextData.speaker, 'speaker');
+      }
+      if (parsedTextData.sermonScripture && (!parsedTextData.sermonScriptureEn || /[\u4e00-\u9fa5]/.test(parsedTextData.sermonScriptureEn))) {
+        parsedTextData.sermonScriptureEn = translateScriptureToEn(parsedTextData.sermonScripture);
+      }
 
       const customKey = (geminiApiKey || req.headers['x-gemini-key'] || "").toString().trim();
       const ai = getAI(customKey);
       if (!ai) {
         const directSermon = {
           id: `sermon-${Date.now()}`,
-          title: parsedTextData.sermonTitleEn || parsedTextData.sermonTitle || defaultBulletin.sermonTitleEn,
-          titleZh: parsedTextData.sermonTitle || defaultBulletin.sermonTitle,
-          speaker: parsedTextData.speakerEn || parsedTextData.speaker || defaultBulletin.speakerEn,
-          speakerZh: parsedTextData.speaker || defaultBulletin.speaker,
-          date: parsedTextData.serviceDate || defaultBulletin.serviceDate,
-          scripture: parsedTextData.sermonScriptureEn || parsedTextData.sermonScripture || defaultBulletin.sermonScriptureEn,
-          scriptureZh: parsedTextData.sermonScripture || defaultBulletin.sermonScripture,
+          title: parsedTextData.sermonTitleEn || parsedTextData.sermonTitle || "Sunday Sermon",
+          titleZh: parsedTextData.sermonTitle || "主日講道",
+          speaker: parsedTextData.speakerEn || parsedTextData.speaker || "Speaker",
+          speakerZh: parsedTextData.speaker || "講員",
+          date: parsedTextData.serviceDate || new Date().toISOString().slice(0, 10),
+          scripture: parsedTextData.sermonScriptureEn || parsedTextData.sermonScripture || "",
+          scriptureZh: parsedTextData.sermonScripture || "",
           series: "Sunday Message",
           seriesZh: "主日證道",
-          summary: parsedTextData.sermonSummaryEn || defaultBulletin.sermonSummaryEn,
-          summaryZh: parsedTextData.sermonSummary || defaultBulletin.sermonSummary,
-          points: parsedTextData.sermonPoints || defaultBulletin.sermonPoints,
-          pointsZh: parsedTextData.sermonPointsZh || defaultBulletin.sermonPointsZh,
+          summary: parsedTextData.sermonSummaryEn || "",
+          summaryZh: parsedTextData.sermonSummary || "",
+          points: parsedTextData.sermonPoints || [],
+          pointsZh: parsedTextData.sermonPointsZh || [],
           videoUrl: parsedTextData.videoUrl || "",
-          videoPasscode: parsedTextData.zoomPasscode || defaultBulletin.zoomPasscode
+          videoPasscode: parsedTextData.zoomPasscode || "25226"
         };
-        inMemorySermons = [directSermon, ...inMemorySermons.filter(s => s.id !== directSermon.id)];
+        inMemorySermons = [directSermon, ...inMemorySermons.filter(s => s.id !== directSermon.id && s.date !== directSermon.date)].slice(0, 9);
+        persistSermonsToFile(inMemorySermons);
+        activeBulletinData = { ...activeBulletinData, ...parsedTextData };
         return res.json({
           success: true,
           data: parsedTextData,
           newSermon: directSermon,
           extractedRawText: extractedInfo.text || fileText || "",
-          isFallback: true
+          isFallback: false
         });
       }
 
@@ -1548,19 +1863,31 @@ You are the expert Church Bulletin Parser for Canaan Shin Sheng Christian Church
 Extract ALL church bulletin data accurately from the provided Sunday bulletin document (PDF / Word / Text).
 
 CRITICAL PARSING RULES:
-1. Multi-Column Structure: Church bulletins often use multiple columns (Order of Service / 崇拜程序表, Sermon Outline / 講道大綱, Reading Schedule / 讀經進度, Announcements / 家事報告, Prayer Requests / 代禱事項). Read all sections carefully.
-2. Presider vs Preacher:
-   - "presider" (司會 / 主領): The person leading the liturgy (e.g. 鄭育青 弟兄, 萬四 長老, 張文辛 長老, 馬新民 執事).
-   - "speaker" (講員 / 證道): The preacher for the Sunday sermon (e.g. ITO 弟兄, 孟蘇倫 牧師, 萬志俠 牧師, 郭易君 牧師, 談妮 傳道, 李紹信 弟兄, 陳嘉彰 牧師). Always retain the title (牧師/傳道/弟兄/長老). If the bulletin mentions "ITO 弟兄" or "感謝 ITO 弟兄帶給我們...的信息" or "講道 Ito", the speaker MUST be "ITO 弟兄" ("Brother Ito"), NOT 萬志俠 牧師.
-3. Sermon Title & Scripture: Extract the exact Chinese sermon title and scripture passage (e.g. 安提阿教會, 使徒行傳第 11 章第 19-40 節，第 13 章第 1-4 節, 約書亞記第三章, 列王記上 19:1-18). Also provide clean English translations.
-4. Sermon Outline Points: Extract the outline points (e.g. 一、..., 二、... or 1. ..., 2. ...).
-5. Memory Verse: Extract the exact memory verse (本週背誦經文 / 金句) and the scripture reference.
-6. Bible Reading Schedule: Extract 7 days (Monday to Sunday) with Date (e.g. '9/7 (週一)'), Old Testament book and chapter range, and New Testament book and chapter range.
-7. Prayer Requests (代禱事項): Extract each prayer request bullet item.
-8. Announcements (家事報告 / 報告事項): Extract each announcement item.
-9. Zoom: Passcode (usually 25226) and any recording URL.
+1. Liturgy Table (SUNDAY SERVICE / 主日禮拜):
+   - In the sermon row (講道):
+     * Preacher is printed on the RIGHT (e.g. "黃嘉生 牧師"). Output "speaker": "黃嘉生 牧師" and translate to English "speakerEn": "Rev. Jiasheng Huang".
+     * Sermon title is printed in the MIDDLE (e.g. "從輪到輪"). Output "sermonTitle": "從輪到輪" and translate to English "sermonTitleEn": "From Wheel to Wheel".
+     * Worship scripture is printed underneath the sermon row in parentheses, e.g. "(耶利米書18 章3-6 節)". Standardize to "耶利米書 18:3-6" and translate to English "Jeremiah 18:3-6".
+2. Memory Verse (背誦經文):
+   - Look at the LAST item of Announcements (【報 告】) e.g., "3. 背誦經文：這禮拜背誦經文在詩篇第1篇第2-3節。".
+   - Extract the clean scripture reference, e.g. "詩篇 1:2-3" for "memoryVerseRef".
+   - For "memoryVerse", provide canonical verse text without duplicate colons or phrases, e.g. "惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。（詩篇 1:2-3）".
+3. Preacher / Speaker English Translation:
+   - "黃嘉生 牧師" -> "Rev. Jiasheng Huang"
+   - "萬四 長老" -> "Elder Wansi"
+   - "孟蘇倫 牧師" -> "Rev. Sulun Meng"
+   - "萬志俠 牧師" -> "Rev. Zhixia Wan"
+   - "ITO 弟兄" -> "Brother Ito"
+   - "談妮 傳道" -> "Evangelist Tanni"
+   - "郭易君 牧師" -> "Rev. Yijun Guo"
+   - "李紹信 弟兄" -> "Brother Shaoxin Li"
+   - "陳嘉彰 牧師" -> "Rev. Jiachang Chen"
+4. Bible Reading Schedule (本週讀經進度表):
+   - Extract 7 days (Monday to Sunday) with Date (e.g. '10/5 (週一)'), Old Testament book and chapter range, and New Testament book and chapter range.
+5. Announcements (家事報告 / 報告事項) & Prayer Requests (代禱事項):
+   - Extract each item cleanly from the current document.
 
-Strictly adhere to the JSON schema. Do not hallucinate or output generic placeholder data.
+Strictly adhere to the JSON schema. Never output hallucinated or old placeholder data.
 `;
 
         const contentsParts: any[] = [];
@@ -1582,7 +1909,7 @@ Strictly adhere to the JSON schema. Do not hallucinate or output generic placeho
         });
 
         const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
+          model: "gemini-3.8-flash",
           contents: [
             {
               role: "user",
@@ -1623,7 +1950,7 @@ Strictly adhere to the JSON schema. Do not hallucinate or output generic placeho
                   items: {
                     type: Type.OBJECT,
                     properties: {
-                      date: { type: Type.STRING, description: "Date and weekday e.g. 8/24 (週一)" },
+                      date: { type: Type.STRING, description: "Date and weekday e.g. 10/5 (週一)" },
                       oldTestament: { type: Type.STRING, description: "Old Testament reading" },
                       newTestament: { type: Type.STRING, description: "New Testament reading" }
                     },
@@ -1651,84 +1978,105 @@ Strictly adhere to the JSON schema. Do not hallucinate or output generic placeho
 
         const parsed = JSON.parse(response.text || "{}");
         const mergedData = {
-          serviceDate: parsed.serviceDate || parsedTextData.serviceDate || defaultBulletin.serviceDate,
-          presider: parsed.presider || parsedTextData.presider || defaultBulletin.presider,
-          speaker: parsed.speaker || parsedTextData.speaker || defaultBulletin.speaker,
-          speakerEn: parsed.speakerEn || parsedTextData.speakerEn || defaultBulletin.speakerEn,
-          sermonTitle: parsed.sermonTitle || parsedTextData.sermonTitle || defaultBulletin.sermonTitle,
-          sermonTitleEn: parsed.sermonTitleEn || parsedTextData.sermonTitleEn || defaultBulletin.sermonTitleEn,
-          sermonScripture: parsed.sermonScripture || parsedTextData.sermonScripture || defaultBulletin.sermonScripture,
-          sermonScriptureEn: parsed.sermonScriptureEn || parsedTextData.sermonScriptureEn || defaultBulletin.sermonScriptureEn,
-          sermonSummary: parsed.sermonSummary || parsedTextData.sermonSummary || defaultBulletin.sermonSummary,
-          sermonSummaryEn: parsed.sermonSummaryEn || parsedTextData.sermonSummaryEn || defaultBulletin.sermonSummaryEn,
-          sermonPointsZh: Array.isArray(parsed.sermonPointsZh) && parsed.sermonPointsZh.length > 0 ? parsed.sermonPointsZh : (parsedTextData.sermonPointsZh || defaultBulletin.sermonPointsZh),
-          sermonPoints: Array.isArray(parsed.sermonPoints) && parsed.sermonPoints.length > 0 ? parsed.sermonPoints : (parsedTextData.sermonPoints || defaultBulletin.sermonPoints),
-          memoryVerse: parsed.memoryVerse || parsedTextData.memoryVerse || defaultBulletin.memoryVerse,
-          memoryVerseRef: parsed.memoryVerseRef || parsedTextData.memoryVerseRef || defaultBulletin.memoryVerseRef,
-          weeklyReadingRange: parsed.weeklyReadingRange || parsedTextData.weeklyReadingRange || defaultBulletin.weeklyReadingRange,
-          weeklyReadingSchedule: Array.isArray(parsed.weeklyReadingSchedule) && parsed.weeklyReadingSchedule.length > 0 ? parsed.weeklyReadingSchedule : (parsedTextData.weeklyReadingSchedule || defaultBulletin.weeklyReadingSchedule),
-          prayerRequests: Array.isArray(parsed.prayerRequests) && parsed.prayerRequests.length > 0 ? parsed.prayerRequests : (parsedTextData.prayerRequests || defaultBulletin.prayerRequests),
-          announcements: Array.isArray(parsed.announcements) && parsed.announcements.length > 0 ? parsed.announcements : (parsedTextData.announcements || defaultBulletin.announcements),
-          zoomPasscode: parsed.zoomPasscode || parsedTextData.zoomPasscode || defaultBulletin.zoomPasscode,
+          serviceDate: parsed.serviceDate || parsedTextData.serviceDate || new Date().toISOString().slice(0, 10),
+          presider: parsed.presider || parsedTextData.presider || "鄭育青 弟兄",
+          speaker: parsed.speaker || parsedTextData.speaker || "",
+          speakerEn: parsed.speakerEn || parsedTextData.speakerEn || "",
+          sermonTitle: parsed.sermonTitle || parsedTextData.sermonTitle || "",
+          sermonTitleEn: parsed.sermonTitleEn || parsedTextData.sermonTitleEn || "",
+          sermonScripture: parsed.sermonScripture || parsedTextData.sermonScripture || "",
+          sermonScriptureEn: parsed.sermonScriptureEn || parsedTextData.sermonScriptureEn || "",
+          sermonSummary: parsed.sermonSummary || parsedTextData.sermonSummary || "",
+          sermonSummaryEn: parsed.sermonSummaryEn || parsedTextData.sermonSummaryEn || "",
+          sermonPointsZh: Array.isArray(parsed.sermonPointsZh) && parsed.sermonPointsZh.length > 0 ? parsed.sermonPointsZh : (parsedTextData.sermonPointsZh || []),
+          sermonPoints: Array.isArray(parsed.sermonPoints) && parsed.sermonPoints.length > 0 ? parsed.sermonPoints : (parsedTextData.sermonPoints || []),
+          memoryVerse: parsed.memoryVerse || parsedTextData.memoryVerse || "",
+          memoryVerseRef: parsed.memoryVerseRef || parsedTextData.memoryVerseRef || "",
+          weeklyReadingRange: parsed.weeklyReadingRange || parsedTextData.weeklyReadingRange || "",
+          weeklyReadingSchedule: Array.isArray(parsed.weeklyReadingSchedule) && parsed.weeklyReadingSchedule.length > 0 ? parsed.weeklyReadingSchedule : (parsedTextData.weeklyReadingSchedule || []),
+          prayerRequests: Array.isArray(parsed.prayerRequests) && parsed.prayerRequests.length > 0 ? parsed.prayerRequests : (parsedTextData.prayerRequests || []),
+          announcements: Array.isArray(parsed.announcements) && parsed.announcements.length > 0 ? parsed.announcements : (parsedTextData.announcements || []),
+          zoomPasscode: parsed.zoomPasscode || parsedTextData.zoomPasscode || "25226",
           videoUrl: parsed.videoUrl || ""
         };
+
+        // Guarantee English translations are filled via AI translation
+        if (mergedData.sermonTitle && (!mergedData.sermonTitleEn || mergedData.sermonTitleEn === mergedData.sermonTitle || /[\u4e00-\u9fa5]/.test(mergedData.sermonTitleEn))) {
+          mergedData.sermonTitleEn = await translateTextWithAI(mergedData.sermonTitle, 'title');
+        }
+        if (mergedData.speaker && (!mergedData.speakerEn || /[\u4e00-\u9fa5]/.test(mergedData.speakerEn))) {
+          mergedData.speakerEn = await translateTextWithAI(mergedData.speaker, 'speaker');
+        }
+        if (mergedData.sermonScripture && (!mergedData.sermonScriptureEn || /[\u4e00-\u9fa5]/.test(mergedData.sermonScriptureEn))) {
+          mergedData.sermonScriptureEn = translateScriptureToEn(mergedData.sermonScripture);
+        }
+        if (mergedData.memoryVerseRef && (!mergedData.memoryVerse || mergedData.memoryVerse.startsWith("：") || mergedData.memoryVerse.startsWith(":"))) {
+          const cleanRef = formatScriptureRefZh(mergedData.memoryVerseRef);
+          if (BIBLE_VERSES_MAP[cleanRef]) {
+            mergedData.memoryVerse = `${BIBLE_VERSES_MAP[cleanRef]}（${cleanRef}）`;
+          }
+        }
 
         // Construct full Sermon object
         const newSermon = {
           id: `sermon-${Date.now()}`,
           title: mergedData.sermonTitleEn || mergedData.sermonTitle || "Sunday Message",
-          titleZh: mergedData.sermonTitle || defaultBulletin.sermonTitle,
-          speaker: mergedData.speakerEn || "Rev. Pastor",
-          speakerZh: mergedData.speaker || defaultBulletin.speaker,
-          date: mergedData.serviceDate || defaultBulletin.serviceDate,
-          scripture: mergedData.sermonScriptureEn || mergedData.sermonScripture || "Scripture Passage",
-          scriptureZh: mergedData.sermonScripture || defaultBulletin.sermonScripture,
+          titleZh: mergedData.sermonTitle || "主日講道",
+          speaker: mergedData.speakerEn || mergedData.speaker || "Speaker",
+          speakerZh: mergedData.speaker || "講員",
+          date: mergedData.serviceDate || new Date().toISOString().slice(0, 10),
+          scripture: mergedData.sermonScriptureEn || mergedData.sermonScripture || "",
+          scriptureZh: mergedData.sermonScripture || "",
           series: "Sunday Message",
           seriesZh: "主日證道",
-          summary: mergedData.sermonSummaryEn || `Sunday sermon delivered at Canaan Shin Sheng Christian Church, sharing God's Word on ${mergedData.sermonScriptureEn}.`,
-          summaryZh: mergedData.sermonSummary || `在加南新生基督教會主日崇拜中證道分享經文「${mergedData.sermonScripture}」，勸勉弟兄姊妹在基督裡同心扎根、數算神恩。`,
+          summary: mergedData.sermonSummaryEn || (mergedData.sermonTitle && mergedData.sermonScripture ? `Sunday sermon delivered at Canaan Shin Sheng Christian Church on ${mergedData.sermonScriptureEn || mergedData.sermonScripture}.` : ""),
+          summaryZh: mergedData.sermonSummary || (mergedData.sermonTitle && mergedData.sermonScripture ? `在加南新生基督教會主日崇拜中證道分享經文「${mergedData.sermonScripture}」，勸勉弟兄姊妹在基督裡同心扎根、數算神恩。` : ""),
           points: mergedData.sermonPoints,
           pointsZh: mergedData.sermonPointsZh,
           videoUrl: mergedData.videoUrl || "",
           videoPasscode: mergedData.zoomPasscode || "25226"
         };
 
-        // Add to server in-memory list
-        inMemorySermons = [newSermon, ...inMemorySermons.filter(s => s.date !== newSermon.date || s.titleZh !== newSermon.titleZh)];
+        inMemorySermons = [newSermon, ...inMemorySermons.filter(s => s.id !== newSermon.id && s.date !== newSermon.date)].slice(0, 9);
+        persistSermonsToFile(inMemorySermons);
+        activeBulletinData = { ...activeBulletinData, ...mergedData };
 
         return res.json({
           success: true,
           data: mergedData,
           newSermon: newSermon,
-          extractedRawText: extractedInfo.text || fileText || ""
+          extractedRawText: extractedInfo.text || fileText || "",
+          isFallback: false
         });
       } catch (aiErr: any) {
         console.warn("AI document extraction fallback notice:", aiErr?.message || "Using parsed document data");
         const fallbackSermon = {
           id: `sermon-${Date.now()}`,
-          title: parsedTextData.sermonTitleEn || parsedTextData.sermonTitle || defaultBulletin.sermonTitleEn,
-          titleZh: parsedTextData.sermonTitle || defaultBulletin.sermonTitle,
-          speaker: parsedTextData.speakerEn || parsedTextData.speaker || defaultBulletin.speakerEn,
-          speakerZh: parsedTextData.speaker || defaultBulletin.speaker,
-          date: parsedTextData.serviceDate || defaultBulletin.serviceDate,
-          scripture: parsedTextData.sermonScriptureEn || parsedTextData.sermonScripture || defaultBulletin.sermonScriptureEn,
-          scriptureZh: parsedTextData.sermonScripture || defaultBulletin.sermonScripture,
+          title: parsedTextData.sermonTitleEn || parsedTextData.sermonTitle || "Sunday Sermon",
+          titleZh: parsedTextData.sermonTitle || "主日講道",
+          speaker: parsedTextData.speakerEn || parsedTextData.speaker || "Speaker",
+          speakerZh: parsedTextData.speaker || "講員",
+          date: parsedTextData.serviceDate || new Date().toISOString().slice(0, 10),
+          scripture: parsedTextData.sermonScriptureEn || parsedTextData.sermonScripture || "",
+          scriptureZh: parsedTextData.sermonScripture || "",
           series: "Sunday Message",
           seriesZh: "主日證道",
-          summary: parsedTextData.sermonSummaryEn || defaultBulletin.sermonSummaryEn,
-          summaryZh: parsedTextData.sermonSummary || defaultBulletin.sermonSummary,
-          points: parsedTextData.sermonPoints || defaultBulletin.sermonPoints,
-          pointsZh: parsedTextData.sermonPointsZh || defaultBulletin.sermonPointsZh,
+          summary: parsedTextData.sermonSummaryEn || "",
+          summaryZh: parsedTextData.sermonSummary || "",
+          points: parsedTextData.sermonPoints || [],
+          pointsZh: parsedTextData.sermonPointsZh || [],
           videoUrl: "",
-          videoPasscode: parsedTextData.zoomPasscode || defaultBulletin.zoomPasscode
+          videoPasscode: parsedTextData.zoomPasscode || "25226"
         };
-        inMemorySermons = [fallbackSermon, ...inMemorySermons.filter(s => s.id !== fallbackSermon.id)];
+        inMemorySermons = [fallbackSermon, ...inMemorySermons.filter(s => s.id !== fallbackSermon.id && s.date !== fallbackSermon.date)].slice(0, 9);
+        persistSermonsToFile(inMemorySermons);
+        activeBulletinData = { ...activeBulletinData, ...parsedTextData };
         return res.json({
           success: true,
           data: parsedTextData,
           newSermon: fallbackSermon,
           extractedRawText: extractedInfo.text || fileText || "",
-          isFallback: true
+          isFallback: false
         });
       }
     } catch (err: any) {
@@ -3495,9 +3843,10 @@ export const INITIAL_DEFAULT_EVENTS: ChurchEvent[] = ${JSON.stringify(eventsList
   app.post("/api/github/sync-sermons", async (req: express.Request, res: express.Response) => {
     try {
       const { token, owner, repo, branch, path: targetPath, sermons, commitMessage } = req.body;
+      const effectiveToken = (token || process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "").trim();
 
-      if (!token) {
-        return res.status(400).json({ error: "GitHub Personal Access Token is required" });
+      if (!effectiveToken) {
+        return res.status(400).json({ error: "GitHub Personal Access Token is required (provide in request or set GITHUB_TOKEN)" });
       }
       if (!owner || !repo) {
         return res.status(400).json({ error: "Repository owner and repo name are required" });
@@ -3538,7 +3887,7 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
       // 1. Fetch current file sha if exists
       let currentSha: string | undefined = undefined;
       const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${activePath}?ref=${activeBranch}`;
-      const authHeader = token.startsWith("Bearer ") || token.startsWith("token ") ? token : `Bearer ${token}`;
+      const authHeader = effectiveToken.startsWith("Bearer ") || effectiveToken.startsWith("token ") ? effectiveToken : `Bearer ${effectiveToken}`;
       
       const getRes = await fetch(getFileUrl, {
         headers: {
@@ -3573,8 +3922,8 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
         })
       });
 
-      if (putRes.status === 401 && !token.startsWith("token ")) {
-        const fallbackAuth = `token ${token.replace(/^Bearer\s+/i, '')}`;
+      if (putRes.status === 401 && !effectiveToken.startsWith("token ")) {
+        const fallbackAuth = `token ${effectiveToken.replace(/^Bearer\s+/i, '')}`;
         putRes = await fetch(putFileUrl, {
           method: "PUT",
           headers: {

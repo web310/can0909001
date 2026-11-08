@@ -33,6 +33,20 @@ export function getMasterDataFingerprint(): string {
  * Guarantees that any turned-off visibility flags (showVideo: false, showAudio: false) in the
  * deployed master take immediate effect across all deployment environments (Cloudflare Pages, GitHub).
  */
+function dedupeSermonsByDate(sermons: Sermon[]): Sermon[] {
+  const seenDates = new Set<string>();
+  const deduped: Sermon[] = [];
+  for (const s of sermons) {
+    if (s.date && !seenDates.has(s.date)) {
+      seenDates.add(s.date);
+      deduped.push(s);
+    } else if (!s.date) {
+      deduped.push(s);
+    }
+  }
+  return deduped;
+}
+
 export function loadAndSyncSermons(): Sermon[] {
   try {
     const currentFingerprint = getMasterDataFingerprint();
@@ -41,7 +55,8 @@ export function loadAndSyncSermons(): Sermon[] {
     const saved = localStorage.getItem('canaan_sermons_data');
 
     if (!saved || cachedFingerprint !== currentFingerprint || cachedVersion !== SERMONS_DATA_VERSION) {
-      const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      const sorted = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      const list = dedupeSermonsByDate(sorted).slice(0, 9);
       try {
         localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
         localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
@@ -63,19 +78,20 @@ export function loadAndSyncSermons(): Sermon[] {
         }
         return s;
       });
-      return reconciled;
+      return dedupeSermonsByDate(reconciled).slice(0, 9);
     }
   } catch (e) {
     // ignore
   }
-  return [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const sorted = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  return dedupeSermonsByDate(sorted).slice(0, 9);
 }
 
 /**
  * Force reset cache to the latest deployed INITIAL_SERMONS version.
  */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 9);
   try {
     localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
     localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());

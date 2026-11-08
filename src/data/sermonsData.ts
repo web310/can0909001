@@ -3,75 +3,27 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-10-18T22:16:18.047Z
+// Updated at: 2026-11-04T19:00:00.000Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
 // Total Sermons: 9
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-10-18-mvedxb3z";
+export const SERMONS_DATA_VERSION = "version-2026-11-04-single-10-04-clean";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
-    "id": "sermon-1792361693013",
-    "title": "從許多到一個",
-    "titleZh": "從許多到一個",
-    "speaker": "郭易君 牧師",
-    "speakerZh": "郭易君 牧師",
-    "date": "2026-10-18",
-    "scripture": "Philippians 三:1-11",
-    "scriptureZh": "腓立比書三章1-11節",
-    "series": "Sunday Message",
-    "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. 郭今天 on \"從許多到一個\", reflecting on Philippians 三:1-11.",
-    "summaryZh": "在加南新生基督教會主日崇拜中，郭牧師今天證道傳講《從許多到一個》，分享經文「腓立比書三章1-11節」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
-    "points": [],
-    "pointsZh": [],
-    "videoUrl": "",
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-1791709300951",
-    "title": "How to Open Our Spiritual Eyes",
-    "titleZh": "如何打開屬靈的眼睛",
-    "speaker": "Elder Wansi",
-    "speakerZh": "萬四長老",
-    "date": "2026-10-04",
-    "scripture": "Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18",
-    "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
-    "series": "Sunday Message",
-    "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wansi on \"How to Open Our Spiritual Eyes\", reflecting on Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18.",
-    "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享經文「以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
-    "points": [
-      "一、打開信心的眼睛（以弗所書 1:17-18）",
-      "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
-      "三、打開盼望的眼睛（羅馬書 8:18）"
-    ],
-    "pointsZh": [
-      "一、打開信心的眼睛（以弗所書 1:17-18）",
-      "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
-      "三、打開盼望的眼睛（羅馬書 8:18）"
-    ],
-    "videoUrl": "",
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
     "id": "sermon-1791706122891",
-    "title": "主是蔔萄樹，我是枝子",
-    "titleZh": "主是蔔萄樹，我是枝子",
+    "title": "The True Vine and the Branches",
+    "titleZh": "主是葡萄樹，我是枝子",
     "speaker": "Brother Zhengyi Qiu",
     "speakerZh": "邱正一 弟兄",
     "date": "2026-10-11",
-    "scripture": "John 十五:4-5,",
-    "scriptureZh": "約翰福音十五章4-5節,",
+    "scripture": "John 15:4-5",
+    "scriptureZh": "約翰福音 15:4-5",
     "series": "Sunday Message",
     "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"主是蔔萄樹，我是枝子\", reflecting on John 十五:4-5,.",
-    "summaryZh": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《主是蔔萄樹，我是枝子》，分享經文「約翰福音十五章4-5節,」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"The True Vine and the Branches\", reflecting on John 15:4-5.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《主是葡萄樹，我是枝子》，分享經文「約翰福音 15:4-5」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
     "points": [
       "1. Opening the Eyes of Faith (Ephesians 1:17-18)",
       "2. Opening the Eyes of Love (John 17:3, Philippians 3:10)",
@@ -80,36 +32,26 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     "pointsZh": [],
     "videoUrl": "",
     "videoPasscode": "25226",
-    "audioUrl": "",
     "showVideo": false,
     "showAudio": false
   },
   {
-    "id": "sermon-1791014936583",
-    "title": "How to Open Our Spiritual Eyes",
-    "titleZh": "如何打開屬靈的眼睛",
-    "speaker": "Elder Wansi",
-    "speakerZh": "萬四長老",
+    "id": "sermon-20261004",
+    "title": "From Wheel to Wheel",
+    "titleZh": "從輪到輪",
+    "speaker": "Rev. Jiasheng Huang",
+    "speakerZh": "黃嘉生 牧師",
     "date": "2026-10-04",
-    "scripture": "Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18",
-    "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
+    "scripture": "Jeremiah 18:3-6",
+    "scriptureZh": "耶利米書 18:3-6",
     "series": "Sunday Message",
     "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wansi on \"How to Open Our Spiritual Eyes\", reflecting on Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18.",
-    "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享經文「以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
-    "points": [
-      "一、打開信心的眼睛（以弗所書 1:17-18）",
-      "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
-      "三、打開盼望的眼睛（羅馬書 8:18）"
-    ],
-    "pointsZh": [
-      "一、打開信心的眼睛（以弗所書 1:17-18）",
-      "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
-      "三、打開盼望的眼睛（羅馬書 8:18）"
-    ],
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Jiasheng Huang on \"From Wheel to Wheel\", reflecting on Jeremiah 18:3-6.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，黃嘉生 牧師證道傳講《從輪到輪》，分享經文「耶利米書 18:3-6」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [],
+    "pointsZh": [],
     "videoUrl": "",
     "videoPasscode": "25226",
-    "audioUrl": "",
     "showVideo": false,
     "showAudio": false
   },
@@ -138,13 +80,12 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
-    "audioUrl": "",
     "showVideo": false,
     "showAudio": false
   },
   {
     "id": "sermon-1789261339556",
-    "title": "A fighting chance",
+    "title": "A Fighting Chance",
     "titleZh": "一線生機",
     "speaker": "Rev. Sulun Meng",
     "speakerZh": "孟蘇倫 牧師",
@@ -167,7 +108,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
-    "audioUrl": "",
     "showVideo": false,
     "showAudio": false
   },
@@ -263,6 +203,64 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "2. 挺身來關愛鄰舍 (使徒行傳 28:4-8)",
       "3. 主恩典是夠用的",
       "4. 專心尋求神引領"
+    ],
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
+  {
+    "id": "sermon-4",
+    "title": "Is Life Really Gone in the Blink of an Eye?",
+    "titleZh": "人生真的轉眼成空嗎？",
+    "speaker": "Rev. Meng Sulun",
+    "speakerZh": "孟蘇倫 牧師",
+    "date": "2026-08-09",
+    "scripture": "Ecclesiastes 1:2-3",
+    "scriptureZh": "傳道書第 1 章第 2-3 節",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
+    "summaryZh": "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』在日光之下尋找上帝賜予永恆的生命目的與公義冠冕。",
+    "points": [
+      "Vanity under the sun — Ecclesiastes 1:2-3",
+      "Everything beautiful in its time — Ecclesiastes 3:11",
+      "The whole duty of humanity — Ecclesiastes 12:13"
+    ],
+    "pointsZh": [
+      "日光之下的虛空 — 傳道書 1:2-3",
+      "神造萬物，各按其時成為美好 — 傳道書 3:11",
+      "人所當盡的分 — 傳道書 12:13"
+    ],
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
+  {
+    "id": "sermon-5",
+    "title": "Those Who Are Well Do Not Need a Physician",
+    "titleZh": "康健的人用不著醫生",
+    "speaker": "Rev. Yijun Guo",
+    "speakerZh": "郭易君 牧師",
+    "date": "2026-08-02",
+    "scripture": "Luke 5:27-32",
+    "scriptureZh": "路加福音第 5 章第 27-32 節",
+    "series": "Sunday Worship",
+    "seriesZh": "主日崇拜",
+    "summary": "Jesus called Levi at the tax booth to 'Follow Me.' Levi left everything and hosted a feast. Jesus proclaimed that the healthy do not need a physician, but those who are sick; He came to call sinners to repentance.",
+    "summaryZh": "耶穌看見稅吏利未坐在稅關上，呼召他『你跟從我來』。利未就撇下所有的，起來跟從了耶穌，並在自己家裡大擺筵席。耶穌親自宣告：康健的人用不著醫生，有病的人才用得著；祂來本不是召義人悔改，乃是召罪人悔改。",
+    "points": [
+      "1. Sitting at the Tax Booth (5:27a)",
+      "2. Follow Me (5:27b)",
+      "3. Followed Jesus (5:28)",
+      "4. Hosted a Great Feast (5:29-30)",
+      "5. Physician of Souls (5:31)"
+    ],
+    "pointsZh": [
+      "一、坐在稅關上 （5:27上）",
+      "二、你跟從我來 （5:27下）",
+      "三、跟從了耶穌 （5:28）",
+      "四、他大擺筵席 （5:29-30）",
+      "五、靈魂的醫生 （5:31）"
     ],
     "videoPasscode": "25226",
     "showVideo": false,

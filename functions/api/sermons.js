@@ -1,6 +1,119 @@
 // Cloudflare Pages Function: /api/sermons
 const DEFAULT_SERMONS = [
   {
+    "id": "sermon-1793817079155",
+    "title": "From Wheel to Wheel",
+    "titleZh": "從輪到輪",
+    "speaker": "Rev. Jiasheng Huang",
+    "speakerZh": "黃嘉生 牧師",
+    "date": "2026-10-04",
+    "scripture": "Jeremiah 18:3-6",
+    "scriptureZh": "耶利米書 18:3-6",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Jiasheng Huang on \"From Wheel to Wheel\", reflecting on Jeremiah 18:3-6.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，黃嘉生 牧師證道傳講《從輪到輪》，分享經文「耶利米書 18:3-6」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226"
+  },
+  {
+    "id": "sermon-1793817074063",
+    "title": "From Wheel to Wheel",
+    "titleZh": "從輪到輪",
+    "speaker": "Rev. Jiasheng Huang",
+    "speakerZh": "黃嘉生 牧師",
+    "date": "2026-10-04",
+    "scripture": "Jeremiah 18:3-6",
+    "scriptureZh": "耶利米書 18:3-6",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Jiasheng Huang on \"From Wheel to Wheel\", reflecting on Jeremiah 18:3-6.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，黃嘉生 牧師證道傳講《從輪到輪》，分享經文「耶利米書 18:3-6」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226"
+  },
+  {
+    "id": "sermon-1791709300951",
+    "title": "How to Open Our Spiritual Eyes",
+    "titleZh": "如何打開屬靈的眼睛",
+    "speaker": "Elder Wansi",
+    "speakerZh": "萬四長老",
+    "date": "2026-10-04",
+    "scripture": "Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18",
+    "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wansi on \"How to Open Our Spiritual Eyes\", reflecting on Ephesians 1:17-18, John 17:3, Philippians 3:10, Romans 8:18.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享經文「以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "一、打開信心的眼睛（以弗所書 1:17-18）",
+      "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
+      "三、打開盼望的眼睛（羅馬書 8:18）"
+    ],
+    "pointsZh": [
+      "一、打開信心的眼睛（以弗所書 1:17-18）",
+      "二、打開愛的眼睛（約翰福音 17:3、腓立比書 3:10）",
+      "三、打開盼望的眼睛（羅馬書 8:18）"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226"
+  },
+  {
+    "id": "sermon-1791706122891",
+    "title": "主是蔔萄樹，我是枝子",
+    "titleZh": "主是蔔萄樹，我是枝子",
+    "speaker": "Brother Zhengyi Qiu",
+    "speakerZh": "邱正一 弟兄",
+    "date": "2026-10-11",
+    "scripture": "John 十五:4-5,",
+    "scriptureZh": "約翰福音十五章4-5節,",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"主是蔔萄樹，我是枝子\", reflecting on John 十五:4-5,.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，邱正一 弟兄證道傳講《主是蔔萄樹，我是枝子》，分享經文「約翰福音十五章4-5節,」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [
+      "1. Opening the Eyes of Faith (Ephesians 1:17-18)",
+      "2. Opening the Eyes of Love (John 17:3, Philippians 3:10)",
+      "3. Opening the Eyes of Hope (Romans 8:18)"
+    ],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226"
+  },
+  {
+    "id": "sermon-1791014936583",
+    "title": "How to Open Our Spiritual Eyes",
+    "titleZh": "如何打開屬靈的眼睛",
+    "speaker": "萬四長老",
+    "speakerZh": "萬四長老",
+    "date": "2026-10-04",
+    "scripture": "Ephesians 1:17–18, John 17:3, Philippians 3:10, Romans 8:18",
+    "scriptureZh": "以弗所書 1:17-18, 約翰福音 17:3, 腓立比書 3:10, 羅馬書 8:18",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Elder Wan Si on 'How to Open Our Spiritual Eyes', based on Ephesians 1:17-18, John 17:3, Philippians 3:10, and Romans 8:18. Encouraging believers through God's word to see God's works with eyes of faith, love those around us with eyes of love, and look up to the Lord with eyes of hope.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，萬四長老證道傳講《如何打開屬靈的眼睛》，分享以弗所書第一章等多處經文，勉勵全體弟兄姊妹：藉著神的話語打開屬靈的眼睛，不只看見眼前的環境，更能憑著信心看見神的作為、用愛看待身邊的人，並帶著盼望仰望主。",
+    "points": [
+      "1. Opening the Eyes of Faith (Ephesians 1:17-18)",
+      "2. Opening the Eyes of Love (John 17:3, Philippians 3:10)",
+      "3. Opening the Eyes of Hope (Romans 8:18)"
+    ],
+    "pointsZh": [
+      "一、打開信心的眼睛",
+      "二、打開愛的眼睛",
+      "三、打開盼望的眼睛"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "",
+    "audioUrl": "",
+    "showVideo": false,
+    "showAudio": false
+  },
+  {
     "id": "sermon-1790547163293",
     "title": "Understanding the Gospel of Jesus Christ",
     "titleZh": "認識耶穌基督的福音",
@@ -26,8 +139,8 @@ const DEFAULT_SERMONS = [
     "videoUrl": "",
     "videoPasscode": "25226",
     "audioUrl": "",
-    "showVideo": true,
-    "showAudio": true
+    "showVideo": false,
+    "showAudio": false
   },
   {
     "id": "sermon-1789261339556",
@@ -125,154 +238,62 @@ const DEFAULT_SERMONS = [
     "videoPasscode": "25226",
     "showVideo": false,
     "showAudio": false
-  },
-  {
-    "id": "sermon-3",
-    "title": "A Life That Never Disappoints",
-    "titleZh": "永不失望的人生",
-    "speaker": "Evangelist ITO",
-    "speakerZh": "ITO 傳道",
-    "date": "2026-08-16",
-    "scripture": "Acts 27:20-25; Acts 28:4-8",
-    "scriptureZh": "使徒行傳第 27 章第 20-25 節、使徒行傳第 28 章第 4-8 節",
-    "series": "Sunday Message",
-    "seriesZh": "主日證道",
-    "summary": "Reflecting on Acts 27:20-25 and Acts 28:4-8 on experiencing peace in the Lord during life's storms, reaching out to care for neighbors, trusting in God's sufficient grace, and wholeheartedly seeking God's guidance.",
-    "summaryZh": "加南新生基督教會主日崇拜，ITO 傳道透過使徒行傳第 27 章 20-25 節與第 28 章 4-8 節傳講《永不失望的人生》，勉勵弟兄姊妹在風浪中堅定信靠神：在主裡面有平安、挺身來關愛鄰舍、深信主恩典是夠用的，並專心尋求神引領。",
-    "points": [
-      "1. Peace in the Lord — Acts 27:20-25",
-      "2. Stepping forward to love and care for neighbors — Acts 28:4-8",
-      "3. God's grace is sufficient",
-      "4. Wholeheartedly seeking God's guidance"
-    ],
-    "pointsZh": [
-      "1. 在主裡面有平安 (使徒行傳 27:20-25)",
-      "2. 挺身來關愛鄰舍 (使徒行傳 28:4-8)",
-      "3. 主恩典是夠用的",
-      "4. 專心尋求神引領"
-    ],
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-4",
-    "title": "Is Life Really Gone in the Blink of an Eye?",
-    "titleZh": "人生真的轉眼成空嗎？",
-    "speaker": "Rev. Meng Sulun",
-    "speakerZh": "孟蘇倫 牧師",
-    "date": "2026-08-09",
-    "scripture": "Ecclesiastes 1:2-3",
-    "scriptureZh": "傳道書第 1 章第 2-3 節",
-    "series": "Sunday Message",
-    "seriesZh": "主日證道",
-    "summary": "Reflecting on Ecclesiastes on the brevity of earthly labor and discovering eternal purpose and heavenly peace in God.",
-    "summaryZh": "『傳道者說：虛空的虛空，虛空的虛空，凡事都是虛空。人在日光之下的勞碌，有什麼益處呢？』在日光之下尋找上帝賜予永恆的生命目的與公義冠冕。",
-    "points": [
-      "Vanity under the sun — Ecclesiastes 1:2-3",
-      "Everything beautiful in its time — Ecclesiastes 3:11",
-      "The whole duty of humanity — Ecclesiastes 12:13"
-    ],
-    "pointsZh": [
-      "日光之下的虛空 — 傳道書 1:2-3",
-      "神造萬物，各按其時成為美好 — 傳道書 3:11",
-      "人所當盡的分 — 傳道書 12:13"
-    ],
-    "videoUrl": "https://us06web.zoom.us/rec/share/FrrAsHVqloU2W0s_2pKXHjhScmH3nBi57pb0wxXTZejCLOgvHjt-ciouOtVXCMPZ.8fEG3je9Hv1syxp6?startTime=1786299508000",
-    "videoPasscode": "8s4y?JHX",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-5",
-    "title": "Those Who Are Well Do Not Need a Physician",
-    "titleZh": "康健的人用不著醫生",
-    "speaker": "Rev. Yijun Guo",
-    "speakerZh": "郭易君 牧師",
-    "date": "2026-08-02",
-    "scripture": "Luke 5:27-32",
-    "scriptureZh": "路加福音第 5 章第 27-32 節",
-    "series": "Sunday Worship",
-    "seriesZh": "主日崇拜",
-    "summary": "Jesus called Levi at the tax booth to 'Follow Me.' Levi left everything and hosted a feast. Jesus proclaimed that the healthy do not need a physician, but those who are sick; He came to call sinners to repentance.",
-    "summaryZh": "耶穌看見稅吏利未坐在稅關上，呼召他『你跟從我來』。利未就撇下所有的，起來跟從了耶穌，並在自己家裡大擺筵席。耶穌親自宣告：康健的人用不著醫生，有病的人才用得著；祂來本不是召義人悔改，乃是召罪人悔改。",
-    "points": [
-      "1. Sitting at the Tax Booth (5:27a)",
-      "2. Follow Me (5:27b)",
-      "3. Followed Jesus (5:28)",
-      "4. Hosted a Great Feast (5:29-30)",
-      "5. Physician of Souls (5:31)"
-    ],
-    "pointsZh": [
-      "一、坐在稅關上 （5:27上）",
-      "二、你跟從我來 （5:27下）",
-      "三、跟從了耶穌 （5:28）",
-      "四、他大擺筵席 （5:29-30）",
-      "五、靈魂的醫生 （5:31）"
-    ],
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-6",
-    "title": "The Lord Jesus Personally Teaches Service",
-    "titleZh": "主耶穌親自教導事奉",
-    "speaker": "Brother Shaoxin Li",
-    "speakerZh": "李紹信 弟兄",
-    "date": "2026-07-26",
-    "scripture": "Luke 10:1-12, 17-21",
-    "scriptureZh": "路加福音第 10 章第 1-12，17-21 節",
-    "series": "Sunday Worship",
-    "seriesZh": "主日崇拜",
-    "summary": "Hoping that we will better understand the service that pleases the Lord, learning from Jesus sending out the seventy disciples to minister in humility, obedience, and joy.",
-    "summaryZh": "盼望我們更加認識主喜悅的事奉，學習主耶穌差遣七十個門徒出去傳道的事奉原則，在謙卑、倚靠與聖靈的喜樂中，做主所喜悅的忠心僕人。",
-    "points": [
-      "1. The Lord Personally Sends Disciples (Luke 10:1-3)",
-      "2. Principles and Attitudes of Ministry (Luke 10:4-12)",
-      "3. Rejoice That Your Names Are Written in Heaven (Luke 10:17-21)"
-    ],
-    "pointsZh": [
-      "一、主親自差遣門徒 (路加福音 10:1-3)",
-      "二、事奉的原則與態度 (路加福音 10:4-12)",
-      "三、因名記在天上而歡喜 (路加福音 10:17-21)"
-    ],
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
   }
 ];
 
 export async function onRequestGet(context) {
   try {
     const url = new URL(context.request.url);
-    const assetUrl = new URL("/canaan_master_data.json", url);
-    const res = await context.env.ASSETS.fetch(assetUrl);
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.data && Array.isArray(data.data.sermons) && data.data.sermons.length > 0) {
-        return new Response(JSON.stringify({
-          success: true,
-          sermons: data.data.sermons
-        }), {
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Cache-Control": "public, max-age=60, s-maxage=60"
+    const assetUrl = new URL('/canaan_master_data.json', url);
+    const masterRes = context.env && context.env.ASSETS
+      ? await context.env.ASSETS.fetch(assetUrl)
+      : await fetch(assetUrl);
+    if (masterRes && masterRes.ok) {
+      const masterData = await masterRes.json();
+      if (masterData && Array.isArray(masterData.data?.sermons) && masterData.data.sermons.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            sermons: masterData.data.sermons,
+            count: masterData.data.sermons.length,
+            source: 'canaan_master_data.json'
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Access-Control-Allow-Origin": "*",
+              "Cache-Control": "no-cache, no-store, must-revalidate"
+            }
           }
-        });
+        );
       }
     }
   } catch (err) {
-    // fallback
+    console.warn("Could not read canaan_master_data.json:", err);
   }
 
-  return new Response(JSON.stringify({
-    success: true,
-    sermons: DEFAULT_SERMONS
-  }), {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=60, s-maxage=60"
+  return new Response(
+    JSON.stringify({
+      success: true,
+      sermons: DEFAULT_SERMONS,
+      count: DEFAULT_SERMONS.length,
+      source: 'edge_function_fallback'
+    }),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
     }
+  );
+}
+
+export async function onRequestPost(context) {
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: { "Content-Type": "application/json; charset=utf-8" }
   });
 }
