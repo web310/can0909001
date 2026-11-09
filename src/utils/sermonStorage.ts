@@ -1,6 +1,12 @@
 import { Sermon } from '../types';
 import * as SermonsData from '../data/sermonsData';
 
+/**
+ * Strict Church Policy:
+ * 主日講道永遠保留最後時間（最新日期由新至舊排序）的 9 個，嚴格排重（同一主日僅一筆，依最新日期保留）。
+ */
+export const MAX_SERMONS = 9;
+
 export const INITIAL_SERMONS: Sermon[] = 
   (SermonsData as any).SERMON_CONTENT_LIST || 
   (SermonsData as any).INITIAL_SERMONS || 
@@ -12,6 +18,36 @@ export const SERMON_CONTENT_LIST: Sermon[] = INITIAL_SERMONS;
 export const SERMONS_DATA_VERSION: string = 
   (SermonsData as any).SERMONS_DATA_VERSION || 
   `v-${INITIAL_SERMONS.length}-${INITIAL_SERMONS[0]?.date || 'master'}`;
+
+/**
+ * Enforces strict sorting descending by date, deduplication by date/id,
+ * and limits strictly to the 9 most recent sermons.
+ */
+export function sanitizeAndLimitSermons(sermons: Sermon[]): Sermon[] {
+  if (!Array.isArray(sermons)) return [];
+
+  // 1. Filter valid entries and sort descending by date (latest first)
+  const valid = sermons.filter(s => s && typeof s === 'object');
+  const sorted = [...valid].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  // 2. Strict deduplication by date, then ID
+  const seenDates = new Set<string>();
+  const seenIds = new Set<string>();
+  const deduped: Sermon[] = [];
+
+  for (const s of sorted) {
+    const dateKey = s.date?.trim();
+    const idKey = s.id?.trim();
+    if (dateKey && seenDates.has(dateKey)) continue;
+    if (idKey && seenIds.has(idKey)) continue;
+    if (dateKey) seenDates.add(dateKey);
+    if (idKey) seenIds.add(idKey);
+    deduped.push(s);
+    if (deduped.length >= MAX_SERMONS) break;
+  }
+
+  return deduped;
+}
 
 /**
  * Generate a deterministic fingerprint of the compiled master sermons.
@@ -33,20 +69,6 @@ export function getMasterDataFingerprint(): string {
  * Guarantees that any turned-off visibility flags (showVideo: false, showAudio: false) in the
  * deployed master take immediate effect across all deployment environments (Cloudflare Pages, GitHub).
  */
-function dedupeSermonsByDate(sermons: Sermon[]): Sermon[] {
-  const seenDates = new Set<string>();
-  const deduped: Sermon[] = [];
-  for (const s of sermons) {
-    if (s.date && !seenDates.has(s.date)) {
-      seenDates.add(s.date);
-      deduped.push(s);
-    } else if (!s.date) {
-      deduped.push(s);
-    }
-  }
-  return deduped;
-}
-
 export function loadAndSyncSermons(): Sermon[] {
   try {
     const currentFingerprint = getMasterDataFingerprint();
@@ -55,8 +77,7 @@ export function loadAndSyncSermons(): Sermon[] {
     const saved = localStorage.getItem('canaan_sermons_data');
 
     if (!saved || cachedFingerprint !== currentFingerprint || cachedVersion !== SERMONS_DATA_VERSION) {
-      const sorted = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-      const list = dedupeSermonsByDate(sorted).slice(0, 9);
+      const list = sanitizeAndLimitSermons(INITIAL_SERMONS);
       try {
         localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
         localStorage.setItem('canaan_sermons_master_fingerprint', currentFingerprint);
@@ -78,20 +99,19 @@ export function loadAndSyncSermons(): Sermon[] {
         }
         return s;
       });
-      return dedupeSermonsByDate(reconciled).slice(0, 9);
+      return sanitizeAndLimitSermons(reconciled);
     }
   } catch (e) {
     // ignore
   }
-  const sorted = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  return dedupeSermonsByDate(sorted).slice(0, 9);
+  return sanitizeAndLimitSermons(INITIAL_SERMONS);
 }
 
 /**
  * Force reset cache to the latest deployed INITIAL_SERMONS version.
  */
 export function resetSermonsToDeployedMaster(): Sermon[] {
-  const list = [...INITIAL_SERMONS].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 9);
+  const list = sanitizeAndLimitSermons(INITIAL_SERMONS);
   try {
     localStorage.setItem('canaan_sermons_data', JSON.stringify(list));
     localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
@@ -99,3 +119,4 @@ export function resetSermonsToDeployedMaster(): Sermon[] {
   } catch {}
   return list;
 }
+

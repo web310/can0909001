@@ -1590,10 +1590,52 @@ Strictly output your answer as a JSON object matching this schema:
     return null;
   };
 
+  // Enforce strict church rule: 主日講道永遠保留最後時間（最新日期）的 9 個
+  const sanitizeAndLimitSermonsBackend = (list: any[]): any[] => {
+    if (!Array.isArray(list)) return [];
+    const valid = list.filter(s => s && typeof s === "object");
+    const sorted = [...valid].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    const seenDates = new Set<string>();
+    const seenIds = new Set<string>();
+    const deduped: any[] = [];
+    for (const s of sorted) {
+      const dateKey = (s.date || "").trim();
+      const idKey = (s.id || "").trim();
+      if (dateKey && seenDates.has(dateKey)) continue;
+      if (idKey && seenIds.has(idKey)) continue;
+      if (dateKey) seenDates.add(dateKey);
+      if (idKey) seenIds.add(idKey);
+      deduped.push(s);
+      if (deduped.length >= 9) break;
+    }
+    return deduped;
+  };
+
+  const loadInitialSermonsFromTs = () => {
+    try {
+      const tsPath = path.join(process.cwd(), "src", "data", "sermonsData.ts");
+      if (fs.existsSync(tsPath)) {
+        const raw = fs.readFileSync(tsPath, "utf-8");
+        const match = raw.match(/export const SERMON_CONTENT_LIST: Sermon\[\] = (\[[\s\S]*?\]);\n\n\/\/ Backwards/);
+        if (match) {
+          return JSON.parse(match[1]);
+        }
+      }
+    } catch (e) {
+      console.warn("Could not read sermons from ts file:", e);
+    }
+    return null;
+  };
+
   const initialMaster = loadInitialMasterData();
-  let inMemorySermons: any[] = (initialMaster && Array.isArray(initialMaster.sermons) && initialMaster.sermons.length > 0)
-    ? initialMaster.sermons
-    : [...INITIAL_DEFAULT_SERMONS];
+  const tsSermons = loadInitialSermonsFromTs();
+  let inMemorySermons: any[] = sanitizeAndLimitSermonsBackend(
+    (initialMaster && Array.isArray(initialMaster.sermons) && initialMaster.sermons.length > 0)
+      ? initialMaster.sermons
+      : (tsSermons && Array.isArray(tsSermons) && tsSermons.length > 0)
+        ? tsSermons
+        : [...INITIAL_DEFAULT_SERMONS]
+  );
 
   let inMemoryPrayers: any[] = (initialMaster && Array.isArray(initialMaster.prayers) && initialMaster.prayers.length > 0)
     ? initialMaster.prayers
@@ -1845,8 +1887,7 @@ Strictly output your answer as a JSON object matching this schema:
           videoUrl: parsedTextData.videoUrl || "",
           videoPasscode: parsedTextData.zoomPasscode || "25226"
         };
-        inMemorySermons = [directSermon, ...inMemorySermons.filter(s => s.id !== directSermon.id && s.date !== directSermon.date)].slice(0, 9);
-        persistSermonsToFile(inMemorySermons);
+        inMemorySermons = persistSermonsToFile([directSermon, ...inMemorySermons]);
         activeBulletinData = { ...activeBulletinData, ...parsedTextData };
         return res.json({
           success: true,
@@ -2037,8 +2078,7 @@ Strictly adhere to the JSON schema. Never output hallucinated or old placeholder
           videoPasscode: mergedData.zoomPasscode || "25226"
         };
 
-        inMemorySermons = [newSermon, ...inMemorySermons.filter(s => s.id !== newSermon.id && s.date !== newSermon.date)].slice(0, 9);
-        persistSermonsToFile(inMemorySermons);
+        inMemorySermons = persistSermonsToFile([newSermon, ...inMemorySermons]);
         activeBulletinData = { ...activeBulletinData, ...mergedData };
 
         return res.json({
@@ -2068,8 +2108,7 @@ Strictly adhere to the JSON schema. Never output hallucinated or old placeholder
           videoUrl: "",
           videoPasscode: parsedTextData.zoomPasscode || "25226"
         };
-        inMemorySermons = [fallbackSermon, ...inMemorySermons.filter(s => s.id !== fallbackSermon.id && s.date !== fallbackSermon.date)].slice(0, 9);
-        persistSermonsToFile(inMemorySermons);
+        inMemorySermons = persistSermonsToFile([fallbackSermon, ...inMemorySermons]);
         activeBulletinData = { ...activeBulletinData, ...parsedTextData };
         return res.json({
           success: true,
@@ -2574,8 +2613,10 @@ Respond in JSON format:
   });
 
   // Helper to persist sermons to src/data/sermonsData.ts and public/canaan_master_data.json
-  const persistSermonsToFile = (sermons: any[]) => {
+  const persistSermonsToFile = (sermonsInput: any[]): any[] => {
     try {
+      const sermons = sanitizeAndLimitSermonsBackend(sermonsInput);
+      inMemorySermons = sermons;
       const versionStr = `version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
       const tsContent = `import { Sermon } from '../types';
 
@@ -2685,8 +2726,10 @@ export async function onRequestPost(context) {
           console.warn("Could not sync functions/api/sermons.js:", fnErr);
         }
       }
+      return inMemorySermons;
     } catch (fsErr) {
       console.warn("Notice: persistSermonsToFile disk write warning:", fsErr);
+      return inMemorySermons;
     }
   };
 
@@ -2963,9 +3006,8 @@ export const INITIAL_PRAYERS: PrayerRequest[] = ${JSON.stringify(prayers, null, 
     try {
       const { sermons } = req.body;
       if (Array.isArray(sermons)) {
-        inMemorySermons = sermons;
-        persistSermonsToFile(sermons);
-        return res.json({ success: true, count: sermons.length });
+        const saved = persistSermonsToFile(sermons);
+        return res.json({ success: true, count: saved.length, sermons: saved });
       }
       return res.status(400).json({ error: "Sermons array required" });
     } catch (err: any) {

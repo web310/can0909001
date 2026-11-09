@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Language, Sermon } from '../types';
 import { SERMON_CONTENT_LIST, SERMONS_DATA_VERSION, INITIAL_SERMONS } from '../data/sermonsData';
-import { loadAndSyncSermons, getMasterDataFingerprint, resetSermonsToDeployedMaster } from '../utils/sermonStorage';
+import { loadAndSyncSermons, getMasterDataFingerprint, resetSermonsToDeployedMaster, sanitizeAndLimitSermons, MAX_SERMONS } from '../utils/sermonStorage';
 import { CHURCH_INFO } from '../data/churchData';
 import { SermonEditModal } from './SermonEditModal';
 import { SermonGitHubSyncModal } from './SermonGitHubSyncModal';
@@ -93,9 +93,10 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
                 showAudio: master?.showAudio === false ? false : Boolean(s.showAudio)
               };
             });
-            setSermons(reconciled);
+            const capped = sanitizeAndLimitSermons(reconciled);
+            setSermons(capped);
             try {
-              localStorage.setItem('canaan_sermons_data', JSON.stringify(reconciled));
+              localStorage.setItem('canaan_sermons_data', JSON.stringify(capped));
               localStorage.setItem('canaan_sermons_data_version', SERMONS_DATA_VERSION);
               localStorage.setItem('canaan_sermons_master_fingerprint', getMasterDataFingerprint());
             } catch {}
@@ -135,7 +136,8 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   useEffect(() => {
     const handleSermonsUpdated = (e: any) => {
       if (e.detail?.allSermons && Array.isArray(e.detail.allSermons)) {
-        setSermons(e.detail.allSermons);
+        const sanitized = sanitizeAndLimitSermons(e.detail.allSermons);
+        setSermons(sanitized);
         if (e.detail.newSermon) {
           setSelectedSermon(e.detail.newSermon);
           showToast(lang === 'zh' ? `已同步最新主日講道：「${e.detail.newSermon.titleZh}」` : `New sermon synced: "${e.detail.newSermon.titleZh}"`);
@@ -157,7 +159,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   };
 
   const syncSermonList = (newList: Sermon[], msg?: string) => {
-    const cappedList = newList.slice(0, 9);
+    const cappedList = sanitizeAndLimitSermons(newList);
     setSermons(cappedList);
     try {
       localStorage.setItem('canaan_sermons_data', JSON.stringify(cappedList));
@@ -228,27 +230,17 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   };
 
   const handleSaveSermon = (savedSermon: Sermon) => {
-    let updatedList: Sermon[] = [];
-    setSermons(prev => {
-      const exists = prev.some(s => s.id === savedSermon.id || s.date === savedSermon.date);
-      if (exists) {
-        updatedList = prev.map(s => (s.id === savedSermon.id || s.date === savedSermon.date) ? { ...s, ...savedSermon, id: s.id } : s);
-      } else {
-        // Prepend new sermon to top of list
-        updatedList = [savedSermon, ...prev];
-      }
-      return updatedList;
-    });
+    // 1. Remove existing duplicate sermon with the same id OR date
+    const filtered = sermons.filter(s => s.id !== savedSermon.id && s.date !== savedSermon.date);
+    // 2. Prepend savedSermon, sort by date descending, and enforce strictly top 9
+    const fullList = sanitizeAndLimitSermons([savedSermon, ...filtered]);
+
+    setSermons(fullList);
 
     // Update currently viewed sermon if it's open
     if (selectedSermon && (selectedSermon.id === savedSermon.id || selectedSermon.date === savedSermon.date)) {
       setSelectedSermon(savedSermon);
     }
-
-    // Determine updated list reliably from current sermons state (strictly max 9)
-    const fullList = (sermons.some(s => s.id === savedSermon.id || s.date === savedSermon.date)
-      ? sermons.map(s => (s.id === savedSermon.id || s.date === savedSermon.date) ? { ...s, ...savedSermon, id: s.id } : s)
-      : [savedSermon, ...sermons]).slice(0, 9);
 
     try {
       localStorage.setItem('canaan_sermons_data', JSON.stringify(fullList));
@@ -269,7 +261,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
       })
     );
 
-    showToast(lang === 'zh' ? `講道「${savedSermon.titleZh || savedSermon.title}」已成功儲存並同步至代碼檔案！` : `Sermon saved and file synced!`);
+    showToast(lang === 'zh' ? `講道「${savedSermon.titleZh || savedSermon.title}」已成功儲存（保持最新時間的 9 篇講道）！` : `Sermon saved (strictly maintaining 9 most recent sermons)!`);
   };
 
   const handleToggleVisibility = (sermonId: string, type: 'video' | 'audio') => {
@@ -304,7 +296,7 @@ export const SermonArchive: React.FC<SermonProps> = ({ lang, adminEmail, onOpenG
   };
 
   const handleDeleteSermon = (sermonId: string) => {
-    const remainingSermons = sermons.filter(s => s.id !== sermonId);
+    const remainingSermons = sanitizeAndLimitSermons(sermons.filter(s => s.id !== sermonId));
     
     // Update React state
     setSermons(remainingSermons);

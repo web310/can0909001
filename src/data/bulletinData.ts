@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-10-04T23:54:17.645Z
+// Updated at: 2026-11-08T16:25:00.000Z
 // ============================================================================
 
 export interface BulletinData {
@@ -44,90 +44,101 @@ export interface BulletinData {
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = {
-  "serviceDate": "2026-10-04",
+  "serviceDate": "2026-11-08",
   "presider": "鄭育青 弟兄",
-  "speaker": "黃嘉生 牧師",
-  "speakerEn": "Rev. Jiasheng Huang",
-  "sermonTitle": "從輪到輪",
-  "sermonTitleEn": "From Wheel to Wheel",
-  "sermonScripture": "耶利米書 18:3-6",
-  "sermonScriptureEn": "Jeremiah 18:3-6",
-  "sermonSummary": "在加南新生基督教會主日崇拜中，黃嘉生 牧師證道傳講《從輪到輪》，分享經文「耶利米書 18:3-6」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
-  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Jiasheng Huang on \"From Wheel to Wheel\", reflecting on Jeremiah 18:3-6.",
-  "sermonPointsZh": [],
-  "sermonPoints": [],
-  "memoryVerseZh": "惟喜愛耶和華的律法，晝夜思想，這人便為有福！他要像一棵樹栽在溪水旁，按時候結果子，葉子也不枯乾。凡他所做的盡都順利。（詩篇 1:2-3）",
-  "memoryVerseEn": "Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take or sit in the company of mockers, but whose delight is in the law of the Lord, and who meditates on his law day and night. That person is like a tree planted by streams of water, which yields its fruit in season and whose leaf does not wither—whatever they do prospers. (Psalms 1:2-3)",
-  "memoryVerseRef": "詩篇 1:2-3",
-  "verseReference": "詩篇 1:2-3 / Psalms 1:2-3",
-  "readingRange": "10/5 - 10/11",
+  "speaker": "邱正一 弟兄",
+  "speakerEn": "Brother Zhengyi Qiu",
+  "sermonTitle": "耶穌所賜的真自由",
+  "sermonTitleEn": "The True Freedom Given by Jesus",
+  "sermonScripture": "約翰福音第 8 章第 34-36 節",
+  "sermonScriptureEn": "John 8:34-36",
+  "sermonSummary": "加南新生基督教會主日崇拜，邱正一 弟兄證道傳講《耶穌所賜的真自由》，經文取自「約翰福音第 8 章第 34-36 節」，勉勵弟兄姊妹經歷神持久的愛，識破罪的誘騙，在基督裡享受真實的救恩與自由。",
+  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"The True Freedom Given by Jesus\", reflecting on John 8:34-36.",
+  "sermonPointsZh": [
+    "一、原來神一直愛我",
+    "二、原來罪一直騙我",
+    "三、原來耶穌已為我成就救恩！"
+  ],
+  "sermonPoints": [
+    "1. God has always loved me",
+    "2. Sin has always deceived me",
+    "3. Jesus has already accomplished salvation for me!"
+  ],
+  "memoryVerseZh": "主就是那靈、主的靈在那裡、那裡就得以自由。（哥林多後書 3:17）",
+  "memoryVerseEn": "Now the Lord is the Spirit, and where the Spirit of the Lord is, there is freedom. (2 Corinthians 3:17)",
+  "memoryVerseRef": "哥林多後書 3:17",
+  "verseReference": "哥林多後書 3:17 / 2 Corinthians 3:17",
+  "readingRange": "11/9 - 11/17",
   "schedule": [
     {
-      "date": "9/7 (週一)",
-      "dateEn": "9/7 (Mon)",
-      "oldTestament": "箴言 1-2",
-      "oldTestamentEn": "Proverbs 1-2",
-      "newTestament": "哥林多前書 16",
-      "newTestamentEn": "1 Corinthians 16"
+      "date": "11/9 (週一)",
+      "dateEn": "11/9 (Mon)",
+      "oldTestament": "耶利米書 46-47",
+      "oldTestamentEn": "Jeremiah 46-47",
+      "newTestament": "希伯來書 6",
+      "newTestamentEn": "Hebrews 6"
     },
     {
-      "date": "9/8 (週二)",
-      "dateEn": "9/8 (Tue)",
-      "oldTestament": "箴言 3-5",
-      "oldTestamentEn": "Proverbs 3-5",
-      "newTestament": "哥林多後書 1",
-      "newTestamentEn": "2 Corinthians 1"
+      "date": "11/10 (週二)",
+      "dateEn": "11/10 (Tue)",
+      "oldTestament": "耶利米書 48-49",
+      "oldTestamentEn": "Jeremiah 48-49",
+      "newTestament": "希伯來書 7",
+      "newTestamentEn": "Hebrews 7"
     },
     {
-      "date": "9/9 (週三)",
-      "dateEn": "9/9 (Wed)",
-      "oldTestament": "箴言 6-7",
-      "oldTestamentEn": "Proverbs 6-7",
-      "newTestament": "哥林多後書 2",
-      "newTestamentEn": "2 Corinthians 2"
+      "date": "11/11 (週三)",
+      "dateEn": "11/11 (Wed)",
+      "oldTestament": "耶利米書 50",
+      "oldTestamentEn": "Jeremiah 50",
+      "newTestament": "希伯來書 8",
+      "newTestamentEn": "Hebrews 8"
     },
     {
-      "date": "9/10 (週四)",
-      "dateEn": "9/10 (Thu)",
-      "oldTestament": "箴言 8-9",
-      "oldTestamentEn": "Proverbs 8-9",
-      "newTestament": "哥林多後書 3",
-      "newTestamentEn": "2 Corinthians 3"
+      "date": "11/12 (週四)",
+      "dateEn": "11/12 (Thu)",
+      "oldTestament": "耶利米書 51-52",
+      "oldTestamentEn": "Jeremiah 51-52",
+      "newTestament": "希伯來書 9",
+      "newTestamentEn": "Hebrews 9"
     },
     {
-      "date": "9/11 (週五)",
-      "dateEn": "9/11 (Fri)",
-      "oldTestament": "箴言 10-12",
-      "oldTestamentEn": "Proverbs 10-12",
-      "newTestament": "哥林多後書 4",
-      "newTestamentEn": "2 Corinthians 4"
+      "date": "11/15 (週五)",
+      "dateEn": "11/15 (Fri)",
+      "oldTestament": "以西結書 1-2",
+      "oldTestamentEn": "Ezekiel 1-2",
+      "newTestament": "希伯來書 11:1-19",
+      "newTestamentEn": "Hebrews 11:1-19"
     },
     {
-      "date": "9/12 (週六)",
-      "dateEn": "9/12 (Sat)",
-      "oldTestament": "箴言 13-15",
-      "oldTestamentEn": "Proverbs 13-15",
-      "newTestament": "哥林多後書 5",
-      "newTestamentEn": "2 Corinthians 5"
+      "date": "11/16 (週六)",
+      "dateEn": "11/16 (Sat)",
+      "oldTestament": "以西結書 3-4",
+      "oldTestamentEn": "Ezekiel 3-4",
+      "newTestament": "希伯來書 11:20-40",
+      "newTestamentEn": "Hebrews 11:20-40"
     },
     {
-      "date": "9/13 (週日)",
-      "dateEn": "9/13 (Sun)",
-      "oldTestament": "箴言 16-18",
-      "oldTestamentEn": "Proverbs 16-18",
-      "newTestament": "哥林多後書 6",
-      "newTestamentEn": "2 Corinthians 6"
+      "date": "11/17 (週日)",
+      "dateEn": "11/17 (Sun)",
+      "oldTestament": "以西結書 5-7",
+      "oldTestamentEn": "Ezekiel 5-7",
+      "newTestament": "希伯來書 12",
+      "newTestamentEn": "Hebrews 12"
     }
   ],
   "announcements": [
-    "年度標題同心合一，興旺福音，建造教會 \u0000 \u0001\t 感謝萬四長老今天帶來的訊息，願我們藉著神的話語，打開屬靈的眼睛，不只看見眼前的環境，更能憑著信心看見神的作為、用愛看待身邊的人，並帶著盼望仰望主。",
-    "下週將再次邀請邱正一弟兄前來證道，請弟兄姊妹"
+    "感謝邱正一弟兄帶來的信息，求主幫助我們不再被罪捆綁，常常活在祂的愛與恩典中，靠著主活出自由、喜樂的新生命。",
+    "下週由蔡豐智弟兄前來講道，願主帶領信息預備，賜講員智慧與感動，也預備弟兄姊妹的心，使大家領受主的話語，生命得著造就。",
+    "週間禱告會於每週四晚上八點以 Zoom 線上舉行（ID 3106266103 及 Passcode 25226），福音事工需要禱告的力量，鼓勵弟兄姊妹踴躍參加，一同禱告。",
+    "11/14（週六）教會將舉辦健行活動，歡迎弟兄姊妹一起來！活動詳情請參閱 WeChat 新生健行隊，或洽 Simon。"
   ],
   "prayerRequests": [
-    "為妮姊妹與 Andrew 弟兄的術後恢復禱告：求主施恩醫治，保守兩位術後恢復順利，減輕疼痛與不適，賜下平安、力量與智慧，也看顧家庭、減輕家人的壓力；願他們在恢復過程中更深經歷主的恩典與同在，身心靈都得著更新。",
-    "近日教會有些許新面孔的出現，求主感動並帶領新朋友來到教會，讓他們在主裡得著平安與愛；也求主眷顧許久未來聚會的弟兄姊妹，親自吸引他們回到教會，在主裡重新得力，經歷.神的恩典與同在。",
-    "為教會兄姊在外就業及就學的兒女禱告：求主親自保守看顧，賜他們智慧、平安與力量，在工作與學業中有好的學習與成長；也求主引導前面的道路，保守出入平安，在各樣環境中持守信仰、倚靠主，經歷神的恩典與帶領。",
-    "求主帶領新招牌製作與網頁設計，賜參與服事的弟兄姊妹智慧，使一切安排合乎主的心意，成為接觸社區、傳揚福音的橋樑，為教會未來的宣教事工預備道路。"
+    "為談妮姊妹頸椎手術後恢復與復健禱告，求主減輕肩頸疼痛及僵硬，賜她耐心與力量，身體逐漸康復；也求主看顧她的先生及母親，保守身體健康、平安。",
+    "求主看顧保守 Luke 的復健過程，賜下耐心與力量，幫助身體逐漸恢復，保守每一次復健都順利，一天比一天更好，心中常有平安與盼望。",
+    "願主時時看顧保守蔡長老及鄭長老，賜他們健康的身體與充沛的精神，遠離病痛，每日出入平安，身心靈健壯，常常經歷主的恩典與平安。",
+    "為教會新招牌及網頁設計代禱：願主帶領各項製作順利，賜服事的弟兄姊妹智慧與合一，使設計合乎主的心意，成為接觸社區、傳揚福音的美好橋樑。",
+    "為今日禮拜後長執會議代禱：願主賜福並帶領會議，賜予每位長執聰明、智慧與合一的心，能同心討論、妥善規劃明年教會的方向與事工，為教會未來的發展與福音使命作好預備，一切安排都合乎主的心意。"
   ],
   "zoomPasscode": "25226",
   "videoUrl": ""

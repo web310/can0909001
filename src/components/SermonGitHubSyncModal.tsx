@@ -25,6 +25,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { Sermon, Language } from '../types';
+import { sanitizeAndLimitSermons } from '../utils/sermonStorage';
 
 interface SermonGitHubSyncModalProps {
   lang: Language;
@@ -47,6 +48,9 @@ export const SermonGitHubSyncModal: React.FC<SermonGitHubSyncModalProps> = ({
   const [serverSyncSuccess, setServerSyncSuccess] = useState(false);
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'github-push' | 'export' | 'guide' | 'backup'>('github-push');
+
+  // Enforce latest 9 Sunday sermons retention rule
+  const activeSermons = sanitizeAndLimitSermons(sermons);
 
   // GitHub Direct Push Configuration
   const [githubToken, setGithubToken] = useState(() => {
@@ -88,7 +92,7 @@ export const SermonGitHubSyncModal: React.FC<SermonGitHubSyncModalProps> = ({
 
   // Helper to generate clean sermonsData.ts file string
   const generateTypeScriptCode = () => {
-    const sermonsJson = JSON.stringify(sermons, null, 2);
+    const sermonsJson = JSON.stringify(activeSermons, null, 2);
     const versionStr = `version-${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
 
     return `import { Sermon } from '../types';
@@ -98,7 +102,7 @@ export const SermonGitHubSyncModal: React.FC<SermonGitHubSyncModalProps> = ({
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
 // Updated at: ${new Date().toISOString()}
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
-// Total Sermons: ${sermons.length}
+// Total Sermons: ${activeSermons.length}
 // ============================================================================
 
 export const SERMONS_DATA_VERSION = "${versionStr}";
@@ -132,7 +136,7 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
     setPushError(null);
     setPushSuccessResult(null);
 
-    const defaultCommitMsg = `feat(sermons): update Sunday sermon archive (${sermons.length} records) - ${new Date().toISOString().slice(0, 10)}`;
+    const defaultCommitMsg = `feat(sermons): update Sunday sermon archive (${activeSermons.length} records) - ${new Date().toISOString().slice(0, 10)}`;
     const commitMessage = customCommitMsg.trim() || defaultCommitMsg;
 
     try {
@@ -147,7 +151,7 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
             repo,
             branch: targetBranch,
             path: targetPath,
-            sermons,
+            sermons: activeSermons,
             commitMessage
           })
         });
@@ -257,7 +261,7 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
         if (masterRes.ok) {
           const masterJson = await masterRes.json();
           if (masterJson && masterJson.data) {
-            masterJson.data.sermons = sermons;
+            masterJson.data.sermons = activeSermons;
             masterJson.exportedAt = new Date().toISOString();
             const masterContent = btoa(unescape(encodeURIComponent(JSON.stringify(masterJson, null, 2))));
             let masterSha: string | undefined;
@@ -272,7 +276,7 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
               method: 'PUT',
               headers: { Authorization: authHeader, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                message: `chore(data): update master snapshot with latest sermons (${sermons.length})`,
+                message: `chore(data): update master snapshot with latest sermons (${activeSermons.length})`,
                 content: masterContent,
                 branch: targetBranch,
                 sha: masterSha
@@ -287,7 +291,7 @@ export const RECENT_SERMONS: Sermon[] = SERMON_CONTENT_LIST;
       // Also sync functions/api/sermons.js to GitHub repository
       try {
         const edgeFnCode = `// Cloudflare Pages Function: /api/sermons
-const DEFAULT_SERMONS = ${JSON.stringify(sermons, null, 2)};
+const DEFAULT_SERMONS = ${JSON.stringify(activeSermons, null, 2)};
 
 export async function onRequestGet(context) {
   try {

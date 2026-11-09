@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Language, Sermon } from '../types';
 import { SERMON_CONTENT_LIST, WEEKLY_BIBLE_READING } from '../data/churchData';
+import { loadAndSyncSermons, sanitizeAndLimitSermons } from '../utils/sermonStorage';
 import { INITIAL_BULLETIN_DATA } from '../data/bulletinData';
 import { parseBulletinFromText, translateTextWithAI, translateScriptureToEn, formatScriptureRefZh, BIBLE_VERSES_MAP } from '../utils/bulletinParser';
 import { SermonEditModal } from './SermonEditModal';
@@ -139,13 +140,18 @@ export const BulletinAdminModal: React.FC<BulletinAdminModalProps> = ({
 
   const syncSermonToStore = (sermonToSave: Sermon) => {
     try {
-      const currentSermons = SERMON_CONTENT_LIST;
+      const currentSermons = loadAndSyncSermons();
 
-      // Prepend or replace if same date or same id (ensure strictly one sermon per Sunday date)
+      // Prepend or replace if same date or same id (strictly maintaining latest 9 sermons by date)
       const filtered = currentSermons.filter(
         s => s.id !== sermonToSave.id && s.date !== sermonToSave.date
       );
-      const updatedSermons = [sermonToSave, ...filtered].slice(0, 9);
+      const updatedSermons = sanitizeAndLimitSermons([sermonToSave, ...filtered]);
+
+      // Save to localStorage
+      try {
+        localStorage.setItem('canaan_sermons_data', JSON.stringify(updatedSermons));
+      } catch {}
 
       // Dispatch global events for instant reactive UI updates
       window.dispatchEvent(
