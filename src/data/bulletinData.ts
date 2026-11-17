@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-08T16:25:00.000Z
+// Updated at: 2026-11-17T16:36:12.129Z
 // ============================================================================
 
 export interface BulletinData {
@@ -44,29 +44,21 @@ export interface BulletinData {
 }
 
 export const INITIAL_BULLETIN_DATA: BulletinData = {
-  "serviceDate": "2026-11-08",
-  "presider": "鄭育青 弟兄",
-  "speaker": "邱正一 弟兄",
-  "speakerEn": "Brother Zhengyi Qiu",
-  "sermonTitle": "耶穌所賜的真自由",
-  "sermonTitleEn": "The True Freedom Given by Jesus",
-  "sermonScripture": "約翰福音第 8 章第 34-36 節",
-  "sermonScriptureEn": "John 8:34-36",
-  "sermonSummary": "加南新生基督教會主日崇拜，邱正一 弟兄證道傳講《耶穌所賜的真自由》，經文取自「約翰福音第 8 章第 34-36 節」，勉勵弟兄姊妹經歷神持久的愛，識破罪的誘騙，在基督裡享受真實的救恩與自由。",
-  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Zhengyi Qiu on \"The True Freedom Given by Jesus\", reflecting on John 8:34-36.",
-  "sermonPointsZh": [
-    "一、原來神一直愛我",
-    "二、原來罪一直騙我",
-    "三、原來耶穌已為我成就救恩！"
-  ],
-  "sermonPoints": [
-    "1. God has always loved me",
-    "2. Sin has always deceived me",
-    "3. Jesus has already accomplished salvation for me!"
-  ],
+  "serviceDate": "2026-11-15",
+  "presider": "鄭育青 鄭育青 弟兄",
+  "speaker": "蔡豐智 弟兄",
+  "speakerEn": "Brother Brother Cai Fengzhi",
+  "sermonTitle": "人生帳棚與帳棚人生",
+  "sermonTitleEn": "Life in Tents and Life in Tents",
+  "sermonScripture": "哥林多後書 5:1",
+  "sermonScriptureEn": "2 Corinthians 5:1",
+  "sermonSummary": "在加南新生基督教會主日崇拜中，蔡豐智 弟兄證道傳講《人生帳棚與帳棚人生》，分享經文「哥林多後書 5:1」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+  "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother 蔡豐智 on \"人生帳棚與帳棚人生\", reflecting on 2 Corinthians 5:1.",
+  "sermonPointsZh": [],
+  "sermonPoints": [],
   "memoryVerseZh": "主就是那靈、主的靈在那裡、那裡就得以自由。（哥林多後書 3:17）",
   "memoryVerseEn": "Now the Lord is the Spirit, and where the Spirit of the Lord is, there is freedom. (2 Corinthians 3:17)",
-  "memoryVerseRef": "哥林多後書 3:17",
+  "memoryVerseRef": "",
   "verseReference": "哥林多後書 3:17 / 2 Corinthians 3:17",
   "readingRange": "11/9 - 11/17",
   "schedule": [
@@ -127,19 +119,11 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
       "newTestamentEn": "Hebrews 12"
     }
   ],
-  "announcements": [
-    "感謝邱正一弟兄帶來的信息，求主幫助我們不再被罪捆綁，常常活在祂的愛與恩典中，靠著主活出自由、喜樂的新生命。",
-    "下週由蔡豐智弟兄前來講道，願主帶領信息預備，賜講員智慧與感動，也預備弟兄姊妹的心，使大家領受主的話語，生命得著造就。",
-    "週間禱告會於每週四晚上八點以 Zoom 線上舉行（ID 3106266103 及 Passcode 25226），福音事工需要禱告的力量，鼓勵弟兄姊妹踴躍參加，一同禱告。",
-    "11/14（週六）教會將舉辦健行活動，歡迎弟兄姊妹一起來！活動詳情請參閱 WeChat 新生健行隊，或洽 Simon。"
-  ],
-  "prayerRequests": [
-    "為談妮姊妹頸椎手術後恢復與復健禱告，求主減輕肩頸疼痛及僵硬，賜她耐心與力量，身體逐漸康復；也求主看顧她的先生及母親，保守身體健康、平安。",
-    "求主看顧保守 Luke 的復健過程，賜下耐心與力量，幫助身體逐漸恢復，保守每一次復健都順利，一天比一天更好，心中常有平安與盼望。",
-    "願主時時看顧保守蔡長老及鄭長老，賜他們健康的身體與充沛的精神，遠離病痛，每日出入平安，身心靈健壯，常常經歷主的恩典與平安。",
-    "為教會新招牌及網頁設計代禱：願主帶領各項製作順利，賜服事的弟兄姊妹智慧與合一，使設計合乎主的心意，成為接觸社區、傳揚福音的美好橋樑。",
-    "為今日禮拜後長執會議代禱：願主賜福並帶領會議，賜予每位長執聰明、智慧與合一的心，能同心討論、妥善規劃明年教會的方向與事工，為教會未來的發展與福音使命作好預備，一切安排都合乎主的心意。"
-  ],
+  "announcements": [],
+  "prayerRequests": [],
   "zoomPasscode": "25226",
-  "videoUrl": ""
+  "videoUrl": "",
+  "memoryVerse": "",
+  "weeklyReadingRange": "",
+  "weeklyReadingSchedule": []
 };
