@@ -3,14 +3,34 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-08T16:24:00.000Z
-// Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest 9 Sunday sermons)
+// Updated at: 2026-11-17T16:36:12.128Z
+// Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
 // Total Sermons: 9
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-11-08-nine-sermons-official";
+export const SERMONS_DATA_VERSION = "version-2026-11-17-mwkwzhsw";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
+  {
+    "id": "sermon-20261115",
+    "title": "Life in Tents and Life in Tents",
+    "titleZh": "人生帳棚與帳棚人生",
+    "speaker": "Brother Brother Cai Fengzhi",
+    "speakerZh": "蔡豐智 弟兄",
+    "date": "2026-11-15",
+    "scripture": "2 Corinthians 5:1",
+    "scriptureZh": "哥林多後書 5:1",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother 蔡豐智 on \"人生帳棚與帳棚人生\", reflecting on 2 Corinthians 5:1.",
+    "summaryZh": "在加南新生基督教會主日崇拜中，蔡豐智 弟兄證道傳講《人生帳棚與帳棚人生》，分享經文「哥林多後書 5:1」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
+    "points": [],
+    "pointsZh": [],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
   {
     "id": "sermon-20261108",
     "title": "The True Freedom Given by Jesus",
@@ -233,36 +253,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "1. 紀念過去：住棚節的背景，禮節與意義",
       "2. 活在當下：住棚節的水與光（基督是活水與世界的光）",
       "3. 盼望等候神永遠的同在：新天新地，神的帳幕在人間"
-    ],
-    "videoUrl": "",
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-20260913",
-    "title": "A Ray of Hope",
-    "titleZh": "一線生機",
-    "speaker": "Rev. Sulun Meng",
-    "speakerZh": "孟蘇倫 牧師",
-    "date": "2026-09-13",
-    "scripture": "Joshua 2:15-21",
-    "scriptureZh": "約書亞記第二章第 15-21 節",
-    "series": "Sunday Message",
-    "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Rev. Sulun Meng on \"A Ray of Hope\", reflecting on Joshua 2:15-21.",
-    "summaryZh": "加南新生基督教會主日崇拜，孟蘇倫 牧師證道傳講《一線生機》，經文取自「約書亞記第二章第 15-21 節」，以喇合窗上的朱紅線繩引領弟兄姊妹仰望十字架，深信在任何絕境中耶穌基督都是我們唯一的一線生機。",
-    "points": [
-      "1. Experiencing hope in hopeless situations",
-      "2. Receiving deliverance in the face of judgment",
-      "3. Life and hope within the promised boundaries",
-      "Conclusion: The scarlet cord on the cross — Jesus Christ is the ray of hope for all humanity"
-    ],
-    "pointsZh": [
-      "一、在絕境中經歷生機",
-      "二、在審判時獲得生機",
-      "三、界線之內才有生機",
-      "結語：十字架上的朱紅線——耶穌基督是全人類的「一線生機」"
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
