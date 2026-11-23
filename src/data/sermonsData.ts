@@ -3,29 +3,73 @@ import { Sermon } from '../types';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - SUNDAY SERMONS MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-17T16:36:12.128Z
+// Updated at: 2026-11-23T23:42:58.816Z
 // Authoritative Constant: SERMON_CONTENT_LIST (Retaining latest Sunday sermons)
 // Total Sermons: 9
 // ============================================================================
 
-export const SERMONS_DATA_VERSION = "version-2026-11-17-mwkwzhsw";
+export const SERMONS_DATA_VERSION = "version-2026-11-23-mwtwvg1s";
 
 export const SERMON_CONTENT_LIST: Sermon[] = [
   {
-    "id": "sermon-20261115",
-    "title": "Life in Tents and Life in Tents",
-    "titleZh": "人生帳棚與帳棚人生",
-    "speaker": "Brother Brother Cai Fengzhi",
-    "speakerZh": "蔡豐智 弟兄",
-    "date": "2026-11-15",
-    "scripture": "2 Corinthians 5:1",
-    "scriptureZh": "哥林多後書 5:1",
+    "id": "sermon-20261122",
+    "title": "Understanding God's Building",
+    "titleZh": "認識神的建造",
+    "speaker": "Brother Shaoxin Li",
+    "speakerZh": "李紹信 弟兄",
+    "date": "2026-11-22",
+    "scripture": "Psalm 127:1-5",
+    "scriptureZh": "詩篇 127 篇 1-5 節",
     "series": "Sunday Message",
     "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother 蔡豐智 on \"人生帳棚與帳棚人生\", reflecting on 2 Corinthians 5:1.",
-    "summaryZh": "在加南新生基督教會主日崇拜中，蔡豐智 弟兄證道傳講《人生帳棚與帳棚人生》，分享經文「哥林多後書 5:1」，勸勉弟兄姊妹同心扎根信仰、數算主恩。",
-    "points": [],
-    "pointsZh": [],
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Shaoxin Li on \"Understanding God's Building\", reflecting on Psalm 127:1-5, reminding believers at year's end of God's heart for building His church and His children by trusting the Lord in church ministry and family life.",
+    "summaryZh": "加南新生基督教會主日崇拜，李紹信 弟兄證道傳講《認識神的建造》，分享經文「詩篇 127 篇 1-5 節」。歲末年終之際，提醒弟兄姊妹再次認識神對「建造神的教會、建造神的兒女」的心意：若不是耶和華建造，所做的一切都是枉然；求主幫助我們在教會服事與家庭生活中凡事倚靠主、尋求主心意，使教會更加合一。",
+    "points": [
+      "Theme: At year's end, renewing our understanding of God's heart for building His church and His children",
+      "1. Unless the Lord builds the house, the builders labor in vain (Psalm 127:1)",
+      "2. For He grants sleep to those He loves (Psalm 127:2)",
+      "3. Children are a heritage and reward from the Lord (Psalm 127:3-5)",
+      "4. Relying on the Lord and seeking His will in church ministry and family life to grow in unity"
+    ],
+    "pointsZh": [
+      "主旨：歲末年終，再次認識神對【建造神的教會、建造神的兒女】的心意",
+      "一、若不是耶和華建造房屋，建造的人就枉然勞力（詩篇 127:1）",
+      "二、惟有耶和華所親愛的，必叫他安然睡覺（詩篇 127:2）",
+      "三、兒女是耶和華所賜的產業與賞賜（詩篇 127:3-5）",
+      "四、在教會服事與家庭生活中凡事倚靠主、尋求主心意，使教會更加合一"
+    ],
+    "videoUrl": "",
+    "videoPasscode": "25226",
+    "showVideo": false,
+    "showAudio": false
+  },
+  {
+    "id": "sermon-20261115",
+    "title": "The Tent of Life and Living as in a Tent",
+    "titleZh": "人生帳棚與帳棚人生",
+    "speaker": "Brother Fengzhi Cai",
+    "speakerZh": "蔡豐智 弟兄",
+    "date": "2026-11-15",
+    "scripture": "2 Corinthians 5:1, Hebrews 11:8-10",
+    "scriptureZh": "哥林多後書第 5 章第 1 節，希伯來書第 11 章第 8-10 節",
+    "series": "Sunday Message",
+    "seriesZh": "主日證道",
+    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Fengzhi Cai on \"The Tent of Life and Living as in a Tent\", reflecting on 2 Corinthians 5:1 and Hebrews 11:8-10, encouraging believers to recognize the temporary nature of earthly life and walk in faith toward the eternal city built by God.",
+    "summaryZh": "加南新生基督教會主日崇拜，蔡豐智 弟兄證道傳講《人生帳棚與帳棚人生》，經文取自「哥林多後書第 5 章第 1 節，希伯來書第 11 章第 8-10 節」，勉勵弟兄姊妹看清地上人生帳棚的短暫本質，如亞伯拉罕憑信心輕裝同行，常存盼望仰望神所經營建造、那座有根基的永恆家鄉。",
+    "points": [
+      "1. Where Do We Dwell: A Tent or a House?",
+      "2. Seeing the True Nature of Life's Tent",
+      "3. The Pilgrim's Tent-Dwelling Life",
+      "4. Hope at the Journey's End: The City with Foundations",
+      "5. Traveling Light Together Toward Eternity"
+    ],
+    "pointsZh": [
+      "一、住在那裡：帳棚房屋？",
+      "二、看清人生帳棚的本質",
+      "三、天路歷程的帳棚人生",
+      "四、終點的盼望：有根基的城",
+      "五、輕裝同行，奔向永恆"
+    ],
     "videoUrl": "",
     "videoPasscode": "25226",
     "showVideo": false,
@@ -225,34 +269,6 @@ export const SERMON_CONTENT_LIST: Sermon[] = [
       "二、福音的核心與真理",
       "三、福音的傳揚與傳承",
       "四、福音的使命與行動"
-    ],
-    "videoUrl": "",
-    "videoPasscode": "25226",
-    "showVideo": false,
-    "showAudio": false
-  },
-  {
-    "id": "sermon-20260920",
-    "title": "From Tabernacles to the New Heavens and New Earth - God's Tabernacle with Man",
-    "titleZh": "從住棚到新天新地-神的帳幕在人間",
-    "speaker": "Brother Fengzhi Cai",
-    "speakerZh": "蔡豐智 弟兄",
-    "date": "2026-09-20",
-    "scripture": "Revelation 21:3",
-    "scriptureZh": "啟示錄第 21 章第 3 節",
-    "series": "Sunday Message",
-    "seriesZh": "主日證道",
-    "summary": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother Fengzhi Cai on \"From Tabernacles to the New Heavens and New Earth - God's Tabernacle with Man\", reflecting on Revelation 21:3.",
-    "summaryZh": "加南新生基督教會主日崇拜，蔡豐智 弟兄透過啟示錄第 21 章第 3 節傳講《從住棚到新天新地-神的帳幕在人間》，記念住棚節背景，思想基督是活水與真光，盼望神永遠與人同在的應許。",
-    "points": [
-      "1. Remembering the past: Feast of Tabernacles background, traditions, and meaning",
-      "2. Living in the present: Water and light in Tabernacles (Christ as Living Water and Light)",
-      "3. Hopeful waiting for God's eternal presence: The new heaven and earth, God's dwelling with man"
-    ],
-    "pointsZh": [
-      "1. 紀念過去：住棚節的背景，禮節與意義",
-      "2. 活在當下：住棚節的水與光（基督是活水與世界的光）",
-      "3. 盼望等候神永遠的同在：新天新地，神的帳幕在人間"
     ],
     "videoUrl": "",
     "videoPasscode": "25226",
