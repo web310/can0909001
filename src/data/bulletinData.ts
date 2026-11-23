@@ -3,7 +3,7 @@ import { WEEKLY_BIBLE_READING } from './churchData';
 // ============================================================================
 // CANAAN SHIN SHENG CHRISTIAN CHURCH - WEEKLY BULLETIN & READING PLAN MASTER DATA
 // Auto-generated & Synced for GitHub Repository & Cloudflare Pages Deployment
-// Updated at: 2026-11-17T16:36:12.129Z
+// Updated at: 2026-11-23T23:42:58.816Z
 // ============================================================================
 
 export interface BulletinData {
@@ -56,67 +56,67 @@ export const INITIAL_BULLETIN_DATA: BulletinData = {
   "sermonSummaryEn": "Sunday sermon delivered at Canaan Shin Sheng Christian Church by Brother 蔡豐智 on \"人生帳棚與帳棚人生\", reflecting on 2 Corinthians 5:1.",
   "sermonPointsZh": [],
   "sermonPoints": [],
-  "memoryVerseZh": "主就是那靈、主的靈在那裡、那裡就得以自由。（哥林多後書 3:17）",
-  "memoryVerseEn": "Now the Lord is the Spirit, and where the Spirit of the Lord is, there is freedom. (2 Corinthians 3:17)",
+  "memoryVerseZh": "你們也靠他同被建造，成為神藉著聖靈居住的所在。（以弗所書 2:22）",
+  "memoryVerseEn": "And in him you too are being built together to become a dwelling in which God lives by his Spirit. (Ephesians 2:22)",
   "memoryVerseRef": "",
-  "verseReference": "哥林多後書 3:17 / 2 Corinthians 3:17",
-  "readingRange": "11/9 - 11/17",
+  "verseReference": "以弗所書 2:22 / Ephesians 2:22",
+  "readingRange": "11/23 - 11/29",
   "schedule": [
     {
-      "date": "11/9 (週一)",
-      "dateEn": "11/9 (Mon)",
-      "oldTestament": "耶利米書 46-47",
-      "oldTestamentEn": "Jeremiah 46-47",
-      "newTestament": "希伯來書 6",
-      "newTestamentEn": "Hebrews 6"
+      "date": "11/23 (週一)",
+      "dateEn": "11/23 (Mon)",
+      "oldTestament": "以西結書 20-21",
+      "oldTestamentEn": "Ezekiel 20-21",
+      "newTestament": "雅各書 5",
+      "newTestamentEn": "James 5"
     },
     {
-      "date": "11/10 (週二)",
-      "dateEn": "11/10 (Tue)",
-      "oldTestament": "耶利米書 48-49",
-      "oldTestamentEn": "Jeremiah 48-49",
-      "newTestament": "希伯來書 7",
-      "newTestamentEn": "Hebrews 7"
+      "date": "11/24 (週二)",
+      "dateEn": "11/24 (Tue)",
+      "oldTestament": "以西結書 22-23",
+      "oldTestamentEn": "Ezekiel 22-23",
+      "newTestament": "彼得前書 1",
+      "newTestamentEn": "1 Peter 1"
     },
     {
-      "date": "11/11 (週三)",
-      "dateEn": "11/11 (Wed)",
-      "oldTestament": "耶利米書 50",
-      "oldTestamentEn": "Jeremiah 50",
-      "newTestament": "希伯來書 8",
-      "newTestamentEn": "Hebrews 8"
+      "date": "11/25 (週三)",
+      "dateEn": "11/25 (Wed)",
+      "oldTestament": "以西結書 24-26",
+      "oldTestamentEn": "Ezekiel 24-26",
+      "newTestament": "彼得前書 2",
+      "newTestamentEn": "1 Peter 2"
     },
     {
-      "date": "11/12 (週四)",
-      "dateEn": "11/12 (Thu)",
-      "oldTestament": "耶利米書 51-52",
-      "oldTestamentEn": "Jeremiah 51-52",
-      "newTestament": "希伯來書 9",
-      "newTestamentEn": "Hebrews 9"
+      "date": "11/26 (週四)",
+      "dateEn": "11/26 (Thu)",
+      "oldTestament": "以西結書 27-29",
+      "oldTestamentEn": "Ezekiel 27-29",
+      "newTestament": "彼得前書 3",
+      "newTestamentEn": "1 Peter 3"
     },
     {
-      "date": "11/15 (週五)",
-      "dateEn": "11/15 (Fri)",
-      "oldTestament": "以西結書 1-2",
-      "oldTestamentEn": "Ezekiel 1-2",
-      "newTestament": "希伯來書 11:1-19",
-      "newTestamentEn": "Hebrews 11:1-19"
+      "date": "11/27 (週五)",
+      "dateEn": "11/27 (Fri)",
+      "oldTestament": "以西結書 30-32",
+      "oldTestamentEn": "Ezekiel 30-32",
+      "newTestament": "彼得前書 4",
+      "newTestamentEn": "1 Peter 4"
     },
     {
-      "date": "11/16 (週六)",
-      "dateEn": "11/16 (Sat)",
-      "oldTestament": "以西結書 3-4",
-      "oldTestamentEn": "Ezekiel 3-4",
-      "newTestament": "希伯來書 11:20-40",
-      "newTestamentEn": "Hebrews 11:20-40"
+      "date": "11/28 (週六)",
+      "dateEn": "11/28 (Sat)",
+      "oldTestament": "以西結書 33-34",
+      "oldTestamentEn": "Ezekiel 33-34",
+      "newTestament": "彼得前書 5",
+      "newTestamentEn": "1 Peter 5"
     },
     {
-      "date": "11/17 (週日)",
-      "dateEn": "11/17 (Sun)",
-      "oldTestament": "以西結書 5-7",
-      "oldTestamentEn": "Ezekiel 5-7",
-      "newTestament": "希伯來書 12",
-      "newTestamentEn": "Hebrews 12"
+      "date": "11/29 (週日)",
+      "dateEn": "11/29 (Sun)",
+      "oldTestament": "以西結書 35-36",
+      "oldTestamentEn": "Ezekiel 35-36",
+      "newTestament": "彼得後書 1",
+      "newTestamentEn": "2 Peter 1"
     }
   ],
   "announcements": [],
